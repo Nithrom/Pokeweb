@@ -1,10 +1,10 @@
 const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada'};
 const TYPE_CLASS={normal:'t-normal',fighting:'t-fighting',flying:'t-flying',poison:'t-poison',ground:'t-ground',rock:'t-rock',bug:'t-bug',ghost:'t-ghost',steel:'t-steel',fire:'t-fire',water:'t-water',grass:'t-grass',electric:'t-electric',psychic:'t-psychic',ice:'t-ice',dragon:'t-dragon',dark:'t-dark',fairy:'t-fairy'};
 
-const CAT_SVG={
-  physical:`<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#C03028"/><circle cx="8.5" cy="8.5" r="4" fill="#F8D030" stroke="#fff" stroke-width="1.2"/><circle cx="15.5" cy="15.5" r="4" fill="#F8D030" stroke="#fff" stroke-width="1.2"/><line x1="4.5" y1="19.5" x2="19.5" y2="4.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>`,
-  special:`<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#4878C8"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="5" r="2" fill="#fff"/><circle cx="12" cy="19" r="2" fill="#fff"/><circle cx="5" cy="12" r="2" fill="#fff"/><circle cx="19" cy="12" r="2" fill="#fff"/></svg>`,
-  status:`<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#888"/><path d="M12 2 A10 10 0 0 1 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2Z" fill="#ccc"/><circle cx="12" cy="7" r="2.5" fill="#888"/><circle cx="12" cy="17" r="2.5" fill="#ccc"/></svg>`
+const CAT_IMG={
+  physical:'img/cat_physical.png',
+  special:'img/cat_special.png',
+  status:'img/cat_status.png'
 };
 
 const EFF={
@@ -118,21 +118,20 @@ function recRow(p,moveTypes,side){
     if(w4.length||w2.length){rightHtml+=`<div class="rec-why-row"><span class="rec-why-label">Débil a:</span>${w4.map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×4</span>`).join('')}${w2.slice(0,3-w4.length).map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×2</span>`).join('')}</div>`;}
     if(imm.length||res.length){rightHtml+=`<div class="rec-why-row"><span class="rec-why-label">Aguanta:</span>${imm.slice(0,2).map(t=>`<span class="rec-weak-tag rwt-immune">${tn(t)} ×0</span>`).join('')}${res.slice(0,3-imm.length).map(t=>`<span class="rec-weak-tag rwt-resist">${tn(t)}</span>`).join('')}</div>`;}
   }
-  return`<div class="rec-row"><img class="rec-row-img" src="${p.sprite}" alt="${p.name}" loading="lazy"><div class="rec-row-info"><div class="rec-row-name">${formatName(p.name)}</div><div class="rec-row-types">${p.types.map(t=>`<span class="rec-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>${rightHtml}</div></div>`;
+  return`<div class="rec-row" data-poke="${p.name}" data-side="${side}" style="cursor:pointer"><div class="rec-img-wrap"><img class="rec-row-img" src="${p.sprite}" alt="${p.name}" loading="lazy"></div><div class="rec-row-info"><div class="rec-row-name">${formatName(p.name)}</div><div class="rec-row-types">${p.types.map(t=>`<span class="rec-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>${rightHtml}</div></div>`;
 }
 
 function moveRow(m,isSelected,side){
   const d=m.detail;
-  const lvlTxt=m.byLevel?(m.level===0?'—':m.level):'NO';
   const catTitle=d.category==='physical'?'Físico':d.category==='special'?'Especial':'Estado';
   const tipData=`data-tip="${tn(d.type)}|${catTitle}|${d.power??'—'}|${d.accuracy??'—'}|${d.pp??'—'}"`;
   return`<tr${isSelected?' class="mv-selected"':''} data-move="${m.name}">
     <td><input type="checkbox" class="mv-check" data-side="${side}" data-move="${m.name}"${isSelected?' checked':''}></td>
-    <td class="mv-lvl${m.byLevel?'':' no-lvl'}">${lvlTxt}</td>
-    <td class="mv-name">${formatName(m.name)}</td>
-    <td><span class="mv-type-badge ${tc(d.type)}" ${tipData}>${tn(d.type)}</span></td>
-    <td title="${catTitle}">${CAT_SVG[d.category]||CAT_SVG.status}</td>
+    <td class="mv-name" ${tipData} style="cursor:help">${formatName(m.name)}</td>
+    <td><span class="mv-type-badge ${tc(d.type)}">${tn(d.type)}</span></td>
+    <td title="${catTitle}"><img class="mv-cat-img" src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="${catTitle}"></td>
     <td class="mv-power ${powerClass(d.power)}">${d.power??'—'}</td>
+    <td class="mv-power">${d.accuracy!=null?d.accuracy+'%':'—'}</td>
   </tr>`;
 }
 
@@ -170,7 +169,8 @@ document.addEventListener('click',e=>{
 
 function getSelectedMoveTypes(side){
   const data=window._movesData?.[side];if(!data||data.selected.size===0)return[];
-  return[...new Set(data.all.filter(m=>data.selected.has(m.name)).map(m=>m.detail.type))];
+  // Solo moves con potencia (no estado) cuentan para daño
+  return[...new Set(data.all.filter(m=>data.selected.has(m.name)&&m.detail.power&&m.detail.category!=='status').map(m=>m.detail.type))];
 }
 
 async function updateRecsFromMoves(side){
@@ -268,21 +268,32 @@ async function selectPokemon(name,side){
   }catch(e){console.error(e);}
 }
 
-// Tooltip global para tipos de movimientos
+// Tooltip: hover sobre el NOMBRE del movimiento
 const _gtt=document.getElementById('mv-global-tooltip');
 document.addEventListener('mouseover',e=>{
-  const b=e.target.closest('.mv-type-badge[data-tip]');if(!b)return;
-  const[tipo,cat,pot,prec,pp]=b.dataset.tip.split('|');
+  const nm=e.target.closest('.mv-name[data-tip]');if(!nm)return;
+  const[tipo,cat,pot,prec,pp]=nm.dataset.tip.split('|');
   _gtt.innerHTML=`Tipo: <b>${tipo}</b><br>Cat.: <b>${cat}</b><br>Potencia: <b>${pot}</b><br>Precisión: <b>${prec}</b><br>PP: <b>${pp}</b>`;
   _gtt.style.display='block';
 });
 document.addEventListener('mousemove',e=>{
   if(_gtt.style.display==='none')return;
-  const x=e.clientX+14,y=e.clientY-10;
-  _gtt.style.left=(x+_gtt.offsetWidth>window.innerWidth?e.clientX-_gtt.offsetWidth-10:x)+'px';
-  _gtt.style.top=(y+_gtt.offsetHeight>window.innerHeight?e.clientY-_gtt.offsetHeight-10:y)+'px';
+  const x=e.clientX+16,y=e.clientY+16;
+  _gtt.style.left=Math.min(x,window.innerWidth-_gtt.offsetWidth-8)+'px';
+  _gtt.style.top=Math.min(y,window.innerHeight-_gtt.offsetHeight-8)+'px';
 });
-document.addEventListener('mouseout',e=>{if(e.target.closest('.mv-type-badge[data-tip]'))_gtt.style.display='none';});
+document.addEventListener('mouseout',e=>{if(e.target.closest('.mv-name[data-tip]'))_gtt.style.display='none';});
+
+// Click en recomendado → carga en el lado CONTRARIO
+document.addEventListener('click',e=>{
+  const row=e.target.closest('.rec-row[data-poke]');if(!row)return;
+  const poke=row.dataset.poke;
+  const side=row.dataset.side;
+  const oppSide=side==='def'?'atk':'def';
+  const input=document.getElementById(oppSide==='def'?'search-def':'search-atk');
+  input.value=formatName(poke);
+  selectPokemon(poke,oppSide);
+});
 
 setupSearch('search-def','sug-def','def');
 setupSearch('search-atk','sug-atk','atk');
