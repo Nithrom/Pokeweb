@@ -1,570 +1,181 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokémon Counter Finder</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:145%;}
-body{background:#0a0a12;color:#eaeaea;font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
-header{text-align:center;padding:14px 16px 10px;background:#0a0a12;border-bottom:1px solid #1a1a2e;}
-h1{font-family:'Press Start 2P',monospace;font-size:clamp(10px,1.8vw,22px);color:#e94560;text-shadow:0 0 20px rgba(233,69,96,.4);margin-bottom:4px;}
-.status-bar{font-size:.6rem;color:#a0a0b0;margin-top:4px;}
-.status-bar span{color:#e94560;font-weight:700;}
-.columns{display:grid;grid-template-columns:1fr 1fr;flex:1;}
-.col-def{background:#0d1526;border-right:2px solid #0a0a12;overflow-y:auto;}
-.col-atk{background:#1a1000;overflow-y:auto;}
-.col-header{padding:14px 18px 10px;border-bottom:2px solid;}
-.col-def .col-header{border-color:#1a3a6e;}
-.col-atk .col-header{border-color:#5a3a00;}
-.col-title{font-family:'Press Start 2P',monospace;font-size:clamp(7px,1vw,12px);display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.col-def .col-title{color:#4a9eff;}
-.col-atk .col-title{color:#ffaa33;}
-.search-wrap{position:relative;}
-.search-input{width:100%;padding:10px 18px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:600;outline:none;transition:border-color .2s;}
-.col-def .search-input{background:#0a1830;border:2px solid #1a3a6e;color:#eaeaea;}
-.col-def .search-input:focus{border-color:#4a9eff;}
-.col-atk .search-input{background:#1f1500;border:2px solid #5a3a00;color:#eaeaea;}
-.col-atk .search-input:focus{border-color:#ffaa33;}
-.search-input::placeholder{color:#606070;}
-.suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;border-radius:10px;max-height:260px;overflow-y:auto;z-index:100;display:none;}
-.col-def .suggestions{background:#0a1830;border:1px solid #1a3a6e;}
-.col-atk .suggestions{background:#1f1500;border:1px solid #5a3a00;}
-.sug-item{display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;font-size:.72rem;font-weight:600;transition:background .15s;}
-.col-def .sug-item:hover{background:#1a3a6e;}
-.col-atk .sug-item:hover{background:#5a3a00;}
-.sug-item img{width:38px;height:38px;image-rendering:pixelated;}
-.sug-num{color:#606070;font-size:.62rem;margin-left:auto;}
-.inner-grid{display:grid;grid-template-columns:380px 1fr;gap:0;min-height:0;}
-.sub-left{padding:14px 12px;border-right:1px solid;display:flex;flex-direction:column;gap:12px;}
-.col-def .sub-left{border-color:#1a3a6e;}
-.col-atk .sub-left{border-color:#5a3a00;}
-.sub-right{padding:14px 14px;overflow-y:auto;}
-.poke-card{border-radius:14px;padding:12px;text-align:center;display:none;}
-.col-def .poke-card{background:#0a1830;border:1px solid #1a3a6e;}
-.col-atk .poke-card{background:#1f1500;border:1px solid #5a3a00;}
-.poke-card img{width:160px;height:160px;image-rendering:auto;display:block;margin:0 auto 8px;}
-.poke-name{font-family:'Press Start 2P',monospace;font-size:clamp(7px,.9vw,10px);margin-bottom:7px;line-height:1.7;}
-.col-def .poke-name{color:#4a9eff;}
-.col-atk .poke-name{color:#ffaa33;}
-.poke-num{font-size:.62rem;color:#606070;margin-bottom:7px;}
-.types-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;}
-
-/* ── RECOMENDADOS: lista de filas ── */
-.rec-label{font-family:'Press Start 2P',monospace;font-size:7px;padding-top:14px;margin-top:6px;border-top:1px solid;display:none;margin-bottom:10px;}
-.col-def .rec-label{color:#4a9eff;border-color:#1a3a6e;}
-.col-atk .rec-label{color:#ffaa33;border-color:#5a3a00;}
-
-.rec-list{display:flex;flex-direction:column;gap:8px;}
-.rec-row{display:flex;align-items:flex-start;gap:10px;border-radius:10px;padding:9px 10px;cursor:pointer;transition:transform .12s,border-color .12s;border:1px solid;}
-.col-def .rec-row{background:#0a1830;border-color:#1a3a6e;}
-.col-def .rec-row:hover{transform:translateX(3px);border-color:#4a9eff;}
-.col-atk .rec-row{background:#1f1500;border-color:#5a3a00;}
-.col-atk .rec-row:hover{transform:translateX(3px);border-color:#ffaa33;}
-
-.rec-row-img{width:56px;height:56px;image-rendering:auto;flex-shrink:0;}
-.rec-row-info{flex:1;min-width:0;}
-.rec-row-name{font-size:.72rem;font-weight:800;color:#eaeaea;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rec-row-types{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px;}
-.rec-badge{font-size:.52rem;font-weight:800;padding:2px 6px;border-radius:50px;text-transform:uppercase;}
-
-/* Con moves: best mult + detalle por tipo */
-.rec-best-mult{font-family:'Press Start 2P',monospace;font-size:.6rem;padding:3px 7px;border-radius:6px;display:inline-block;margin-bottom:5px;}
-.rec-moves-detail{display:flex;flex-wrap:wrap;gap:4px;}
-.rec-move-eff{display:flex;align-items:center;gap:2px;}
-.rec-mult-pill{font-family:'Press Start 2P',monospace;font-size:.48rem;padding:1px 4px;border-radius:4px;}
-
-/* Sin moves: debilidades/aguante */
-.rec-why-row{display:flex;flex-wrap:wrap;align-items:center;gap:3px;margin-bottom:3px;}
-.rec-why-label{font-size:.55rem;font-weight:700;color:#606070;flex-shrink:0;}
-.rec-weak-tag{font-size:.52rem;font-weight:800;padding:1px 5px;border-radius:4px;}
-.rwt-good{background:rgba(255,71,87,.18);color:#ff6b7a;border:1px solid rgba(255,71,87,.4);}
-.rwt-resist{background:rgba(46,213,115,.15);color:#2ed573;border:1px solid rgba(46,213,115,.35);}
-.rwt-immune{background:rgba(162,155,254,.15);color:#a29bfe;border:1px solid rgba(162,155,254,.35);}
-
-/* Multiplicadores compartidos */
-.rm-4  {background:rgba(255,71,87,.2);  color:#ff4757;border:1px solid #ff4757;}
-.rm-2  {background:rgba(255,165,2,.2);  color:#ffa502;border:1px solid #ffa502;}
-.rm-1  {background:rgba(160,160,176,.15);color:#a0a0b0;border:1px solid #555566;}
-.rm-05 {background:rgba(46,213,115,.15);color:#2ed573;border:1px solid #2ed573;}
-.rm-025{background:rgba(30,144,255,.15);color:#1e90ff;border:1px solid #1e90ff;}
-.rm-0  {background:rgba(162,155,254,.15);color:#a29bfe;border:1px solid #a29bfe;}
-
-/* ── Tipos ── */
-.section-title{font-family:'Press Start 2P',monospace;font-size:8px;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid;display:none;}
-.col-def .section-title{color:#4a9eff;border-color:#1a3a6e;}
-.col-atk .section-title{color:#ffaa33;border-color:#5a3a00;}
-.mult-group{margin-bottom:12px;}
-.mult-label{font-size:.75rem;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
-.mx4{color:#ff4757;}.mx2{color:#ffa502;}.mx1{color:#a0a0b0;}.mx05{color:#2ed573;}.mx025{color:#1e90ff;}.mx0{color:#a29bfe;}
-.types-grid{display:flex;flex-wrap:wrap;gap:4px;}
-.none-text{color:#606070;font-size:.75rem;}
-.type-badge{padding:4px 10px;border-radius:50px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
-.t-normal{background:#A8A878;color:#fff;}.t-fighting{background:#C03028;color:#fff;}.t-flying{background:#A890F0;color:#fff;}
-.t-poison{background:#A040A0;color:#fff;}.t-ground{background:#E0C068;color:#333;}.t-rock{background:#B8A038;color:#fff;}
-.t-bug{background:#A8B820;color:#fff;}.t-ghost{background:#705898;color:#fff;}.t-steel{background:#B8B8D0;color:#333;}
-.t-fire{background:#F08030;color:#fff;}.t-water{background:#6890F0;color:#fff;}.t-grass{background:#78C850;color:#fff;}
-.t-electric{background:#F8D030;color:#333;}.t-psychic{background:#F85888;color:#fff;}.t-ice{background:#98D8D8;color:#333;}
-.t-dragon{background:#7038F8;color:#fff;}.t-dark{background:#705848;color:#fff;}.t-fairy{background:#EE99AC;color:#fff;}
-
-/* ── Movimientos ── */
-.moves-section{display:none;margin-top:12px;}
-.moves-section-title{font-family:'Press Start 2P',monospace;font-size:7px;margin-bottom:8px;padding:12px 0 6px;border-top:1px solid;display:flex;align-items:center;justify-content:space-between;}
-.col-def .moves-section-title{color:#4a9eff;border-color:#1a3a6e;}
-.col-atk .moves-section-title{color:#ffaa33;border-color:#5a3a00;}
-.moves-filter{width:100%;padding:5px 10px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:600;outline:none;margin-bottom:6px;}
-.col-def .moves-filter{background:#0a1830;border:1px solid #1a3a6e;color:#eaeaea;}
-.col-def .moves-filter:focus{border-color:#4a9eff;}
-.col-atk .moves-filter{background:#1f1500;border:1px solid #5a3a00;color:#eaeaea;}
-.col-atk .moves-filter:focus{border-color:#ffaa33;}
-.moves-filter::placeholder{color:#606070;}
-.moves-selected-info{display:none;font-size:.65rem;font-weight:700;padding:5px 8px;border-radius:6px;margin-bottom:6px;text-align:center;cursor:pointer;}
-.col-def .moves-selected-info{background:rgba(74,158,255,.12);color:#4a9eff;border:1px solid #1a3a6e;}
-.col-atk .moves-selected-info{background:rgba(255,170,51,.12);color:#ffaa33;border:1px solid #5a3a00;}
-.moves-table-wrap{max-height:300px;overflow-y:auto;scrollbar-width:thin;border-radius:8px;border:1px solid;}
-.col-def .moves-table-wrap{border-color:#1a3a6e;scrollbar-color:#1a3a6e #0a1830;}
-.col-atk .moves-table-wrap{border-color:#5a3a00;scrollbar-color:#5a3a00 #1f1500;}
-.moves-table{width:100%;border-collapse:collapse;font-size:.68rem;table-layout:fixed;}
-.moves-table col.col-sel{width:22px;}
-.moves-table col.col-lvl{width:32px;}
-.moves-table col.col-name{width:auto;}
-.moves-table col.col-type{width:60px;}
-.moves-table col.col-cat{width:28px;}
-.moves-table col.col-pow{width:34px;}
-.moves-table thead th{position:sticky;top:0;padding:5px 3px;font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;text-align:left;z-index:2;}
-.col-def .moves-table thead th{background:#0d1e3a;color:#4a9eff;border-bottom:1px solid #1a3a6e;}
-.col-atk .moves-table thead th{background:#201500;color:#ffaa33;border-bottom:1px solid #5a3a00;}
-.moves-table th.th-c{text-align:center;}
-.col-def .moves-table tbody tr{border-bottom:1px solid #111d30;}
-.col-atk .moves-table tbody tr{border-bottom:1px solid #1f1500;}
-.col-def .moves-table tbody tr:hover{background:rgba(74,158,255,.07);}
-.col-atk .moves-table tbody tr:hover{background:rgba(255,170,51,.07);}
-.col-def .moves-table tbody tr.mv-selected{background:rgba(74,158,255,.16);}
-.col-atk .moves-table tbody tr.mv-selected{background:rgba(255,170,51,.16);}
-.moves-table td{padding:3px 3px;vertical-align:middle;overflow:hidden;}
-.mv-check{width:13px;height:13px;cursor:pointer;accent-color:#4a9eff;display:block;margin:0 auto;}
-.col-atk .mv-check{accent-color:#ffaa33;}
-.mv-lvl{font-family:'Press Start 2P',monospace;font-size:.5rem;text-align:center;white-space:nowrap;}
-.col-def .mv-lvl{color:#4a9eff;}
-.col-atk .mv-lvl{color:#ffaa33;}
-.mv-lvl.no-lvl{color:#444455;}
-.mv-name{font-weight:700;color:#eaeaea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.mv-type-badge{padding:2px 5px;border-radius:50px;font-size:.55rem;font-weight:800;text-transform:uppercase;cursor:pointer;white-space:nowrap;display:block;text-align:center;width:100%;}
-/* Iconos de categoría SVG inline */
-.mv-cat-icon{display:block;width:22px;height:22px;margin:0 auto;border-radius:50%;}
-.mv-power{font-weight:800;font-size:.68rem;text-align:center;white-space:nowrap;}
-.mv-power.pow-high{color:#ff4757;}.mv-power.pow-mid{color:#ffa502;}.mv-power.pow-low{color:#2ed573;}.mv-power.pow-none{color:#444455;}
-.move-count{font-size:.65rem;color:#606070;margin-bottom:4px;text-align:right;}
-.moves-empty{color:#606070;font-size:.7rem;padding:12px;text-align:center;}
-.loading{text-align:center;color:#606070;font-size:.75rem;padding:16px;}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid #1a3a6e;border-top-color:#4a9eff;border-radius:50%;animation:spin .8s linear infinite;margin-right:5px;vertical-align:middle;}
-.spinner-atk{border-color:#5a3a00;border-top-color:#ffaa33;}
-@keyframes spin{to{transform:rotate(360deg);}}
-@media(max-width:1200px){.inner-grid{grid-template-columns:320px 1fr;}}
-@media(max-width:1000px){.columns{grid-template-columns:1fr;}.col-def{border-right:none;border-bottom:2px solid #0a0a12;}.inner-grid{grid-template-columns:320px 1fr;}}
-@media(max-width:640px){.inner-grid{grid-template-columns:1fr;}.sub-left{border-right:none;border-bottom:1px solid #1a3a6e;}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Counter Finder</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<div id="mv-global-tooltip" style="display:none;position:fixed;z-index:9999;background:#1a1a2e;border:1px solid #333355;border-radius:8px;padding:8px 12px;font-size:.7rem;font-weight:700;line-height:1.8;color:#eaeaea;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.7);white-space:nowrap;"></div>
-<header>
-  <h1>⚔ POKÉMON COUNTER FINDER</h1>
-  <div class="status-bar" id="status-bar"><span class="spinner"></span> Cargando Pokédex...</div>
-</header>
-<div class="columns">
-  <div class="col-def">
-    <div class="col-header">
-      <div class="col-title">🛡 ¿QUÉ LE HACE DAÑO?</div>
-      <div class="search-wrap">
-        <input class="search-input" id="search-def" placeholder="Pokémon defensor..." disabled autocomplete="off">
-        <div class="suggestions" id="sug-def"></div>
-      </div>
+
+  <!-- Tooltip global para badges de tipo -->
+  <div id="mv-global-tooltip"></div>
+
+  <!-- HEADER -->
+  <header>
+    <h1>⚔ POKÉMON COUNTER FINDER</h1>
+    <div class="status-bar" id="status-bar">
+      <span class="spinner"></span> Cargando Pokédex...
     </div>
-    <div class="inner-grid">
-      <div class="sub-left">
-        <div class="poke-card" id="card-def">
-          <img id="img-def" src="" alt="">
-          <div class="poke-name" id="name-def"></div>
-          <div class="poke-num">N.º <span id="id-def"></span></div>
-          <div class="types-row" id="types-def"></div>
-          <div class="moves-section" id="moves-section-def">
-            <div class="moves-section-title"><span>MOVIMIENTOS</span><span class="move-count" id="moves-count-def"></span></div>
-            <div class="moves-selected-info" id="moves-sel-info-def"></div>
-            <input class="moves-filter" id="moves-filter-def" placeholder="Filtrar move..." autocomplete="off">
-            <div class="moves-table-wrap">
-              <table class="moves-table">
-                <colgroup><col class="col-sel"><col class="col-lvl"><col class="col-name"><col class="col-type"><col class="col-cat"><col class="col-pow"></colgroup>
-                <thead><tr><th class="th-c">✓</th><th class="th-c">Nv.</th><th>Move</th><th>Tipo</th><th class="th-c">Cat.</th><th class="th-c">Pot.</th></tr></thead>
-                <tbody id="moves-list-def"></tbody>
-              </table>
-            </div>
+  </header>
+
+  <!-- COLUMNAS PRINCIPALES -->
+  <div class="main-cols">
+
+    <!-- ══════════ COLUMNA DEFENSOR ══════════ -->
+    <div class="col-def">
+
+      <!-- Cabecera + búsqueda -->
+      <div class="col-header">
+        <div class="col-title">🛡 ¿QUÉ LE HACE DAÑO?</div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-def" placeholder="Pokémon defensor..." disabled autocomplete="off">
+          <div class="suggestions" id="sug-def"></div>
+        </div>
+      </div>
+
+      <!-- FILA 1: Pokémon + Movimientos -->
+      <div class="row-pokemon">
+
+        <!-- Tarjeta pokémon -->
+        <div class="poke-panel">
+          <div class="poke-card" id="card-def">
+            <img id="img-def" src="" alt="">
+            <div class="poke-name" id="name-def"></div>
+            <div class="poke-num">N.º <span id="id-def"></span></div>
+            <div class="types-row" id="types-def"></div>
+          </div>
+        </div>
+
+        <!-- Panel de movimientos -->
+        <div class="moves-panel" id="moves-section-def" style="display:none;">
+          <div class="moves-panel-title">
+            <span>MOVIMIENTOS</span>
+            <span id="moves-count-def"></span>
+          </div>
+          <div class="moves-selected-info" id="moves-sel-info-def"></div>
+          <input class="moves-filter" id="moves-filter-def" placeholder="Filtrar movimiento..." autocomplete="off">
+          <div class="moves-table-wrap">
+            <table class="moves-table">
+              <colgroup>
+                <col class="col-sel"><col class="col-lvl"><col class="col-name">
+                <col class="col-type"><col class="col-cat"><col class="col-pow">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="th-c">✓</th>
+                  <th class="th-c">Nv.</th>
+                  <th>Movimiento</th>
+                  <th>Tipo</th>
+                  <th class="th-c">Cat.</th>
+                  <th class="th-c">Pot.</th>
+                </tr>
+              </thead>
+              <tbody id="moves-list-def"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /row-pokemon -->
+
+      <!-- FILA 2: Tabla de tipos -->
+      <div class="row-types">
+        <div class="types-panel">
+          <div class="types-panel-title" id="types-title-def">TIPOS QUE LE HACEN DAÑO</div>
+          <div class="types-two-cols" id="types-panel-def">
+            <div id="output-left-def"></div>
+            <div id="output-right-def"></div>
           </div>
         </div>
       </div>
-      <div class="sub-right">
-        <div class="section-title" id="sec-title-def">TIPOS QUE LE HACEN DAÑO</div>
-        <div id="output-def"></div>
+
+      <!-- FILA 3: Pokémon recomendados -->
+      <div class="row-recs">
         <div class="rec-label" id="rec-label-def">COUNTERS RECOMENDADOS</div>
-        <div class="rec-list" id="rec-def"></div>
+        <div class="rec-grid" id="rec-def"></div>
       </div>
-    </div>
-  </div>
-  <div class="col-atk">
-    <div class="col-header">
-      <div class="col-title">⚔ ¿A QUÉ LE HACE DAÑO?</div>
-      <div class="search-wrap">
-        <input class="search-input" id="search-atk" placeholder="Pokémon atacante..." disabled autocomplete="off">
-        <div class="suggestions" id="sug-atk"></div>
+
+    </div><!-- /col-def -->
+
+    <!-- ══════════ COLUMNA ATACANTE ══════════ -->
+    <div class="col-atk">
+
+      <!-- Cabecera + búsqueda -->
+      <div class="col-header">
+        <div class="col-title">⚔ ¿A QUÉ LE HACE DAÑO?</div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-atk" placeholder="Pokémon atacante..." disabled autocomplete="off">
+          <div class="suggestions" id="sug-atk"></div>
+        </div>
       </div>
-    </div>
-    <div class="inner-grid">
-      <div class="sub-left">
-        <div class="poke-card" id="card-atk">
-          <img id="img-atk" src="" alt="">
-          <div class="poke-name" id="name-atk"></div>
-          <div class="poke-num">N.º <span id="id-atk"></span></div>
-          <div class="types-row" id="types-atk"></div>
-          <div class="moves-section" id="moves-section-atk">
-            <div class="moves-section-title"><span>MOVIMIENTOS</span><span class="move-count" id="moves-count-atk"></span></div>
-            <div class="moves-selected-info" id="moves-sel-info-atk"></div>
-            <input class="moves-filter" id="moves-filter-atk" placeholder="Filtrar move..." autocomplete="off">
-            <div class="moves-table-wrap">
-              <table class="moves-table">
-                <colgroup><col class="col-sel"><col class="col-lvl"><col class="col-name"><col class="col-type"><col class="col-cat"><col class="col-pow"></colgroup>
-                <thead><tr><th class="th-c">✓</th><th class="th-c">Nv.</th><th>Move</th><th>Tipo</th><th class="th-c">Cat.</th><th class="th-c">Pot.</th></tr></thead>
-                <tbody id="moves-list-atk"></tbody>
-              </table>
-            </div>
+
+      <!-- FILA 1: Pokémon + Movimientos -->
+      <div class="row-pokemon">
+
+        <!-- Tarjeta pokémon -->
+        <div class="poke-panel">
+          <div class="poke-card" id="card-atk">
+            <img id="img-atk" src="" alt="">
+            <div class="poke-name" id="name-atk"></div>
+            <div class="poke-num">N.º <span id="id-atk"></span></div>
+            <div class="types-row" id="types-atk"></div>
+          </div>
+        </div>
+
+        <!-- Panel de movimientos -->
+        <div class="moves-panel" id="moves-section-atk" style="display:none;">
+          <div class="moves-panel-title">
+            <span>MOVIMIENTOS</span>
+            <span id="moves-count-atk"></span>
+          </div>
+          <div class="moves-selected-info" id="moves-sel-info-atk"></div>
+          <input class="moves-filter" id="moves-filter-atk" placeholder="Filtrar movimiento..." autocomplete="off">
+          <div class="moves-table-wrap">
+            <table class="moves-table">
+              <colgroup>
+                <col class="col-sel"><col class="col-lvl"><col class="col-name">
+                <col class="col-type"><col class="col-cat"><col class="col-pow">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="th-c">✓</th>
+                  <th class="th-c">Nv.</th>
+                  <th>Movimiento</th>
+                  <th>Tipo</th>
+                  <th class="th-c">Cat.</th>
+                  <th class="th-c">Pot.</th>
+                </tr>
+              </thead>
+              <tbody id="moves-list-atk"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /row-pokemon -->
+
+      <!-- FILA 2: Tabla de tipos -->
+      <div class="row-types">
+        <div class="types-panel">
+          <div class="types-panel-title" id="types-title-atk">TIPOS A LOS QUE HACE DAÑO</div>
+          <div class="types-two-cols" id="types-panel-atk">
+            <div id="output-left-atk"></div>
+            <div id="output-right-atk"></div>
           </div>
         </div>
       </div>
-      <div class="sub-right">
-        <div class="section-title" id="sec-title-atk">TIPOS A LOS QUE HACE DAÑO</div>
-        <div id="output-atk"></div>
+
+      <!-- FILA 3: Pokémon recomendados -->
+      <div class="row-recs">
         <div class="rec-label" id="rec-label-atk">POKÉMON DÉBILES</div>
-        <div class="rec-list" id="rec-atk"></div>
+        <div class="rec-grid" id="rec-atk"></div>
       </div>
-    </div>
-  </div>
-</div>
-<script>
-const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada'};
-const TYPE_CLASS={normal:'t-normal',fighting:'t-fighting',flying:'t-flying',poison:'t-poison',ground:'t-ground',rock:'t-rock',bug:'t-bug',ghost:'t-ghost',steel:'t-steel',fire:'t-fire',water:'t-water',grass:'t-grass',electric:'t-electric',psychic:'t-psychic',ice:'t-ice',dragon:'t-dragon',dark:'t-dark',fairy:'t-fairy'};
 
-// SVG inline para iconos de categoría (fieles a los iconos oficiales)
-const CAT_SVG = {
-  physical: `<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#C03028"/><circle cx="8.5" cy="8.5" r="4" fill="#F8D030" stroke="#fff" stroke-width="1.2"/><circle cx="15.5" cy="15.5" r="4" fill="#F8D030" stroke="#fff" stroke-width="1.2"/><line x1="4.5" y1="19.5" x2="19.5" y2="4.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>`,
-  special:  `<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#4878C8"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="5" r="2" fill="#fff"/><circle cx="12" cy="19" r="2" fill="#fff"/><circle cx="5" cy="12" r="2" fill="#fff"/><circle cx="19" cy="12" r="2" fill="#fff"/></svg>`,
-  status:   `<svg class="mv-cat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#888"/><path d="M12 2 A10 10 0 0 1 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2Z" fill="#ccc"/><circle cx="12" cy="7" r="2.5" fill="#888"/><circle cx="12" cy="17" r="2.5" fill="#ccc"/></svg>`
-};
+    </div><!-- /col-atk -->
 
-const EFF={
-  normal:{normal:1,fighting:1,flying:1,poison:1,ground:1,rock:0.5,bug:1,ghost:0,steel:0.5,fire:1,water:1,grass:1,electric:1,psychic:1,ice:1,dragon:1,dark:1,fairy:1},
-  fighting:{normal:2,fighting:1,flying:0.5,poison:0.5,ground:1,rock:2,bug:0.5,ghost:0,steel:2,fire:1,water:1,grass:1,electric:1,psychic:0.5,ice:2,dragon:1,dark:2,fairy:0.5},
-  flying:{normal:1,fighting:2,flying:1,poison:1,ground:1,rock:0.5,bug:2,ghost:1,steel:0.5,fire:1,water:1,grass:2,electric:0.5,psychic:1,ice:1,dragon:1,dark:1,fairy:1},
-  poison:{normal:1,fighting:1,flying:1,poison:0.5,ground:0.5,rock:0.5,bug:1,ghost:0.5,steel:0,fire:1,water:1,grass:2,electric:1,psychic:1,ice:1,dragon:1,dark:1,fairy:2},
-  ground:{normal:1,fighting:1,flying:0,poison:2,ground:1,rock:2,bug:0.5,ghost:1,steel:2,fire:2,water:1,grass:0.5,electric:2,psychic:1,ice:1,dragon:1,dark:1,fairy:1},
-  rock:{normal:1,fighting:0.5,flying:2,poison:1,ground:0.5,rock:1,bug:2,ghost:1,steel:0.5,fire:2,water:1,grass:1,electric:1,psychic:1,ice:2,dragon:1,dark:1,fairy:1},
-  bug:{normal:1,fighting:0.5,flying:0.5,poison:0.5,ground:1,rock:1,bug:1,ghost:0.5,steel:0.5,fire:0.5,water:1,grass:2,electric:1,psychic:2,ice:1,dragon:1,dark:2,fairy:0.5},
-  ghost:{normal:0,fighting:1,flying:1,poison:1,ground:1,rock:1,bug:1,ghost:2,steel:1,fire:1,water:1,grass:1,electric:1,psychic:2,ice:1,dragon:1,dark:0.5,fairy:1},
-  steel:{normal:1,fighting:1,flying:1,poison:1,ground:1,rock:2,bug:1,ghost:1,steel:0.5,fire:0.5,water:0.5,grass:1,electric:0.5,psychic:1,ice:2,dragon:1,dark:1,fairy:2},
-  fire:{normal:1,fighting:1,flying:1,poison:1,ground:1,rock:0.5,bug:2,ghost:1,steel:2,fire:0.5,water:0.5,grass:2,electric:1,psychic:1,ice:2,dragon:0.5,dark:1,fairy:1},
-  water:{normal:1,fighting:1,flying:1,poison:1,ground:2,rock:2,bug:1,ghost:1,steel:1,fire:2,water:0.5,grass:0.5,electric:1,psychic:1,ice:1,dragon:0.5,dark:1,fairy:1},
-  grass:{normal:1,fighting:1,flying:0.5,poison:0.5,ground:2,rock:2,bug:0.5,ghost:1,steel:0.5,fire:0.5,water:2,grass:0.5,electric:1,psychic:1,ice:1,dragon:0.5,dark:1,fairy:1},
-  electric:{normal:1,fighting:1,flying:2,poison:1,ground:0,rock:1,bug:1,ghost:1,steel:1,fire:1,water:2,grass:0.5,electric:0.5,psychic:1,ice:1,dragon:0.5,dark:1,fairy:1},
-  psychic:{normal:1,fighting:2,flying:1,poison:2,ground:1,rock:1,bug:1,ghost:1,steel:0.5,fire:1,water:1,grass:1,electric:1,psychic:0.5,ice:1,dragon:1,dark:0,fairy:1},
-  ice:{normal:1,fighting:1,flying:2,poison:1,ground:2,rock:1,bug:1,ghost:1,steel:0.5,fire:0.5,water:0.5,grass:2,electric:1,psychic:1,ice:0.5,dragon:2,dark:1,fairy:1},
-  dragon:{normal:1,fighting:1,flying:1,poison:1,ground:1,rock:1,bug:1,ghost:1,steel:0.5,fire:1,water:1,grass:1,electric:1,psychic:1,ice:1,dragon:2,dark:1,fairy:0},
-  dark:{normal:1,fighting:0.5,flying:1,poison:1,ground:1,rock:1,bug:1,ghost:2,steel:1,fire:1,water:1,grass:1,electric:1,psychic:2,ice:1,dragon:1,dark:0.5,fairy:0.5},
-  fairy:{normal:1,fighting:2,flying:1,poison:0.5,ground:1,rock:1,bug:1,ghost:1,steel:0.5,fire:0.5,water:1,grass:1,electric:1,psychic:1,ice:1,dragon:2,dark:2,fairy:1}
-};
+  </div><!-- /main-cols -->
 
-function calcDefense(types){const r={4:[],2:[],1:[],0.5:[],0.25:[],0:[]};for(const a of Object.keys(EFF)){let m=1;for(const d of types)m*=(EFF[a][d]??1);const k=Math.round(m*100)/100;if(r[k]!==undefined)r[k].push(a);else if(k>=3)r[4].push(a);else r[1].push(a);}return r;}
-function calcAttack(types){const r={4:[],2:[],1:[],0.5:[],0.25:[],0:[]};for(const d of Object.keys(EFF[Object.keys(EFF)[0]])){let m=1;for(const a of types)m*=(EFF[a][d]??1);const k=Math.round(m*100)/100;if(r[k]!==undefined)r[k].push(d);else if(k>=3)r[4].push(d);else r[1].push(d);}return r;}
-
-function calcMovesMult(moveTypes,defTypes){
-  let best=0;
-  for(const a of moveTypes){let m=1;for(const d of defTypes)m*=(EFF[a]?.[d]??1);m=Math.round(m*100)/100;if(m>best)best=m;}
-  return best;
-}
-function multLabel(m){if(m>=4)return{txt:'×4',cls:'rm-4'};if(m>=2)return{txt:'×2',cls:'rm-2'};if(m>=1)return{txt:'×1',cls:'rm-1'};if(m>=0.5)return{txt:'×½',cls:'rm-05'};if(m>0)return{txt:'×¼',cls:'rm-025'};return{txt:'×0 inmune',cls:'rm-0'};}
-
-const MULT_DEF=[{key:4,label:'×4 Le destroza',cls:'mx4'},{key:2,label:'×2 Supereficaz',cls:'mx2'},{key:1,label:'×1 Normal',cls:'mx1'},{key:0.5,label:'×0,5 Poco eficaz',cls:'mx05'},{key:0.25,label:'×0,25 Muy poco eficaz',cls:'mx025'},{key:0,label:'×0 Inmune',cls:'mx0'}];
-const MULT_ATK=[{key:4,label:'×4 Destroza a',cls:'mx4'},{key:2,label:'×2 Supereficaz contra',cls:'mx2'},{key:1,label:'×1 Normal contra',cls:'mx1'},{key:0.5,label:'×0,5 Flojo contra',cls:'mx05'},{key:0.25,label:'×0,25 Muy flojo contra',cls:'mx025'},{key:0,label:'×0 No afecta a',cls:'mx0'}];
-const TYPE_POOL={normal:[143,113,241,234,289,446],fighting:[68,107,297,448,534,619],flying:[18,142,277,334,468,561],poison:[34,89,211,454,452,545],ground:[31,75,232,330,443,530],rock:[76,185,219,248,369,411],bug:[123,127,212,214,291,542],ghost:[94,200,302,354,429,477],steel:[81,208,227,376,385,448],fire:[6,38,59,136,157,250],water:[9,54,90,121,131,134],grass:[3,45,103,154,182,254],electric:[26,125,135,181,243,310],psychic:[65,122,196,199,280,376],ice:[87,91,131,144,215,461],dragon:[130,147,230,334,373,445],dark:[197,248,262,359,430,461],fairy:[35,39,176,183,282,468]};
-
-let allPokemon=[],typeCache={},moveDetailCache={};
-
-async function loadPokedex(){
-  try{const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');const data=await res.json();allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));document.getElementById('status-bar').innerHTML=`Pokédex: <span>${allPokemon.length} Pokémon</span> listos`;document.getElementById('search-def').disabled=false;document.getElementById('search-atk').disabled=false;}
-  catch(e){document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';}
-}
-
-function formatName(n){return n.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
-function tc(t){return TYPE_CLASS[t]||'t-normal';}
-function tn(t){return TIPOS_ES[t]||t;}
-function powerClass(p){if(!p)return 'pow-none';if(p>=100)return 'pow-high';if(p>=60)return 'pow-mid';return 'pow-low';}
-
-function setupSearch(inputId,sugId,side){
-  const input=document.getElementById(inputId),sug=document.getElementById(sugId);
-  input.addEventListener('input',()=>{
-    const q=input.value.toLowerCase().trim();if(!q){sug.style.display='none';return;}
-    const isNum=/^\d+$/.test(q);let matches;
-    if(isNum){const n=parseInt(q);matches=allPokemon.filter(p=>p.id===n||String(p.id).startsWith(q)).slice(0,8);}
-    else{if(q.length<2){sug.style.display='none';return;}matches=allPokemon.filter(p=>p.name.includes(q)).slice(0,8);}
-    if(!matches.length){sug.style.display='none';return;}
-    sug.innerHTML=matches.map(p=>`<div class="sug-item" data-name="${p.name}"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" loading="lazy"><span>${formatName(p.name)}</span><span class="sug-num">N.º${p.id}</span></div>`).join('');
-    sug.style.display='block';
-    sug.querySelectorAll('.sug-item').forEach(el=>el.addEventListener('click',()=>{sug.style.display='none';input.value=formatName(el.dataset.name);selectPokemon(el.dataset.name,side);}));
-  });
-}
-
-async function getMoveDetail(url){
-  if(moveDetailCache[url])return moveDetailCache[url];
-  try{const res=await fetch(url);const d=await res.json();const r={type:d.type?.name||'normal',category:d.damage_class?.name||'status',power:d.power||null,pp:d.pp||null,accuracy:d.accuracy||null};moveDetailCache[url]=r;return r;}
-  catch(e){return{type:'normal',category:'status',power:null,pp:null,accuracy:null};}
-}
-
-async function getPokemonData(name){
-  if(typeCache[name])return typeCache[name];
-  const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);const data=await res.json();
-  const levelSet=new Map();
-  for(const m of data.moves){for(const vd of m.version_group_details){if(vd.move_learn_method.name==='level-up'){if(!levelSet.has(m.move.name))levelSet.set(m.move.name,{url:m.move.url,level:vd.level_learned_at});break;}}}
-  const levelMoves=[];for(const[n,info]of levelSet)levelMoves.push({name:n,url:info.url,level:info.level,byLevel:true});
-  levelMoves.sort((a,b)=>a.level-b.level||a.name.localeCompare(b.name));
-  const otherMoves=[];for(const m of data.moves){if(!levelSet.has(m.move.name))otherMoves.push({name:m.move.name,url:m.move.url,level:null,byLevel:false});}
-  otherMoves.sort((a,b)=>a.name.localeCompare(b.name));
-  const result={types:data.types.map(t=>t.type.name),sprite:data.sprites.other['official-artwork'].front_default||data.sprites.front_default,id:data.id,allMoves:[...levelMoves,...otherMoves]};
-  typeCache[name]=result;return result;
-}
-
-async function getRecsForTypes(goodTypes,count=8){
-  const ids=new Set();
-  for(const t of goodTypes){for(const id of(TYPE_POOL[t]||[])){ids.add(id);if(ids.size>=count)break;}if(ids.size>=count)break;}
-  const results=[];
-  for(const id of[...ids].slice(0,count)){
-    try{const d=await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);const p=await d.json();const sprite=p.sprites.other['official-artwork'].front_default||p.sprites.front_default;results.push({name:p.name,id:p.id,types:p.types.map(t=>t.type.name),sprite});}
-    catch(e){}
-  }
-  return results;
-}
-
-// Genera la tarjeta de recomendado en formato fila con info de utilidad
-function recRow(p, moveTypes, side) {
-  const def = calcDefense(p.types);
-
-  // ── Con moves seleccionados: muestra cuál move le hace más daño ──
-  let rightHtml = '';
-  if (moveTypes && moveTypes.length > 0) {
-    // Calcular daño de cada move sobre este pokémon
-    const moveEffects = moveTypes.map(atkType => {
-      let m = 1;
-      for (const defType of p.types) m *= (EFF[atkType]?.[defType] ?? 1);
-      return { type: atkType, mult: Math.round(m * 100) / 100 };
-    }).sort((a, b) => b.mult - a.mult);
-
-    const best = moveEffects[0];
-    const { txt, cls } = multLabel(best.mult);
-
-    // Barra de hits eficaces
-    const hitsEficaces = moveEffects.filter(e => e.mult >= 2).length;
-    const totalMoves   = moveEffects.length;
-    const barPct       = Math.round((hitsEficaces / totalMoves) * 100);
-    const isLeft       = side === 'def';
-    const barColor     = isLeft ? '#4a9eff' : '#ffaa33';
-
-    // Lista de todos los moves con su multiplicador
-    const movesDetail = moveEffects.map(e => {
-      const {txt: mt, cls: mc} = multLabel(e.mult);
-      return `<span class="rec-move-eff"><span class="rec-badge ${tc(e.type)}">${tn(e.type)}</span><span class="rec-mult-pill ${mc}">${mt}</span></span>`;
-    }).join('');
-
-    rightHtml = `
-      <div class="rec-best-mult ${cls}">${txt}</div>
-      <div class="rec-moves-detail">${movesDetail}</div>`;
-
-  } else {
-    // ── Sin moves: muestra debilidades/resistencias clave del pokémon ──
-    const weakx4  = def[4] || [];
-    const weakx2  = def[2] || [];
-    const immune  = def[0] || [];
-    const resist  = (def[0.25] || []).concat(def[0.5] || []);
-
-    let whyHtml = '';
-    if (weakx4.length || weakx2.length) {
-      whyHtml += `<div class="rec-why-row"><span class="rec-why-label">Débil a:</span>`;
-      whyHtml += weakx4.map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×4</span>`).join('');
-      whyHtml += weakx2.slice(0, 3 - weakx4.length).map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×2</span>`).join('');
-      whyHtml += '</div>';
-    }
-    if (immune.length || resist.slice(0,2).length) {
-      whyHtml += `<div class="rec-why-row"><span class="rec-why-label">Aguanta:</span>`;
-      whyHtml += immune.slice(0,2).map(t=>`<span class="rec-weak-tag rwt-immune">${tn(t)} ×0</span>`).join('');
-      whyHtml += resist.slice(0, 3 - immune.length).map(t=>`<span class="rec-weak-tag rwt-resist">${tn(t)}</span>`).join('');
-      whyHtml += '</div>';
-    }
-    rightHtml = whyHtml;
-  }
-
-  return `<div class="rec-row">
-    <img class="rec-row-img" src="${p.sprite}" alt="${p.name}" loading="lazy">
-    <div class="rec-row-info">
-      <div class="rec-row-name">${formatName(p.name)}</div>
-      <div class="rec-row-types">${p.types.map(t=>`<span class="rec-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
-      ${rightHtml}
-    </div>
-  </div>`;
-}
-
-// Tabla de movimientos
-function moveRow(m,isSelected,side){
-  const d=m.detail;
-  const lvlTxt=m.byLevel?(m.level===0?'—':m.level):'NO';
-  const lvlCls=m.byLevel?'mv-lvl':'mv-lvl no-lvl';
-  const catTitle=d.category==='physical'?'Físico':d.category==='special'?'Especial':'Estado';
-  const tipData=`data-tip="${tn(d.type)}|${catTitle}|${d.power??'—'}|${d.accuracy??'—'}|${d.pp??'—'}"`;
-  const rowCls=isSelected?' class="mv-selected"':'';
-  return `<tr${rowCls} data-move="${m.name}">
-    <td><input type="checkbox" class="mv-check" data-side="${side}" data-move="${m.name}"${isSelected?' checked':''}></td>
-    <td class="${lvlCls}">${lvlTxt}</td>
-    <td class="mv-name">${formatName(m.name)}</td>
-    <td><span class="mv-type-badge ${tc(d.type)}" ${tipData}>${tn(d.type)}</span></td>
-    <td title="${catTitle}">${CAT_SVG[d.category]||CAT_SVG.status}</td>
-    <td class="mv-power ${powerClass(d.power)}">${d.power??'—'}</td>
-  </tr>`;
-}
-
-function renderMovesTable(side){
-  const data=window._movesData?.[side];if(!data)return;
-  const isLeft=side==='def';
-  const movesList =document.getElementById(isLeft?'moves-list-def':'moves-list-atk');
-  const movesCount=document.getElementById(isLeft?'moves-count-def':'moves-count-atk');
-  const selInfo   =document.getElementById(isLeft?'moves-sel-info-def':'moves-sel-info-atk');
-  const source=data.filter?data.all.filter(m=>m.name.includes(data.filter)||formatName(m.name).toLowerCase().includes(data.filter)):data.all;
-  movesCount.textContent=`${source.length}${data.filter?` de ${data.all.length}`:''} movs.`;
-  movesList.innerHTML=source.length?source.map(m=>moveRow(m,data.selected.has(m.name),side)).join(''):`<tr><td colspan="6" class="moves-empty">Sin resultados</td></tr>`;
-  const nSel=data.selected.size;
-  selInfo.style.display=nSel>0?'block':'none';
-  if(nSel>0)selInfo.textContent=`${nSel} move${nSel>1?'s':''} seleccionado${nSel>1?'s':''} — click para limpiar`;
-}
-
-document.addEventListener('change',e=>{
-  const cb=e.target.closest('.mv-check');if(!cb)return;
-  const side=cb.dataset.side,data=window._movesData?.[side];if(!data)return;
-  if(cb.checked)data.selected.add(cb.dataset.move);else data.selected.delete(cb.dataset.move);
-  cb.closest('tr').classList.toggle('mv-selected',cb.checked);
-  const isLeft=side==='def',selInfo=document.getElementById(isLeft?'moves-sel-info-def':'moves-sel-info-atk');
-  const nSel=data.selected.size;
-  selInfo.style.display=nSel>0?'block':'none';
-  if(nSel>0)selInfo.textContent=`${nSel} move${nSel>1?'s':''} seleccionado${nSel>1?'s':''} — click para limpiar`;
-  updateRecsFromMoves(side);
-});
-
-document.addEventListener('click',e=>{
-  const info=e.target.closest('.moves-selected-info');if(!info)return;
-  const side=info.id.includes('def')?'def':'atk',data=window._movesData?.[side];if(!data)return;
-  data.selected.clear();renderMovesTable(side);restoreDefaultRecs(side);
-});
-
-function getSelectedMoveTypes(side){
-  const data=window._movesData?.[side];if(!data||data.selected.size===0)return[];
-  return[...new Set(data.all.filter(m=>data.selected.has(m.name)).map(m=>m.detail.type))];
-}
-
-async function updateRecsFromMoves(side){
-  const moveTypes=getSelectedMoveTypes(side);
-  if(!moveTypes.length){restoreDefaultRecs(side);return;}
-  const isLeft=side==='def';
-  const recList =document.getElementById(isLeft?'rec-def':'rec-atk');
-  const recLabel=document.getElementById(isLeft?'rec-label-def':'rec-label-atk');
-  const spinCls =isLeft?'spinner':'spinner spinner-atk';
-  recLabel.style.display='block';
-  recLabel.textContent=isLeft?'COUNTERS (por moves)':'DÉBILES A TUS MOVES';
-  recList.innerHTML=`<div class="loading"><span class="${spinCls}"></span></div>`;
-  function scoreTypes(fn){return Object.keys(EFF).map(d=>{let s=0;for(const a of moveTypes)s+=fn(EFF[a]?.[d]??1);return{type:d,score:s};}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,4).map(x=>x.type);}
-  const tgt=isLeft?scoreTypes(m=>m<=0.5?2:m===0?3:m>=2?-2:0):scoreTypes(m=>m>=4?4:m>=2?2:m<=0.5?-1:0);
-  const recs=await getRecsForTypes(tgt.length?tgt:moveTypes,8);
-  recList.innerHTML=recs.map(p=>recRow(p,moveTypes,side)).join('')||'<div class="loading">Sin resultados</div>';
-}
-
-async function restoreDefaultRecs(side){
-  const pokeName=window._currentPokemon?.[side];if(!pokeName)return;
-  const isLeft=side==='def',{types}=await getPokemonData(pokeName);
-  const eff=isLeft?calcDefense(types):calcAttack(types),goodTypes=eff[4].concat(eff[2]);
-  const recList =document.getElementById(isLeft?'rec-def':'rec-atk');
-  const recLabel=document.getElementById(isLeft?'rec-label-def':'rec-label-atk');
-  const spinCls =isLeft?'spinner':'spinner spinner-atk';
-  recLabel.textContent=isLeft?'COUNTERS RECOMENDADOS':'POKÉMON DÉBILES';
-  if(goodTypes.length>0){
-    recList.innerHTML=`<div class="loading"><span class="${spinCls}"></span></div>`;
-    const recs=await getRecsForTypes(goodTypes,8);
-    recList.innerHTML=recs.map(p=>recRow(p,[],side)).join('');
-  }
-}
-
-async function selectPokemon(name,side){
-  const isLeft=side==='def';
-  const cardEl  =document.getElementById(isLeft?'card-def':'card-atk');
-  const recList =document.getElementById(isLeft?'rec-def':'rec-atk');
-  const recLabel=document.getElementById(isLeft?'rec-label-def':'rec-label-atk');
-  const outputEl=document.getElementById(isLeft?'output-def':'output-atk');
-  const secTitle=document.getElementById(isLeft?'sec-title-def':'sec-title-atk');
-  const movesSec=document.getElementById(isLeft?'moves-section-def':'moves-section-atk');
-  const spinCls =isLeft?'spinner':'spinner spinner-atk';
-  cardEl.style.display='none';recLabel.style.display='none';recList.innerHTML='';
-  secTitle.style.display='none';movesSec.style.display='none';
-  outputEl.innerHTML=`<div class="loading"><span class="${spinCls}"></span> Cargando...</div>`;
-  try{
-    const{types,sprite,id,allMoves}=await getPokemonData(name);
-    document.getElementById(isLeft?'img-def':'img-atk').src=sprite;
-    document.getElementById(isLeft?'name-def':'name-atk').textContent=formatName(name);
-    document.getElementById(isLeft?'id-def':'id-atk').textContent=id;
-    document.getElementById(isLeft?'types-def':'types-atk').innerHTML=types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('');
-    cardEl.style.display='block';
-    const cacheKey=isLeft?'def':'atk';
-    window._movesData=window._movesData||{};window._currentPokemon=window._currentPokemon||{};
-    window._currentPokemon[cacheKey]=name;
-    window._movesData[cacheKey]={all:[],filter:'',selected:new Set()};
-    movesSec.style.display='block';
-    const movesList  =document.getElementById(isLeft?'moves-list-def':'moves-list-atk');
-    const movesFilter=document.getElementById(isLeft?'moves-filter-def':'moves-filter-atk');
-    movesFilter.value='';
-    movesList.innerHTML=`<tr><td colspan="6" class="moves-empty"><span class="${spinCls}"></span> Cargando...</td></tr>`;
-    const movesWithDetail=[];
-    for(let i=0;i<allMoves.length;i+=8){
-      const batch=allMoves.slice(i,i+8);
-      const details=await Promise.all(batch.map(m=>getMoveDetail(m.url)));
-      batch.forEach((m,j)=>movesWithDetail.push({...m,detail:details[j]}));
-    }
-    window._movesData[cacheKey].all=movesWithDetail;
-    movesFilter.oninput=()=>{window._movesData[cacheKey].filter=movesFilter.value.trim().toLowerCase();renderMovesTable(cacheKey);};
-    renderMovesTable(cacheKey);
-    const eff=isLeft?calcDefense(types):calcAttack(types),config=isLeft?MULT_DEF:MULT_ATK;
-    secTitle.style.display='block';
-    let html='';
-    for(const cfg of config){const list=eff[cfg.key]||[];html+=`<div class="mult-group"><div class="mult-label ${cfg.cls}">${cfg.label} (${list.length})</div><div class="types-grid">${list.length?list.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join(''):'<span class="none-text">Ninguno</span>'}</div></div>`;}
-    outputEl.innerHTML=html;
-    const goodTypes=eff[4].concat(eff[2]);
-    if(goodTypes.length>0){
-      recLabel.style.display='block';recLabel.textContent=isLeft?'COUNTERS RECOMENDADOS':'POKÉMON DÉBILES';
-      recList.innerHTML=`<div class="loading"><span class="${spinCls}"></span></div>`;
-      const recs=await getRecsForTypes(goodTypes,8);
-      recList.innerHTML=recs.map(p=>recRow(p,[],side)).join('');
-    }
-  }catch(e){outputEl.innerHTML='<div class="loading">Error cargando datos.</div>';}
-}
-
-const _gtt=document.getElementById('mv-global-tooltip');
-document.addEventListener('mouseover',e=>{const b=e.target.closest('.mv-type-badge[data-tip]');if(!b)return;const[tipo,cat,pot,prec,pp]=b.dataset.tip.split('|');_gtt.innerHTML=`Tipo: <b>${tipo}</b><br>Cat.: <b>${cat}</b><br>Potencia: <b>${pot}</b><br>Precisión: <b>${prec}</b><br>PP: <b>${pp}</b>`;_gtt.style.display='block';});
-document.addEventListener('mousemove',e=>{if(_gtt.style.display==='none')return;const x=e.clientX+14,y=e.clientY-10;_gtt.style.left=(x+_gtt.offsetWidth>window.innerWidth?e.clientX-_gtt.offsetWidth-10:x)+'px';_gtt.style.top=(y+_gtt.offsetHeight>window.innerHeight?e.clientY-_gtt.offsetHeight-10:y)+'px';});
-document.addEventListener('mouseout',e=>{if(e.target.closest('.mv-type-badge[data-tip]'))_gtt.style.display='none';});
-
-setupSearch('search-def','sug-def','def');
-setupSearch('search-atk','sug-atk','atk');
-document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.querySelectorAll('.suggestions').forEach(s=>s.style.display='none');});
-loadPokedex();
-</script>
+  <script src="js/app.js"></script>
 </body>
 </html>
