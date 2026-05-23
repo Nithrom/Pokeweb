@@ -213,7 +213,7 @@ async function selectPokemon(name,side){
   const typesTitle=document.getElementById(isLeft?'types-title-def':'types-title-atk');
   const spinCls=isLeft?'spinner':'spinner spinner-atk';
   cardEl.style.display='none';recLabel.style.display='none';recList.innerHTML='';
-  typesTitle.style.display='none';typesPanel.innerHTML='';
+  typesTitle.style.display='none';
   document.getElementById(isLeft?'output-left-def':'output-left-atk').innerHTML='';
   document.getElementById(isLeft?'output-right-def':'output-right-atk').innerHTML='';
 
