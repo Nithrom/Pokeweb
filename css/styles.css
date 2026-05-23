@@ -1,6 +1,6 @@
 /* ── Reset & base ── */
 *{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:115%;}
+html{font-size:145%;}
 body{background:#0a0a12;color:#eaeaea;font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
 
 /* ── Header ── */
