@@ -11,7 +11,7 @@
 <body>
 
   <!-- Tooltip global para badges de tipo -->
-  <div id="mv-global-tooltip"></div>
+  <div id="mv-global-tooltip" style="display:none;position:fixed;z-index:9999;background:#1a1a2e;border:1px solid #4a9eff;border-radius:8px;padding:8px 12px;font-size:.65rem;font-weight:700;line-height:1.9;color:#eaeaea;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.7);white-space:nowrap;"></div>
 
   <!-- HEADER -->
   <header>
@@ -60,17 +60,17 @@
           <div class="moves-table-wrap">
             <table class="moves-table">
               <colgroup>
-                <col class="col-sel"><col class="col-lvl"><col class="col-name">
-                <col class="col-type"><col class="col-cat"><col class="col-pow">
+                <col class="col-sel"><col class="col-name">
+                <col class="col-type"><col class="col-cat"><col class="col-pow"><col class="col-acc">
               </colgroup>
               <thead>
                 <tr>
                   <th class="th-c">✓</th>
-                  <th class="th-c">Nv.</th>
                   <th>Movimiento</th>
                   <th>Tipo</th>
-                  <th class="th-c">Cat.</th>
-                  <th class="th-c">Pot.</th>
+                  <th class="th-c">Categoría</th>
+                  <th class="th-c">Potencia</th>
+                  <th class="th-c">Precisión</th>
                 </tr>
               </thead>
               <tbody id="moves-list-def"></tbody>
@@ -86,6 +86,7 @@
           <div class="types-panel-title" id="types-title-def">TIPOS QUE LE HACEN DAÑO</div>
           <div class="types-two-cols" id="types-panel-def">
             <div id="output-left-def"></div>
+            <div class="types-divider"></div>
             <div id="output-right-def"></div>
           </div>
         </div>
@@ -135,17 +136,17 @@
           <div class="moves-table-wrap">
             <table class="moves-table">
               <colgroup>
-                <col class="col-sel"><col class="col-lvl"><col class="col-name">
-                <col class="col-type"><col class="col-cat"><col class="col-pow">
+                <col class="col-sel"><col class="col-name">
+                <col class="col-type"><col class="col-cat"><col class="col-pow"><col class="col-acc">
               </colgroup>
               <thead>
                 <tr>
                   <th class="th-c">✓</th>
-                  <th class="th-c">Nv.</th>
                   <th>Movimiento</th>
                   <th>Tipo</th>
-                  <th class="th-c">Cat.</th>
-                  <th class="th-c">Pot.</th>
+                  <th class="th-c">Categoría</th>
+                  <th class="th-c">Potencia</th>
+                  <th class="th-c">Precisión</th>
                 </tr>
               </thead>
               <tbody id="moves-list-atk"></tbody>
@@ -161,6 +162,7 @@
           <div class="types-panel-title" id="types-title-atk">TIPOS A LOS QUE HACE DAÑO</div>
           <div class="types-two-cols" id="types-panel-atk">
             <div id="output-left-atk"></div>
+            <div class="types-divider"></div>
             <div id="output-right-atk"></div>
           </div>
         </div>
