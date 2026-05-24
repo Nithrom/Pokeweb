@@ -54,10 +54,6 @@ const MULT_ATK=[{key:4,label:'×4 Destroza a',cls:'mx4'},{key:2,label:'×2 Super
 const TYPE_POOL={normal:[143,113,241,234,289,446],fighting:[68,107,297,448,534,619],flying:[18,142,277,334,468,561],poison:[34,89,211,454,452,545],ground:[31,75,232,330,443,530],rock:[76,185,219,248,369,411],bug:[123,127,212,214,291,542],ghost:[94,200,302,354,429,477],steel:[81,208,227,376,385,448],fire:[6,38,59,136,157,250],water:[9,54,90,121,131,134],grass:[3,45,103,154,182,254],electric:[26,125,135,181,243,310],psychic:[65,122,196,199,280,376],ice:[87,91,131,144,215,461],dragon:[130,147,230,334,373,445],dark:[197,248,262,359,430,461],fairy:[35,39,176,183,282,468]};
 
 let allPokemon=[],typeCache={},moveDetailCache={};
-<<<<<<< Updated upstream
-
-async function loadPokedex(){
-=======
 let DB=null;
 
 async function loadPokedex(){
@@ -76,16 +72,11 @@ async function loadPokedex(){
       return;
     }
   }catch(e){}
->>>>>>> Stashed changes
   try{
     const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
     const data=await res.json();
     allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));
-<<<<<<< Updated upstream
-    document.getElementById('status-bar').innerHTML=`Pokédex: <span>${allPokemon.length} Pokémon</span> listos`;
-=======
     document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon disponibles</span>`;
->>>>>>> Stashed changes
     document.getElementById('search-def').disabled=false;
     document.getElementById('search-atk').disabled=false;
   }catch(e){document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';}
@@ -96,10 +87,7 @@ function tc(t){return TYPE_CLASS[t]||'t-normal';}
 function tn(t){return TIPOS_ES[t]||t;}
 function powerClass(p){if(!p)return 'pow-none';if(p>=100)return 'pow-high';if(p>=60)return 'pow-mid';return 'pow-low';}
 
-<<<<<<< Updated upstream
-=======
 // ── Búsqueda: pokemon + tipo simple + doble tipo ──
->>>>>>> Stashed changes
 function setupSearch(inputId,sugId,side){
   const input=document.getElementById(inputId),sug=document.getElementById(sugId);
   input.addEventListener('input',()=>{
@@ -113,12 +101,6 @@ function setupSearch(inputId,sugId,side){
     sug.style.display='block';
     sug.querySelectorAll('.sug-item').forEach(el=>el.addEventListener('click',()=>{sug.style.display='none';input.value=formatName(el.dataset.name);selectPokemon(el.dataset.name,side);}));
   });
-<<<<<<< Updated upstream
-}
-
-async function getMoveDetail(url){
-  if(moveDetailCache[url])return moveDetailCache[url];
-=======
   input.addEventListener('keydown',e=>{
     if(e.key!=='Enter')return;
     sug.style.display='none';
@@ -143,18 +125,16 @@ async function getMoveDetail(url){
   if(moveDetailCache[url])return moveDetailCache[url];
   const lsKey='mv_'+moveName;
   try{const cached=localStorage.getItem(lsKey);if(cached){const r=JSON.parse(cached);moveDetailCache[url]=r;return r;}}catch(e){}
->>>>>>> Stashed changes
   try{
     const res=await fetch(url);const d=await res.json();
     const r={type:d.type?.name||'normal',category:d.damage_class?.name||'status',power:d.power||null,pp:d.pp||null,accuracy:d.accuracy||null};
-    moveDetailCache[url]=r;return r;
+    moveDetailCache[url]=r;
+    try{localStorage.setItem(lsKey,JSON.stringify(r));}catch(e){}
+    return r;
   }catch(e){return{type:'normal',category:'status',power:null,pp:null,accuracy:null};}
 }
 
 async function getPokemonData(name){
-<<<<<<< Updated upstream
-  if(typeCache[name])return typeCache[name];
-=======
   if(typeCache[name]){
     const cached=typeCache[name];
     if(cached.allMoves&&cached.allMoves.length>0&&cached.allMoves[0].detail)return cached;
@@ -164,7 +144,6 @@ async function getPokemonData(name){
     }
     if(cached.allMoves&&cached.allMoves.length>0)return cached;
   }
->>>>>>> Stashed changes
   const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
   const data=await res.json();
   const levelSet=new Map();
@@ -423,16 +402,8 @@ async function selectPokemon(name,side){
     movesFilter.value='';if(sortSel)sortSel.value='default';
     movesList.innerHTML=`<tr><td colspan="6" class="moves-empty"><span class="${spinCls}"></span> Cargando...</td></tr>`;
     const movesWithDetail=[];
-<<<<<<< Updated upstream
-    for(let i=0;i<allMoves.length;i+=8){
-      const batch=allMoves.slice(i,i+8);
-      const details=await Promise.all(batch.map(m=>getMoveDetail(m.url)));
-      batch.forEach((m,j)=>movesWithDetail.push({...m,detail:details[j]}));
-    }
-=======
     if(allMoves.length>0&&allMoves[0].detail){movesWithDetail.push(...allMoves);}
     else{for(let i=0;i<allMoves.length;i+=20){const batch=allMoves.slice(i,i+20);const details=await Promise.all(batch.map(m=>getMoveDetail(m.url)));batch.forEach((m,j)=>movesWithDetail.push({...m,detail:details[j]}));}}
->>>>>>> Stashed changes
     window._movesData[cacheKey].all=movesWithDetail;
     movesFilter.oninput=()=>{window._movesData[cacheKey].filter=movesFilter.value.trim().toLowerCase();renderMovesTable(cacheKey);};
     renderMovesTable(cacheKey);
@@ -479,8 +450,6 @@ document.addEventListener('click',e=>{
   selectPokemon(poke,oppSide);
 });
 
-<<<<<<< Updated upstream
-=======
 // ── Búsqueda por tipo ──
 function showTypeResults(side,html){
   const isLeft=side==='def';
@@ -608,7 +577,6 @@ document.addEventListener('click',e=>{
   searchByType(typeEn,oppSide);
 });
 
->>>>>>> Stashed changes
 setupSearch('search-def','sug-def','def');
 setupSearch('search-atk','sug-atk','atk');
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.querySelectorAll('.suggestions').forEach(s=>s.style.display='none');});
