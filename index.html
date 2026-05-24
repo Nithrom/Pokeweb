@@ -43,7 +43,7 @@
 
         <!-- Tarjeta pokémon -->
         <div class="poke-panel">
-          <div class="poke-card" id="card-def">
+          <div class="poke-card" id="card-def"><button class="shiny-btn" id="shiny-btn-def" data-side="def" data-shiny="0" title="Ver Shiny ✨">✨</button>
             <img id="img-def" src="" alt="">
             <div class="poke-name" id="name-def"></div>
             <div class="poke-num">N.º <span id="id-def"></span></div>
@@ -68,11 +68,11 @@
               <thead>
                 <tr>
                   <th class="th-c">✓</th>
-                  <th>Movimiento</th>
-                  <th>Tipo</th>
-                  <th class="th-c">Categoría</th>
-                  <th class="th-c">Potencia</th>
-                  <th class="th-c">Precisión</th>
+                  <th data-sort="name" data-side="def">Movimiento<span class="sort-arrow">↕</span></th>
+                  <th data-sort="type" data-side="def">Tipo<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="cat" data-side="def">Cat.<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="pow" data-side="def">Potencia<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="acc" data-side="def">Precisión<span class="sort-arrow">↕</span></th>
                 </tr>
               </thead>
               <tbody id="moves-list-def"></tbody>
@@ -121,7 +121,7 @@
 
         <!-- Tarjeta pokémon -->
         <div class="poke-panel">
-          <div class="poke-card" id="card-atk">
+          <div class="poke-card" id="card-atk"><button class="shiny-btn" id="shiny-btn-atk" data-side="atk" data-shiny="0" title="Ver Shiny ✨">✨</button>
             <img id="img-atk" src="" alt="">
             <div class="poke-name" id="name-atk"></div>
             <div class="poke-num">N.º <span id="id-atk"></span></div>
@@ -146,11 +146,11 @@
               <thead>
                 <tr>
                   <th class="th-c">✓</th>
-                  <th>Movimiento</th>
-                  <th>Tipo</th>
-                  <th class="th-c">Categoría</th>
-                  <th class="th-c">Potencia</th>
-                  <th class="th-c">Precisión</th>
+                  <th data-sort="name" data-side="atk">Movimiento<span class="sort-arrow">↕</span></th>
+                  <th data-sort="type" data-side="atk">Tipo<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="cat" data-side="atk">Cat.<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="pow" data-side="atk">Potencia<span class="sort-arrow">↕</span></th>
+                  <th class="th-c" data-sort="acc" data-side="atk">Precisión<span class="sort-arrow">↕</span></th>
                 </tr>
               </thead>
               <tbody id="moves-list-atk"></tbody>
