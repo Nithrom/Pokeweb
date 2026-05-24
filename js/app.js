@@ -37,13 +37,39 @@ const MULT_ATK=[{key:4,label:'×4 Destroza a',cls:'mx4'},{key:2,label:'×2 Super
 const TYPE_POOL={normal:[143,113,241,234,289,446],fighting:[68,107,297,448,534,619],flying:[18,142,277,334,468,561],poison:[34,89,211,454,452,545],ground:[31,75,232,330,443,530],rock:[76,185,219,248,369,411],bug:[123,127,212,214,291,542],ghost:[94,200,302,354,429,477],steel:[81,208,227,376,385,448],fire:[6,38,59,136,157,250],water:[9,54,90,121,131,134],grass:[3,45,103,154,182,254],electric:[26,125,135,181,243,310],psychic:[65,122,196,199,280,376],ice:[87,91,131,144,215,461],dragon:[130,147,230,334,373,445],dark:[197,248,262,359,430,461],fairy:[35,39,176,183,282,468]};
 
 let allPokemon=[],typeCache={},moveDetailCache={};
+let DB=null; // pokemon_db.json cargado en memoria
 
 async function loadPokedex(){
+  // Intentar cargar base de datos local primero
+  try{
+    const res=await fetch('data/pokemon_db.json');
+    if(res.ok){
+      DB=await res.json();
+      // Construir lista de todos los pokémon desde la DB
+      allPokemon=Object.entries(DB.pokemon).map(([name,p])=>({name,id:p.id})).sort((a,b)=>a.id-b.id);
+      // Pre-poblar caches
+      for(const[name,p]of Object.entries(DB.pokemon)){
+        // Construir allMoves con detail ya incrustado
+        typeCache[name]={types:p.types,sprite:p.sprite,id:p.id,allMoves:p.moves};
+      }
+      if(DB.moves){
+        for(const[mn,detail]of Object.entries(DB.moves)){
+          moveDetailCache['__'+mn]=detail;
+        }
+      }
+      document.getElementById('status-bar').innerHTML=`🗄 DB local: <span>${allPokemon.length} Pokémon</span> cargados al instante`;
+      document.getElementById('search-def').disabled=false;
+      document.getElementById('search-atk').disabled=false;
+      return;
+    }
+  }catch(e){}
+
+  // Fallback: API online
   try{
     const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
     const data=await res.json();
     allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));
-    document.getElementById('status-bar').innerHTML=`Pokédex: <span>${allPokemon.length} Pokémon</span> listos`;
+    document.getElementById('status-bar').innerHTML=`🌐 API: <span>${allPokemon.length} Pokémon</span> listos (moves cargan al buscar)`;
     document.getElementById('search-def').disabled=false;
     document.getElementById('search-atk').disabled=false;
   }catch(e){document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';}
@@ -53,6 +79,9 @@ function formatName(n){return n.split('-').map(w=>w.charAt(0).toUpperCase()+w.sl
 function tc(t){return TYPE_CLASS[t]||'t-normal';}
 function tn(t){return TIPOS_ES[t]||t;}
 function powerClass(p){if(!p)return 'pow-none';if(p>=100)return 'pow-high';if(p>=60)return 'pow-mid';return 'pow-low';}
+
+// Nombres de tipo en español → inglés
+const TYPE_ES_EN={normal:'normal',lucha:'fighting',volador:'flying',veneno:'poison',tierra:'ground',roca:'rock',bicho:'bug',fantasma:'ghost',acero:'steel',fuego:'fire',agua:'water',planta:'grass',eléctrico:'electric',electrico:'electric',psíquico:'psychic',psiquico:'psychic',hielo:'ice',dragón:'dragon',dragon:'dragon',siniestro:'dark',hada:'fairy'};
 
 function setupSearch(inputId,sugId,side){
   const input=document.getElementById(inputId),sug=document.getElementById(sugId);
@@ -67,19 +96,45 @@ function setupSearch(inputId,sugId,side){
     sug.style.display='block';
     sug.querySelectorAll('.sug-item').forEach(el=>el.addEventListener('click',()=>{sug.style.display='none';input.value=formatName(el.dataset.name);selectPokemon(el.dataset.name,side);}));
   });
+  // Enter → buscar por tipo si coincide
+  input.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const q=input.value.toLowerCase().trim();
+    const typeEn=TYPE_ES_EN[q]||Object.values(TYPE_ES_EN).find(v=>v===q);
+    if(typeEn){sug.style.display='none';searchByType(typeEn,side);}
+  });
 }
 
 async function getMoveDetail(url){
+  // Si hay DB local, buscar por nombre (clave '__movename' en moveDetailCache)
+  const moveName=url.split('/').slice(-2,-1)[0];
+  const dbKey='__'+moveName;
+  if(moveDetailCache[dbKey])return moveDetailCache[dbKey];
   if(moveDetailCache[url])return moveDetailCache[url];
+  // Intentar desde localStorage
+  const lsKey='mv_'+moveName;
+  try{const cached=localStorage.getItem(lsKey);if(cached){const r=JSON.parse(cached);moveDetailCache[url]=r;return r;}}catch(e){}
   try{
     const res=await fetch(url);const d=await res.json();
     const r={type:d.type?.name||'normal',category:d.damage_class?.name||'status',power:d.power||null,pp:d.pp||null,accuracy:d.accuracy||null};
-    moveDetailCache[url]=r;return r;
+    moveDetailCache[url]=r;
+    try{localStorage.setItem(lsKey,JSON.stringify(r));}catch(e){}
+    return r;
   }catch(e){return{type:'normal',category:'status',power:null,pp:null,accuracy:null};}
 }
 
 async function getPokemonData(name){
-  if(typeCache[name])return typeCache[name];
+  if(typeCache[name]){
+    // Si los moves ya tienen 'detail' incrustado (desde DB), no hay que volver a fetchear
+    const cached=typeCache[name];
+    if(cached.allMoves&&cached.allMoves.length>0&&cached.allMoves[0].detail)return cached;
+    // Si vienen de DB pero sin detail aún, añadirlo desde DB.moves
+    if(DB&&DB.moves&&cached.allMoves){
+      cached.allMoves=cached.allMoves.map(m=>({...m,detail:DB.moves[m.name]||{type:'normal',category:'status',power:null,pp:null,accuracy:null}}));
+      return cached;
+    }
+    if(cached.allMoves&&cached.allMoves.length>0)return cached;
+  }
   const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
   const data=await res.json();
   const levelSet=new Map();
@@ -239,10 +294,15 @@ async function selectPokemon(name,side){
     movesFilter.value='';
     movesList.innerHTML=`<tr><td colspan="6" class="moves-empty"><span class="${spinCls}"></span> Cargando...</td></tr>`;
     const movesWithDetail=[];
-    for(let i=0;i<allMoves.length;i+=8){
-      const batch=allMoves.slice(i,i+8);
-      const details=await Promise.all(batch.map(m=>getMoveDetail(m.url)));
-      batch.forEach((m,j)=>movesWithDetail.push({...m,detail:details[j]}));
+    // Si los moves ya tienen detail incrustado (DB local), usarlos directamente
+    if(allMoves.length>0&&allMoves[0].detail){
+      movesWithDetail.push(...allMoves);
+    } else {
+      for(let i=0;i<allMoves.length;i+=20){
+        const batch=allMoves.slice(i,i+20);
+        const details=await Promise.all(batch.map(m=>getMoveDetail(m.url)));
+        batch.forEach((m,j)=>movesWithDetail.push({...m,detail:details[j]}));
+      }
     }
     window._movesData[cacheKey].all=movesWithDetail;
     movesFilter.oninput=()=>{window._movesData[cacheKey].filter=movesFilter.value.trim().toLowerCase();renderMovesTable(cacheKey);};
@@ -293,6 +353,138 @@ document.addEventListener('click',e=>{
   const input=document.getElementById(oppSide==='def'?'search-def':'search-atk');
   input.value=formatName(poke);
   selectPokemon(poke,oppSide);
+});
+
+// ── Búsqueda por tipo ──
+async function searchByType(typeEn, side){
+  const isLeft=side==='def';
+  const container=document.getElementById(isLeft?'type-results-def':'type-results-atk');
+  const spinCls=isLeft?'spinner':'spinner spinner-atk';
+  container.style.display='block';
+  container.innerHTML=`<div class="loading"><span class="${spinCls}"></span> Buscando pokémon de tipo ${tn(typeEn)}...</div>`;
+
+  // ── Ficha del tipo con TODOS los multiplicadores ──
+  const atkEff=EFF[typeEn]||{};
+  // Ataque: cómo afecta este tipo a los demás
+  const atk4=Object.entries(atkEff).filter(([,v])=>v>=4).map(([k])=>k);
+  const atk2=Object.entries(atkEff).filter(([,v])=>v>=2&&v<4).map(([k])=>k);
+  const atk1=Object.entries(atkEff).filter(([,v])=>v===1).map(([k])=>k);
+  const atk05=Object.entries(atkEff).filter(([,v])=>v>0&&v<1).map(([k])=>k);
+  const atk0=Object.entries(atkEff).filter(([,v])=>v===0).map(([k])=>k);
+  // Defensa: cómo le afectan los demás a este tipo
+  const defEff=calcDefense([typeEn]);
+  const def4=defEff[4]||[];
+  const def2=defEff[2]||[];
+  const def1=defEff[1]||[];
+  const def05=(defEff[0.5]||[]).concat(defEff[0.25]||[]);
+  const def0=defEff[0]||[];
+
+  // Badge con data-typeinfo para que sea clickable
+  const badgeRow=(arr,clickable=true)=>arr.length
+    ?arr.map(t=>`<span class="type-badge ${tc(t)}"${clickable?` data-typeinfo="${t}" data-side="${side}"`:''}>${tn(t)}</span>`).join('')
+    :'<span class="none-text">—</span>';
+
+  const multRow=(label,cls,arr)=>arr.length?`<div class="type-info-row"><div class="type-info-label ${cls}">${label}</div><div class="type-info-badges">${badgeRow(arr)}</div></div>`:'';
+
+  const infoBox=`<div class="type-info-box">
+    <div class="type-info-name"><span class="type-badge ${tc(typeEn)}">${tn(typeEn)}</span></div>
+    <div class="type-info-cols">
+      <div>
+        <div class="type-info-section-label">⚔ Ataque</div>
+        ${multRow('×4 Destroza a:','mx4',atk4)}
+        ${multRow('×2 Fuerte contra:','mx2',atk2)}
+        ${multRow('×1 Normal contra:','mx1',atk1)}
+        ${multRow('×½ Flojo contra:','mx05',atk05)}
+        ${multRow('×0 No afecta a:','mx0',atk0)}
+      </div>
+      <div>
+        <div class="type-info-section-label">🛡 Defensa</div>
+        ${multRow('×4 Le destroza:','mx4',def4)}
+        ${multRow('×2 Débil a:','mx2',def2)}
+        ${multRow('×1 Normal:','mx1',def1)}
+        ${multRow('×½ Resiste:','mx05',def05)}
+        ${multRow('×0 Inmune a:','mx0',def0)}
+      </div>
+    </div>
+  </div>`;
+
+  // ── Todos los pokémon de ese tipo ──
+  let pokemons=[];
+
+  if(DB&&DB.pokemon){
+    // DB local: filtrar todos los que tengan ese tipo (principal o secundario)
+    pokemons=Object.entries(DB.pokemon)
+      .filter(([,p])=>p.types.includes(typeEn))
+      .map(([name,p])=>({name,id:p.id,types:p.types,sprite:p.sprite}))
+      .sort((a,b)=>a.id-b.id);
+  } else {
+    // API: endpoint /type/{typeEn} devuelve todos los pokémon de ese tipo
+    try{
+      const r=await fetch(`https://pokeapi.co/api/v2/type/${typeEn}`);
+      const d=await r.json();
+      const ids=d.pokemon
+        .map(p=>{const parts=p.pokemon.url.split('/');return{name:p.pokemon.name,id:parseInt(parts[parts.length-2])};})
+        .filter(p=>p.id<=1025)
+        .sort((a,b)=>a.id-b.id);
+      // Fetch en paralelo de todos (en batches para no saturar)
+      for(let i=0;i<ids.length;i+=20){
+        const batch=ids.slice(i,i+20);
+        const results=await Promise.all(batch.map(async({name,id})=>{
+          // Intentar desde typeCache primero
+          if(typeCache[name])return{name,id:typeCache[name].id,types:typeCache[name].types,sprite:typeCache[name].sprite};
+          try{
+            const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            const p=await res.json();
+            return{name:p.name,id:p.id,types:p.types.map(t=>t.type.name),sprite:p.sprites.other['official-artwork'].front_default||p.sprites.front_default};
+          }catch(e){return null;}
+        }));
+        pokemons.push(...results.filter(Boolean));
+        // Actualizar UI parcialmente mientras carga
+        if(i===0){
+          container.innerHTML=`<div class="type-search-title">TIPO: ${tn(typeEn).toUpperCase()} <span style="font-size:.6em;color:#606070">(${ids.length} pokémon)</span></div>${infoBox}<div class="loading"><span class="${spinCls}"></span> Cargando pokémon...</div>`;
+        }
+      }
+    }catch(e){console.error(e);}
+  }
+
+  const cards=pokemons.map(p=>`
+    <div class="type-poke-card" data-poke="${p.name}" data-side="${side}">
+      <img src="${p.sprite}" alt="${p.name}" loading="lazy">
+      <div class="rec-row-name">${formatName(p.name)}</div>
+      <div class="rec-row-types">${p.types.map(t=>`<span class="rec-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+    </div>`).join('');
+
+  container.innerHTML=`
+    <div class="type-search-title">TIPO: ${tn(typeEn).toUpperCase()} <span style="font-family:'Nunito',sans-serif;font-size:.75rem;color:#606070;font-weight:600">(${pokemons.length} pokémon)</span></div>
+    ${infoBox}
+    <div class="type-poke-grid">${cards}</div>`;
+}
+
+// Click en badge de tipo DENTRO de type-info-box → buscar ese tipo en el mismo lado
+document.addEventListener('click',e=>{
+  const badge=e.target.closest('.type-info-badges .type-badge[data-typeinfo]');
+  if(!badge)return;
+  const typeEn=badge.dataset.typeinfo;
+  const side=badge.dataset.side;
+  if(!typeEn||!side)return;
+  const input=document.getElementById(side==='def'?'search-def':'search-atk');
+  input.value=tn(typeEn);
+  searchByType(typeEn,side);
+});
+
+// Click en type-badge de la zona de tipos → buscar ese tipo en el otro lado
+document.addEventListener('click',e=>{
+  const badge=e.target.closest('.types-grid .type-badge, .types-row .type-badge');
+  if(!badge)return;
+  // Determinar en qué columna estamos
+  const colDef=badge.closest('.col-def'),side=colDef?'def':'atk';
+  const oppSide=side==='def'?'atk':'def';
+  const typeName=badge.textContent.trim().toLowerCase();
+  const typeEn=TYPE_ES_EN[typeName]||Object.keys(TIPOS_ES).find(k=>TIPOS_ES[k].toLowerCase()===typeName);
+  if(!typeEn)return;
+  const input=document.getElementById(oppSide==='def'?'search-def':'search-atk');
+  input.value=tn(typeEn);
+  searchByType(typeEn,oppSide);
 });
 
 setupSearch('search-def','sug-def','def');
