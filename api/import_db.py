@@ -12,7 +12,7 @@ Instrucciones:
      docker exec pokeweb_api python import_db.py --reset
 """
 
-import json, os, sys, time, argparse
+import json, os, sys, time, argparse, re
 import pymysql
 
 DB_CONFIG = {
@@ -293,6 +293,8 @@ def main():
     # ── 5. Verificación ───────────────────────────────────────────────────────
     print('[5/5] Verificando...')
     def count(table):
+        if not re.match(r'^[a-zA-Z0-9_]+$', str(table)):
+            raise ValueError("Invalid input")
         cur.execute(f'SELECT COUNT(*) AS n FROM {table}')
         return cur.fetchone()['n']
 
