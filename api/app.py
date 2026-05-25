@@ -16,7 +16,6 @@ Endpoints disponibles:
   PUT  /teams/<id>           → actualizar equipo
   DEL  /teams/<id>           → borrar equipo
 """
-from flask import Flask, jsonify, request, send_from_directory
 import os
 import pymysql
 from flask import Flask, jsonify, request
@@ -70,12 +69,8 @@ def execute(sql, params=None):
 
 # ── Pokémon ───────────────────────────────────────
 @app.route('/')
-def serve_index():
-    return send_from_directory('.', 'index.html')
-
-@app.route('/<path:filename>')
-def serve_static(filename):
-    return send_from_directory('.', filename)
+def index():
+    return jsonify({'status': 'API online'})
 
 @app.route('/pokemon')
 def list_pokemon():
