@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Battle Teams</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/teams.css">
+</head>
+<body>
+
+  <!-- Menú hamburguesa -->
+  <nav class="nav-menu">
+    <button class="nav-btn" id="nav-btn" title="Menú">☰</button>
+    <div class="nav-dropdown" id="nav-dropdown">
+      <a href="index.html">⚔ Counter Finder</a>
+      <a href="teams.html" class="active">👥 Battle Teams</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <h1>👥 BATTLE TEAMS</h1>
+    <div class="status-bar" id="status-bar">
+      <span class="spinner"></span> Cargando Pokédex...
+    </div>
+  </header>
+
+  <!-- Columnas de equipos -->
+  <div class="teams-cols">
+
+    <!-- ══ EQUIPO A ══ -->
+    <div class="team-col team-a" id="col-a">
+      <div class="team-header">
+        <div class="team-title-row">
+          <input class="team-name-input" id="team-name-a" value="Equipo A" maxlength="24">
+          <div class="team-actions">
+            <button class="btn-sm btn-analyze" onclick="analyzeTeam('a')">⚡ Analizar</button>
+            <button class="btn-sm btn-save"    onclick="saveTeam('a')">💾 Guardar</button>
+            <button class="btn-sm btn-clear"   onclick="clearTeam('a')">✕ Limpiar</button>
+          </div>
+        </div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-a" placeholder="Añadir pokémon al equipo..." autocomplete="off" disabled>
+          <div class="suggestions" id="sug-a"></div>
+        </div>
+      </div>
+
+      <!-- 6 slots -->
+      <div class="team-slots" id="slots-a">
+        <div class="slot" id="slot-a-0" onclick="slotClick('a',0)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-a-1" onclick="slotClick('a',1)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-a-2" onclick="slotClick('a',2)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-a-3" onclick="slotClick('a',3)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-a-4" onclick="slotClick('a',4)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-a-5" onclick="slotClick('a',5)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+      </div>
+
+      <!-- Análisis equipo A -->
+      <div class="analysis-section" id="analysis-a" style="display:none">
+        <div class="analysis-title">ANÁLISIS VS <span id="analysis-vs-label-a">EQUIPO B</span></div>
+
+        <!-- Tabla 6×6 -->
+        <div class="matchup-table-wrap">
+          <table class="matchup-table" id="matchup-table-a"></table>
+        </div>
+
+        <!-- Detalle al hacer click en celda -->
+        <div class="matchup-detail" id="matchup-detail-a"></div>
+
+        <!-- Cobertura -->
+        <div class="coverage-section">
+          <div class="coverage-title">COBERTURA DE TIPOS</div>
+          <div class="coverage-grid" id="coverage-a"></div>
+          <div class="threat-list" id="threats-a"></div>
+        </div>
+      </div>
+    </div><!-- /team-a -->
+
+    <!-- ══ EQUIPO B ══ -->
+    <div class="team-col team-b" id="col-b">
+      <div class="team-header">
+        <div class="team-title-row">
+          <input class="team-name-input" id="team-name-b" value="Equipo B" maxlength="24">
+          <div class="team-actions">
+            <button class="btn-sm btn-analyze" onclick="analyzeTeam('b')">⚡ Analizar</button>
+            <button class="btn-sm btn-save"    onclick="saveTeam('b')">💾 Guardar</button>
+            <button class="btn-sm btn-clear"   onclick="clearTeam('b')">✕ Limpiar</button>
+          </div>
+        </div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-b" placeholder="Añadir pokémon al equipo..." autocomplete="off" disabled>
+          <div class="suggestions" id="sug-b"></div>
+        </div>
+      </div>
+
+      <div class="team-slots" id="slots-b">
+        <div class="slot" id="slot-b-0" onclick="slotClick('b',0)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-b-1" onclick="slotClick('b',1)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-b-2" onclick="slotClick('b',2)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-b-3" onclick="slotClick('b',3)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-b-4" onclick="slotClick('b',4)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+        <div class="slot" id="slot-b-5" onclick="slotClick('b',5)"><div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div></div>
+      </div>
+
+      <div class="analysis-section" id="analysis-b" style="display:none">
+        <div class="analysis-title">ANÁLISIS VS <span id="analysis-vs-label-b">EQUIPO A</span></div>
+        <div class="matchup-table-wrap">
+          <table class="matchup-table" id="matchup-table-b"></table>
+        </div>
+        <div class="matchup-detail" id="matchup-detail-b"></div>
+        <div class="coverage-section">
+          <div class="coverage-title">COBERTURA DE TIPOS</div>
+          <div class="coverage-grid" id="coverage-b"></div>
+          <div class="threat-list" id="threats-b"></div>
+        </div>
+      </div>
+    </div><!-- /team-b -->
+
+  </div><!-- /teams-cols -->
+
+  <!-- Modal de selección de moves -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-title">MOVIMIENTOS</div>
+          <div class="modal-subtitle" id="modal-subtitle">Selecciona hasta 4 movimientos</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-search">
+        <input type="text" id="modal-filter" placeholder="Filtrar movimiento, tipo, categoría..." autocomplete="off">
+      </div>
+      <div class="modal-selected-bar">Seleccionados: <span id="modal-count">0</span>/4</div>
+      <div class="modal-moves" id="modal-moves-list"></div>
+      <div class="modal-footer">
+        <button class="btn-sm btn-clear" onclick="closeModal()">Cancelar</button>
+        <button class="btn-confirm" id="modal-confirm" onclick="confirmMoves()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/teams.js"></script>
+</body>
+</html>
