@@ -118,6 +118,31 @@ function setupSearch(inputId,sugId,side){
   });
 }
 
+function buildValidatedUrl(baseUrl, moveId) {
+  try {
+    if (baseUrl.includes('/../') || /\/%2e%2e\//i.test(baseUrl)) {
+      throw new Error('Invalid path');
+    }
+    const url = new URL(baseUrl);
+    const allowedDomains = ['pokeapi.co'];
+    if (!allowedDomains.includes(url.hostname)) {
+      throw new Error('Invalid host');
+    }
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('Invalid protocol');
+    }
+    if (moveId && !/^[A-Za-z0-9_-]+$/.test(moveId)) {
+      throw new Error('Invalid parameter');
+    }
+    if (moveId) {
+      url.pathname = `/api/v2/move/${moveId}`;
+    }
+    return url.href;
+  } catch {
+    throw new Error('Invalid URL');
+  }
+}
+
 async function getMoveDetail(url){
   const moveName=url.split('/').slice(-2,-1)[0];
   const dbKey='__'+moveName;
@@ -126,7 +151,8 @@ async function getMoveDetail(url){
   const lsKey='mv_'+moveName;
   try{const cached=localStorage.getItem(lsKey);if(cached){const r=JSON.parse(cached);moveDetailCache[url]=r;return r;}}catch(e){}
   try{
-    const res=await fetch(url);const d=await res.json();
+    const validatedUrl = buildValidatedUrl('https://pokeapi.co', moveName);
+    const res=await fetch(validatedUrl);const d=await res.json();
     const r={type:d.type?.name||'normal',category:d.damage_class?.name||'status',power:d.power||null,pp:d.pp||null,accuracy:d.accuracy||null};
     moveDetailCache[url]=r;
     try{localStorage.setItem(lsKey,JSON.stringify(r));}catch(e){}
