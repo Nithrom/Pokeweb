@@ -81,8 +81,6 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .moves-table col.col-acc{width:72px;}
 .moves-table thead th{position:sticky;top:0;padding:5px 4px;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;text-align:left;z-index:2;white-space:nowrap;cursor:pointer;user-select:none;}
 .moves-table thead th.th-c{text-align:center;}
-.moves-table thead th .sort-arrow{margin-left:2px;opacity:.4;font-size:.65em;}
-.moves-table thead th.sort-active .sort-arrow{opacity:1;}
 .col-def .moves-table thead th{background:#0d1e3a;color:#4a9eff;border-bottom:1px solid #1a3a6e;}
 .col-atk .moves-table thead th{background:#201500;color:#ffaa33;border-bottom:1px solid #5a3a00;}
 .col-def .moves-table tbody tr{border-bottom:1px solid #111d30;}
@@ -300,5 +298,140 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 
 /* Sort arrows in th */
 th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap;}
-th[data-sort]:hover{background:rgba(255,255,255,0.06);}
 .sort-arrow{margin-left:3px;}
+.col-def .moves-table thead th:hover{background:rgb(26, 25, 85);}
+
+/* ══════════════════════════════════════
+   STATS RADAR — botón y panel
+══════════════════════════════════════ */
+
+/* Altura fija en poke-card */
+.poke-card { height: 418px; }
+
+/* Botón STATS */
+.stats-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: none;
+  border: 1px solid;
+  border-radius: 6px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 4px 6px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity .2s, transform .2s, background .2s;
+  z-index: 5;
+  line-height: 1;
+}
+.stats-btn:hover { opacity: 1; transform: scale(1.08); }
+.stats-btn.active { opacity: 1; }
+.col-def .stats-btn { color: #4a9eff; border-color: #1a3a6e; }
+.col-def .stats-btn.active { background: rgba(74,158,255,.18); border-color: #4a9eff; }
+.col-atk .stats-btn { color: #ffaa33; border-color: #5a3a00; }
+.col-atk .stats-btn.active { background: rgba(255,170,51,.18); border-color: #ffaa33; }
+
+.poke-sprite-wrap { display: flex; justify-content: center; align-items: flex-start; }
+
+/* Stats wrap: vertical, radar arriba + barras abajo */
+.poke-stats-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+}
+
+#stats-radar-def, #stats-radar-atk {
+  display: block;
+  flex-shrink: 0;
+  margin-top: 5px;
+  width: 200px;
+  height: 200px;
+}
+
+/* Barras: 240px de alto, centradas verticalmente */
+.stats-bars {
+  width: 100%;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 10px;
+}
+.stat-bar-row {
+  display: grid;
+  grid-template-columns: 46px 32px 1fr;
+  align-items: center;
+  gap: 6px;
+  font-size: .68rem;
+  font-weight: 700;
+}
+.stat-bar-label { color: #888899; text-transform: uppercase; letter-spacing: .02em; text-align: right; }
+.stat-bar-val { font-weight: 800; text-align: right; }
+.stat-bar-track {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+
+/* Colores por stat */
+.sb-hp   .stat-bar-fill { background: #ff4757; }
+.sb-atk  .stat-bar-fill { background: #ffa502; }
+.sb-def  .stat-bar-fill { background: #2ed573; }
+.sb-spa  .stat-bar-fill { background: #70a1ff; }
+.sb-spd  .stat-bar-fill { background: #a29bfe; }
+.sb-spe  .stat-bar-fill { background: #fd79a8; }
+
+.sb-hp   .stat-bar-val { color: #ff4757; }
+.sb-atk  .stat-bar-val { color: #ffa502; }
+.sb-def  .stat-bar-val { color: #2ed573; }
+.sb-spa  .stat-bar-val { color: #70a1ff; }
+.sb-spd  .stat-bar-val { color: #a29bfe; }
+.sb-spe  .stat-bar-val { color: #fd79a8; }
+
+/* Sin stats disponibles */
+.stats-no-data {
+  color: #444455;
+  font-size: .65rem;
+  text-align: center;
+  padding: 20px 0;
+  font-style: italic;
+  width: 100%;
+}
+
+/* Responsive */
+@media(max-width:1200px) {
+  .poke-card { height: 358px; }
+  #stats-radar-def, #stats-radar-atk { width: 130px; height: 130px; }
+  .stats-bars { height: 200px; gap: 6px; }
+  .stat-bar-row { font-size: .63rem; }
+}
+@media(max-width:900px) {
+  .poke-card { height: 316px; }
+  #stats-radar-def, #stats-radar-atk { width: 110px; height: 110px; }
+  .stats-bars { height: 180px; gap: 5px; }
+  .stat-bar-row { grid-template-columns: 38px 28px 1fr; font-size: .58rem; }
+}
+@media(max-width:600px) {
+  .stats-btn { font-size: 6px; padding: 3px 5px; }
+  .poke-card { height: 270px; }
+  #stats-radar-def, #stats-radar-atk { width: 88px; height: 88px; }
+  .stats-bars { height: 158px; gap: 4px; padding: 0 6px; }
+  .stat-bar-row { grid-template-columns: 32px 24px 1fr; font-size: .52rem; gap: 4px; }
+  .stat-bar-track { height: 6px; }
+}
+@media(max-width:400px) {
+  .poke-card { height: 230px; }
+  #stats-radar-def, #stats-radar-atk { width: 70px; height: 70px; }
+  .stats-bars { height: 136px; gap: 3px; }
+  .stat-bar-row { grid-template-columns: 28px 20px 1fr; font-size: .48rem; }
+}

@@ -84,7 +84,27 @@ def get_pokemon(entry):
         )
         all_moves = lvl_moves + other_moves
 
-        return name, {'id': d['id'], 'types': types, 'sprite': sprite, 'moves': all_moves}
+        # Stats base
+        stats_map = {s['stat']['name']: s['base_stat'] for s in d.get('stats', [])}
+        stats = {
+            'hp':         stats_map.get('hp', 0),
+            'attack':     stats_map.get('attack', 0),
+            'defense':    stats_map.get('defense', 0),
+            'sp_attack':  stats_map.get('special-attack', 0),
+            'sp_defense': stats_map.get('special-defense', 0),
+            'speed':      stats_map.get('speed', 0),
+        }
+
+        # is_legendary / is_mythical vienen de /pokemon-species
+        is_legendary = 0
+        try:
+            sp = fetch(f"{BASE}/pokemon-species/{d['id']}")
+            is_legendary = int(sp.get('is_legendary', False) or sp.get('is_mythical', False))
+        except Exception:
+            pass
+
+        return name, {'id': d['id'], 'types': types, 'sprite': sprite,
+                      **stats, 'is_legendary': is_legendary, 'moves': all_moves}
     except Exception as e:
         print(f"  ERROR {name}: {e}")
         return name, None

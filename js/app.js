@@ -465,6 +465,8 @@ async function selectPokemon(name,side){
     const shinyBtn=document.getElementById(isLeft?'shiny-btn-def':'shiny-btn-atk');
     if(shinyBtn){shinyBtn.dataset.shiny='0';shinyBtn.style.opacity='0.6';shinyBtn.title='Ver Shiny ✨';}
     cardEl.style.display='block';
+    // Siempre empezar en modo sprite al cargar un nuevo pokémon
+    showSpritePanel(isLeft?'def':'atk');
 
     const cacheKey=isLeft?'def':'atk';
     window._movesData=window._movesData||{};window._currentPokemon=window._currentPokemon||{};
@@ -657,3 +659,178 @@ setupSearch('search-def','sug-def','def');
 setupSearch('search-atk','sug-atk','atk');
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.querySelectorAll('.suggestions').forEach(s=>s.style.display='none');});
 loadPokedex();
+
+// ══════════════════════════════════════
+// STATS RADAR
+// ══════════════════════════════════════
+
+const STAT_KEYS = [
+  { key: 'hp',         label: 'PS',   cls: 'sb-hp'  },
+  { key: 'attack',     label: 'ATQ',  cls: 'sb-atk' },
+  { key: 'defense',    label: 'DEF',  cls: 'sb-def' },
+  { key: 'sp_attack',  label: 'ATQE', cls: 'sb-spa' },
+  { key: 'sp_defense', label: 'DEFE', cls: 'sb-spd' },
+  { key: 'speed',      label: 'VEL',  cls: 'sb-spe' },
+];
+const STAT_MAX = 255; // máximo teórico de PokeAPI
+
+// Colores de relleno del radar por lado
+const RADAR_FILL = { def: 'rgba(74,158,255,0.20)', atk: 'rgba(255,170,51,0.20)' };
+const RADAR_STROKE = { def: '#4a9eff', atk: '#ffaa33' };
+
+function drawRadar(canvasId, stats, side) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H / 2;
+  const R = Math.min(W, H) / 2 - 36; // radio máximo dejando margen para labels
+  const N = 6;
+  const angleOffset = -Math.PI / 2; // empezar arriba
+
+  function angleOf(i) { return angleOffset + (2 * Math.PI * i) / N; }
+  function pointAt(i, r) {
+    const a = angleOf(i);
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+
+  // — Fondo: telarañas —
+  const levels = [0.25, 0.5, 0.75, 1.0];
+  for (const lvl of levels) {
+    ctx.beginPath();
+    for (let i = 0; i < N; i++) {
+      const [x, y] = pointAt(i, R * lvl);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // — Ejes —
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pointAt(i, R);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // — Polígono de stats —
+  const values = STAT_KEYS.map(s => (stats[s.key] || 0) / STAT_MAX);
+  ctx.beginPath();
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pointAt(i, R * values[i]);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = RADAR_FILL[side] || RADAR_FILL.def;
+  ctx.fill();
+  ctx.strokeStyle = RADAR_STROKE[side] || RADAR_STROKE.def;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // — Puntos en cada vértice —
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pointAt(i, R * values[i]);
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.fillStyle = RADAR_STROKE[side] || RADAR_STROKE.def;
+    ctx.fill();
+  }
+
+  // — Labels de stats —
+  ctx.font = 'bold 9px Nunito, sans-serif';
+  ctx.fillStyle = '#a0a0b0';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const labelR = R + 22;
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pointAt(i, labelR);
+    ctx.fillText(STAT_KEYS[i].label, x, y);
+  }
+}
+
+function renderStatBars(containerId, stats, side) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = STAT_KEYS.map(s => {
+    const val = stats[s.key] || 0;
+    const pct = Math.round((val / STAT_MAX) * 100);
+    return `<div class="stat-bar-row ${s.cls}">
+      <span class="stat-bar-label">${s.label}</span>
+      <span class="stat-bar-val">${val}</span>
+      <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function showStatsPanel(side) {
+  const name = window._currentPokemon?.[side];
+  if (!name) return;
+
+  const spriteWrap = document.getElementById(`sprite-wrap-${side}`);
+  const statsWrap  = document.getElementById(`stats-wrap-${side}`);
+  const btn        = document.getElementById(`stats-btn-${side}`);
+  const shinyBtn   = document.getElementById(`shiny-btn-${side}`);
+  const card       = document.getElementById(`card-${side}`);
+
+  const pdata = DB?.pokemon?.[name];
+  const hasStats = pdata && (pdata.hp || pdata.attack || pdata.speed);
+
+  spriteWrap.style.display = 'none';
+  statsWrap.style.display  = 'flex';
+  btn.classList.add('active');
+  btn.textContent = 'SPRITE';
+  if (shinyBtn) shinyBtn.style.display = 'none';
+  // Ocultar nombre, número y tipos
+  card.querySelector('.poke-name').style.display   = 'none';
+  card.querySelector('.poke-num').style.display    = 'none';
+  card.querySelector('.types-row').style.display   = 'none';
+
+  if (!hasStats) {
+    statsWrap.innerHTML = '<div class="stats-no-data">Stats no disponibles aún.<br>Ejecuta enrich_stats.py</div>';
+    return;
+  }
+
+  // Restaurar estructura por si se reusó
+  statsWrap.innerHTML = `<canvas id="stats-radar-${side}" width="200" height="200"></canvas><div class="stats-bars" id="stats-bars-${side}"></div>`;
+  drawRadar(`stats-radar-${side}`, pdata, side);
+  renderStatBars(`stats-bars-${side}`, pdata, side);
+}
+
+function showSpritePanel(side) {
+  const spriteWrap = document.getElementById(`sprite-wrap-${side}`);
+  const statsWrap  = document.getElementById(`stats-wrap-${side}`);
+  const btn        = document.getElementById(`stats-btn-${side}`);
+  const shinyBtn   = document.getElementById(`shiny-btn-${side}`);
+  const card       = document.getElementById(`card-${side}`);
+
+  spriteWrap.style.display = 'flex';
+  statsWrap.style.display  = 'none';
+  btn.classList.remove('active');
+  btn.textContent = 'STATS';
+  if (shinyBtn) shinyBtn.style.display = '';
+  // Restaurar nombre, número y tipos
+  card.querySelector('.poke-name').style.display   = '';
+  card.querySelector('.poke-num').style.display    = '';
+  card.querySelector('.types-row').style.display   = '';
+}
+
+// Toggle al hacer click en el botón STATS / SPRITE
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.stats-btn');
+  if (!btn) return;
+  const side = btn.dataset.side;
+  const mode = btn.textContent.trim();
+  if (mode === 'STATS') {
+    showStatsPanel(side);
+  } else {
+    showSpritePanel(side);
+  }
+});
