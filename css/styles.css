@@ -43,7 +43,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .poke-panel{padding:16px 14px;border-right:1px solid;}
 .col-def .poke-panel{border-color:#1a3a6e;}
 .col-atk .poke-panel{border-color:#5a3a00;}
-.poke-card{border-radius:14px;padding:12px;text-align:center;display:none;}
+.poke-card{position:relative;border-radius:14px;padding:14px;text-align:center;display:none;}
 .col-def .poke-card{background:#0a1830;border:1px solid #1a3a6e;}
 .col-atk .poke-card{background:#1f1500;border:1px solid #5a3a00;}
 .poke-card img{width:255px;height:255px;image-rendering:auto;display:block;margin:0 auto 10px;}
@@ -54,7 +54,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .types-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;margin-top:16px;}
 
 /* Moves panel */
-.moves-panel{padding:16px 14px;display:flex;flex-direction:column;height:420px;}
+.moves-panel{padding:16px 14px;display:flex;flex-direction:column;height:450px;}
 .moves-panel-title{font-family:'Press Start 2P',monospace;font-size:15px;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid;display:flex;align-items:center;justify-content:space-between;}
 .col-def .moves-panel-title{color:#4a9eff;border-color:#1a3a6e;}
 .col-atk .moves-panel-title{color:#ffaa33;border-color:#5a3a00;}
@@ -206,9 +206,82 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .spinner-atk{border-color:#5a3a00;border-top-color:#ffaa33;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-@media(max-width:1200px){.row-pokemon{grid-template-columns:200px 1fr;}}
-@media(max-width:900px){.main-cols{grid-template-columns:1fr;}.col-def{border-right:none;border-bottom:3px solid #0a0a12;}}
-@media(max-width:600px){.row-pokemon{grid-template-columns:1fr;}.types-two-cols{grid-template-columns:1fr;}.rec-grid{grid-template-columns:1fr;}}
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+
+/* Tablets landscape: 1200px */
+@media(max-width:1200px){
+  .row-pokemon{grid-template-columns:240px 1fr;}
+  .poke-card img{width:200px;height:200px;}
+}
+
+/* Tablets portrait: 900px — columnas apiladas */
+@media(max-width:900px){
+  html{font-size:120%;}
+  .main-cols{grid-template-columns:1fr;}
+  .col-def{border-right:none;border-bottom:4px solid #0a0a12;}
+  .row-pokemon{grid-template-columns:200px 1fr;}
+  .poke-card img{width:170px;height:170px;}
+  .poke-name{font-size:16px;}
+  .moves-panel{height:380px;}
+  .rec-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* Móviles grandes: 600px */
+@media(max-width:600px){
+  html{font-size:110%;}
+  h1{font-size:clamp(9px,3.5vw,16px);}
+  .col-header{padding:10px 12px 8px;}
+  .col-title{font-size:clamp(7px,2.5vw,11px);}
+
+  /* Fila 1: pokémon encima, moves debajo */
+  .row-pokemon{grid-template-columns:1fr;grid-template-rows:auto auto;}
+  .poke-panel{border-right:none;border-bottom:1px solid;}
+  .col-def .poke-panel{border-color:#1a3a6e;}
+  .col-atk .poke-panel{border-color:#5a3a00;}
+  .poke-card img{width:140px;height:140px;}
+  .poke-name{font-size:13px;}
+  .moves-panel{height:320px;padding:10px 10px;}
+  .moves-panel-title{font-size:11px;}
+
+  /* Tabla moves: ocultar precisión en móvil para que quepa */
+  .moves-table col.col-acc{width:0;display:none;}
+  .moves-table th.th-acc,.moves-table td.td-acc{display:none;}
+  .moves-table col.col-name{width:35%;}
+  .moves-table col.col-type{width:60px;}
+  .moves-table col.col-cat{width:40px;}
+  .mv-cat-img{width:36px;}
+
+  /* Tipos: una columna */
+  .types-two-cols{grid-template-columns:1fr;}
+  .types-divider{display:none;}
+  .types-panel{padding:10px 12px;}
+  .mult-label{font-size:.72rem;}
+
+  /* Recomendados: una columna */
+  .rec-grid{grid-template-columns:1fr;}
+  .rec-img-wrap{width:72px;}
+  .rec-row-img{width:60px;height:60px;}
+  .row-recs{padding:10px 12px;}
+
+  /* Búsqueda por tipo: grid más pequeño */
+  .type-poke-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;}
+  .type-poke-card img{width:56px;height:56px;}
+  .type-info-cols{grid-template-columns:1fr;}
+}
+
+/* Móviles pequeños: 400px */
+@media(max-width:400px){
+  html{font-size:100%;}
+  .poke-card img{width:110px;height:110px;}
+  .poke-name{font-size:11px;}
+  .moves-panel{height:280px;}
+  .rec-img-wrap{width:60px;}
+  .rec-row-img{width:50px;height:50px;}
+  .moves-table{font-size:.62rem;}
+  .mv-type-badge{font-size:.48rem;padding:3px;}
+}
 
 /* Moves recomendados: moves fuertes */
 .rec-strong-label{font-size:.52rem;font-weight:800;color:#ff6b7a;margin-bottom:3px;}
@@ -227,5 +300,5 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 
 /* Sort arrows in th */
 th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap;}
-th[data-sort]:hover{opacity:.8;}
-.sort-arrow{font-size:.7em;margin-left:3px;opacity:.6;}
+th[data-sort]:hover{background:rgba(255,255,255,0.06);}
+.sort-arrow{margin-left:3px;}
