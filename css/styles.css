@@ -18,6 +18,21 @@ nav {
     right: 16px;
     z-index: 1000;
 }
+.nav-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #0d1526;
+    border: 1px solid #1a3a6e;
+    border-radius: 10px;
+    min-width: 190px;
+    padding: 6px 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+}
+.nav-dropdown.open {
+    display: block;
+}
 /* Columnas */
 .main-cols{display:grid;grid-template-columns:1fr 1fr;flex:1;min-width:0;overflow:hidden;}
 .col-def{background:#0d1526;border-right:2px solid #0a0a12;min-width:0;overflow:hidden;}
