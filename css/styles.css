@@ -18,6 +18,16 @@ nav {
     right: 16px;
     z-index: 1000;
 }
+.nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: #eaeaea;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: background .15s;
+}
 .nav-dropdown {
     display: none;
     position: absolute;
