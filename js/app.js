@@ -860,3 +860,20 @@ document.addEventListener('click', e => {
     showSpritePanel(side);
   }
 });
+// ══════════════════════════════════════════════════════
+//  MENÚ NAV
+// ══════════════════════════════════════════════════════
+document.getElementById('nav-btn').addEventListener('click',e=>{
+  e.stopPropagation();
+  document.getElementById('nav-dropdown').classList.toggle('open');
+});
+document.addEventListener('click',()=>document.getElementById('nav-dropdown').classList.remove('open'));
+
+// Cerrar modales con overlay
+document.getElementById('modal-poke-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal-poke-overlay'))closePokeModal();
+});
+document.getElementById('modal-moves-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal-moves-overlay'))closeMovesModal();
+});
+init();
