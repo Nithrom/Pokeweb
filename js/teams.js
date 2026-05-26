@@ -1,8 +1,8 @@
-// ══════════════════════════════════════════════════════
-//  teams.js — Página de batalla por equipos
-// ══════════════════════════════════════════════════════
+// teams.js — Battle Teams
 
-// ── Datos compartidos de app.js (duplicados aquí para independencia) ──
+// ══════════════════════════════════════
+// DATOS BASE (copiados de app.js)
+// ══════════════════════════════════════
 const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada'};
 const TYPE_CLASS={normal:'t-normal',fighting:'t-fighting',flying:'t-flying',poison:'t-poison',ground:'t-ground',rock:'t-rock',bug:'t-bug',ghost:'t-ghost',steel:'t-steel',fire:'t-fire',water:'t-water',grass:'t-grass',electric:'t-electric',psychic:'t-psychic',ice:'t-ice',dragon:'t-dragon',dark:'t-dark',fairy:'t-fairy'};
 const CAT_IMG={physical:'img/cat_physical.png',special:'img/cat_special.png',status:'img/cat_status.png'};
@@ -28,48 +28,44 @@ const EFF={
   fairy:{normal:1,fighting:2,flying:1,poison:0.5,ground:1,rock:1,bug:1,ghost:1,steel:0.5,fire:0.5,water:1,grass:1,electric:1,psychic:1,ice:1,dragon:2,dark:2,fairy:1}
 };
 
-function tc(t){return TYPE_CLASS[t]||'t-normal';}
-function tn(t){return TIPOS_ES[t]||t;}
-function formatName(n){return n.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
+function calcDefense(types){const r={4:[],2:[],1:[],0.5:[],0.25:[],0:[]};for(const a of Object.keys(EFF)){let m=1;for(const d of types)m*=(EFF[a][d]??1);const k=Math.round(m*100)/100;if(r[k]!==undefined)r[k].push(a);else if(k>=3)r[4].push(a);else r[1].push(a);}return r;}
 function multLabel(m){if(m>=4)return{txt:'×4',cls:'rm-4'};if(m>=2)return{txt:'×2',cls:'rm-2'};if(m>=1)return{txt:'×1',cls:'rm-1'};if(m>=0.5)return{txt:'×½',cls:'rm-05'};if(m>0)return{txt:'×¼',cls:'rm-025'};return{txt:'×0',cls:'rm-0'};}
 
-// Calcular el mejor multiplicador que los moves de un atacante hacen sobre los tipos de un defensor
-function bestMultiplier(attackerMoves, defenderTypes){
-  let best=0;
-  for(const m of attackerMoves){
-    if(!m.detail||!m.detail.power||m.detail.category==='status')continue;
-    let mult=1;
-    for(const dt of defenderTypes) mult*=(EFF[m.detail.type]?.[dt]??1);
-    mult=Math.round(mult*100)/100;
-    if(mult>best)best=mult;
-  }
-  return best;
-}
+const STAT_KEYS=[
+  {key:'hp',label:'PS',cls:'sb-hp'},
+  {key:'attack',label:'ATQ',cls:'sb-atk'},
+  {key:'defense',label:'DEF',cls:'sb-def'},
+  {key:'sp_attack',label:'ATQE',cls:'sb-spa'},
+  {key:'sp_defense',label:'DEFE',cls:'sb-spd'},
+  {key:'speed',label:'VEL',cls:'sb-spe'},
+];
+const STAT_MAX=255;
+const RADAR_COLORS={a:{fill:'rgba(74,158,255,0.20)',stroke:'#4a9eff'},b:{fill:'rgba(255,170,51,0.20)',stroke:'#ffaa33'}};
 
-// Calcular el mejor multiplicador solo por tipos (sin moves)
-function bestTypeMultiplier(attackerTypes, defenderTypes){
-  let best=0;
-  for(const at of attackerTypes){
-    let mult=1;
-    for(const dt of defenderTypes) mult*=(EFF[at]?.[dt]??1);
-    mult=Math.round(mult*100)/100;
-    if(mult>best)best=mult;
-  }
-  return best;
-}
-
-// ── Estado global ──
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
 let DB=null;
 let allPokemon=[];
 
-// Equipos: array de 6 slots, cada slot = {name, id, types, sprite, moves:[{name,detail}]}
-const teams={
-  a: Array(6).fill(null),
-  b: Array(6).fill(null)
-};
+// teams[team][slot] = {name, shiny, selectedMoves:[]} | null
+const teams={a:Array(6).fill(null),b:Array(6).fill(null)};
 
-// ── Carga inicial ──
-async function init(){
+// Modal
+let activeSlot={team:null,slot:null};
+let activeMovesSlot={team:null,slot:null};
+let modalFiltered=[];
+let modalPage=0;
+const MODAL_PAGE_SIZE=50;
+let modalTypeFilter=[];     // hasta 2 tipos
+let modalLegendFilter='all';
+let modalStyleFilter='all';
+let modalSearchQ='';
+
+// ══════════════════════════════════════
+// CARGA POKÉDEX
+// ══════════════════════════════════════
+async function loadPokedex(){
   try{
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
@@ -78,415 +74,588 @@ async function init(){
       document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon disponibles</span>`;
     }
   }catch(e){
-    // Fallback API
-    try{
-      const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
-      const d=await res.json();
-      allPokemon=d.results.map((p,i)=>({name:p.name,id:i+1}));
-      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon disponibles</span>`;
-    }catch(e2){document.getElementById('status-bar').textContent='Error cargando.';}
+    document.getElementById('status-bar').textContent='Error cargando Pokédex';
   }
-  document.getElementById('search-a').disabled=false;
-  document.getElementById('search-b').disabled=false;
-  setupSearch('a');
-  setupSearch('b');
+  initSlots();
+  buildTypeFilterGrid();
 }
 
-// ── Buscador ──
-function setupSearch(team){
-  const input=document.getElementById(`search-${team}`);
-  const sug=document.getElementById(`sug-${team}`);
-  input.addEventListener('input',()=>{
-    const q=input.value.toLowerCase().trim();
-    if(q.length<2){sug.style.display='none';return;}
-    const matches=allPokemon.filter(p=>p.name.includes(q)).slice(0,8);
-    if(!matches.length){sug.style.display='none';return;}
-    sug.innerHTML=matches.map(p=>`<div class="sug-item" data-name="${p.name}">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" loading="lazy">
-      <span>${formatName(p.name)}</span>
-      <span class="sug-num">N.º${p.id}</span>
-    </div>`).join('');
-    sug.style.display='block';
-    sug.querySelectorAll('.sug-item').forEach(el=>el.addEventListener('click',()=>{
-      sug.style.display='none';
-      input.value='';
-      addPokemonToTeam(el.dataset.name, team);
-    }));
-  });
+// ══════════════════════════════════════
+// SLOTS
+// ══════════════════════════════════════
+function initSlots(){
+  renderTeam('a');
+  renderTeam('b');
 }
 
-// ── Añadir pokémon al equipo ──
-async function addPokemonToTeam(name, team){
-  // Buscar slot vacío
-  const slotIdx=teams[team].findIndex(s=>s===null);
-  if(slotIdx===-1){alert('El equipo ya está lleno (6 pokémon).');return;}
-  // Ya en el equipo?
-  if(teams[team].some(s=>s&&s.name===name)){alert(`${formatName(name)} ya está en el equipo.`);return;}
-
-  const pdata=DB?DB.pokemon[name]:null;
-  let pokemon;
-  if(pdata){
-    const allMovesRaw=pdata.moves||[];
-    // Precargar detalles desde DB.moves
-    const allMoves=allMovesRaw.map(m=>({
-      name:m.name,
-      byLevel:m.byLevel,
-      level:m.level,
-      detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}
-    }));
-    pokemon={name,id:pdata.id,types:pdata.types,sprite:pdata.sprite,allMoves,moves:[]};
-  } else {
-    // Fallback API
-    const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-    const d=await res.json();
-    pokemon={
-      name,id:d.id,
-      types:d.types.map(t=>t.type.name),
-      sprite:d.sprites.other['official-artwork'].front_default||d.sprites.front_default,
-      allMoves:[],moves:[]
-    };
+function renderTeam(team){
+  const container=document.getElementById(`slots-${team}`);
+  container.innerHTML='';
+  for(let i=0;i<6;i++){
+    container.appendChild(buildSlotEl(team,i));
   }
-  teams[team][slotIdx]=pokemon;
-  renderSlot(team, slotIdx);
 }
 
-// ── Renderizar slot ──
-function renderSlot(team, idx){
-  const el=document.getElementById(`slot-${team}-${idx}`);
-  const p=teams[team][idx];
-  if(!p){
-    el.className='slot';
-    el.innerHTML=`<div class="slot-empty-icon">＋</div><div class="slot-empty-label">Vacío</div>`;
-    el.onclick=()=>slotClick(team,idx);
-    return;
-  }
-  const typeBadges=p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('');
-  const movesBadges=p.moves.length>0
-    ?p.moves.map(m=>`<span class="slot-move-badge active">${tn(m.detail?.type||'normal')} ${formatName(m.name)}</span>`).join('')
-    :`<span class="slot-add-moves" onclick="openModal('${team}',${idx});event.stopPropagation()">＋ Añadir moves</span>`;
-  el.className='slot filled';
-  el.innerHTML=`
-    <button class="slot-remove" onclick="removePokemon('${team}',${idx});event.stopPropagation()" title="Quitar">✕</button>
-    <img class="slot-img" src="${p.sprite}" alt="${p.name}">
-    <div class="slot-name">${formatName(p.name)}</div>
-    <div class="slot-types">${typeBadges}</div>
-    <div class="slot-moves">${movesBadges}</div>`;
-  el.onclick=()=>openModal(team,idx);
-}
+function buildSlotEl(team,slot){
+  const poke=teams[team][slot];
+  const wrap=document.createElement('div');
+  wrap.className='slot-row';
+  wrap.dataset.team=team;
+  wrap.dataset.slot=slot;
 
-function slotClick(team,idx){
-  if(!teams[team][idx]) document.getElementById(`search-${team}`).focus();
-}
-
-function removePokemon(team,idx){
-  teams[team][idx]=null;
-  renderSlot(team,idx);
-}
-
-function clearTeam(team){
-  if(!confirm('¿Vaciar el equipo?'))return;
-  teams[team]=Array(6).fill(null);
-  for(let i=0;i<6;i++)renderSlot(team,i);
-  document.getElementById(`analysis-${team}`).style.display='none';
-}
-
-// ── Modal de moves ──
-let _modal={team:null,idx:null,selected:new Set()};
-
-function openModal(team,idx){
-  const p=teams[team][idx];if(!p)return;
-  _modal.team=team;_modal.idx=idx;
-  _modal.selected=new Set(p.moves.map(m=>m.name));
-
-  const overlay=document.getElementById('modal-overlay');
-  const modal=document.getElementById('modal');
-  overlay.classList.add('open');
-  modal.className=team==='b'?'modal modal-b':'modal';
-  document.getElementById('modal-title').textContent=formatName(p.name).toUpperCase();
-  document.getElementById('modal-confirm').className=`btn-confirm ${team}`;
-  document.getElementById('modal-filter').value='';
-
-  renderModalMoves(p.allMoves,'');
-  document.getElementById('modal-filter').oninput=e=>renderModalMoves(p.allMoves,e.target.value.toLowerCase().trim());
-}
-
-function renderModalMoves(allMoves, filter){
-  const list=document.getElementById('modal-moves-list');
-  const nSel=_modal.selected.size;
-  document.getElementById('modal-count').textContent=nSel;
-
-  const TYPE_ES_EN={normal:'normal',lucha:'fighting',volador:'flying',veneno:'poison',tierra:'ground',roca:'rock',bicho:'bug',fantasma:'ghost',acero:'steel',fuego:'fire',agua:'water',planta:'grass','eléctrico':'electric',electrico:'electric','psíquico':'psychic',psiquico:'psychic',hielo:'ice','dragón':'dragon',dragon:'dragon',siniestro:'dark',hada:'fairy'};
-  const catMap={'físico':'physical','fisico':'physical','especial':'special','estado':'status'};
-
-  let filtered=allMoves;
-  if(filter){
-    const typeQ=TYPE_ES_EN[filter]||null;
-    const catQ=catMap[filter]||null;
-    const numQ=!isNaN(parseInt(filter))&&filter!==''?parseInt(filter):null;
-    filtered=allMoves.filter(m=>{
-      const d=m.detail;
-      if(typeQ)return d.type===typeQ;
-      if(catQ)return d.category===catQ;
-      if(numQ!==null)return d.power===numQ||d.accuracy===numQ;
-      return m.name.includes(filter)||formatName(m.name).toLowerCase().includes(filter)||tn(d.type).toLowerCase().includes(filter);
-    });
+  if(!poke){
+    // Slot vacío
+    wrap.innerHTML=`
+      <div class="slot-main">
+        <div class="slot-poke" onclick="openModal('${team}',${slot})">
+          <div class="slot-empty">
+            <div class="slot-empty-num">SLOT ${slot+1}</div>
+            <div class="slot-empty-icon">＋</div>
+            <div class="slot-empty-text">Click para añadir</div>
+          </div>
+        </div>
+        <div class="slot-moves" style="align-items:center;justify-content:center;">
+          <div class="slot-move-empty">— Sin Pokémon —</div>
+        </div>
+      </div>`;
+    return wrap;
   }
 
-  list.innerHTML=filtered.map(m=>{
-    const d=m.detail||{};
-    const isSel=_modal.selected.has(m.name);
-    const isDisabled=!isSel&&nSel>=4;
-    const powClass=d.power>=100?'pow-high':d.power>=60?'pow-mid':d.power?'pow-low':'pow-none';
-    return`<div class="modal-move-row${isSel?' selected':''}${isDisabled?' disabled':''}" data-move="${m.name}" onclick="toggleModalMove('${m.name}',${isDisabled})">
-      <input type="checkbox" class="modal-move-check" ${isSel?'checked':''} readonly>
-      <span class="modal-move-name">${formatName(m.name)}</span>
-      <span class="modal-move-type ${tc(d.type)}">${tn(d.type)}</span>
-      <img class="modal-move-cat" src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="">
-      <span class="modal-move-pow ${powClass}">${d.power??'—'}</span>
+  const pdata=DB?.pokemon?.[poke.name]||{};
+  const types=pdata.types||[];
+  const sprite=poke.shiny
+    ?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pdata.id}.png`
+    :(pdata.sprite||`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pdata.id}.png`);
+
+  const typesBadges=types.map(t=>`<span class="type-badge ${TYPE_CLASS[t]||''}">${TIPOS_ES[t]||t}</span>`).join('');
+
+  // Moves seleccionados
+  const selMoves=poke.selectedMoves||[];
+  const movesHtml=buildMovesListHtml(poke.name,selMoves);
+
+  // Franja tipos: débil a / fuerte contra
+  const defenses=calcDefense(types);
+  const weakTo=(defenses[4]||[]).concat(defenses[2]||[]);
+  const resistTo=(defenses[0.5]||[]).concat(defenses[0.25]||[]);
+  const immuneTo=defenses[0]||[];
+  const weakHtml=weakTo.slice(0,6).map(t=>`<span class="type-badge ${TYPE_CLASS[t]||''}">${TIPOS_ES[t]||t}</span>`).join('');
+  const resistHtml=resistTo.slice(0,6).map(t=>`<span class="type-badge ${TYPE_CLASS[t]||''}">${TIPOS_ES[t]||t}</span>`).join('');
+
+  wrap.innerHTML=`
+    <div class="slot-main">
+      <div class="slot-poke" onclick="openModal('${team}',${slot})">
+        <button class="slot-shiny-btn" onclick="event.stopPropagation();toggleSlotShiny('${team}',${slot})" title="Shiny">✨</button>
+        <button class="slot-stats-btn" id="sstats-${team}-${slot}" onclick="event.stopPropagation();toggleSlotStats('${team}',${slot})" title="Stats">STATS</button>
+        <div class="slot-filled" id="sfilled-${team}-${slot}">
+          <img id="simg-${team}-${slot}" src="${sprite}" alt="${poke.name}" loading="lazy">
+          <div class="slot-poke-name">${pdata.name_es||poke.name}</div>
+          <div class="slot-poke-num">N.º ${pdata.id||''}</div>
+          <div class="slot-types-row">${typesBadges}</div>
+        </div>
+        <div class="slot-radar-wrap" id="sradar-${team}-${slot}" style="display:none"></div>
+      </div>
+      <div class="slot-moves">
+        <div class="slot-moves-header">
+          <span>MOVES</span>
+          <button class="slot-edit-moves-btn" onclick="openMovesModal('${team}',${slot})">✏ Editar</button>
+        </div>
+        <div class="slot-moves-list">${movesHtml}</div>
+      </div>
+    </div>
+    <div class="slot-types-bar">
+      <div class="slot-types-section"><span class="slot-types-section-label">⚠ Débil a:</span>${weakHtml||'<span style="color:#444;font-size:.5rem">ninguna</span>'}</div>
+      <div class="slot-types-section"><span class="slot-types-section-label">🛡 Resiste:</span>${resistHtml||'<span style="color:#444;font-size:.5rem">ninguna</span>'}</div>
+    </div>
+    <button class="slot-clear-btn" onclick="clearSlot('${team}',${slot})">🗑 Eliminar Pokémon</button>`;
+
+  return wrap;
+}
+
+function buildMovesListHtml(pokeName,selMoves){
+  if(!selMoves||selMoves.length===0){
+    return `<div class="slot-move-empty">Sin moves seleccionados</div>`;
+  }
+  return selMoves.map(mname=>{
+    const pdata=DB?.pokemon?.[pokeName];
+    const moveData=pdata?.moves?.find(m=>m.name===mname);
+    const det=moveData?.detail||(DB?.moves?.[mname])||{};
+    const typeClass=TYPE_CLASS[det.type]||'';
+    const catImg=det.category&&CAT_IMG[det.category]?`<img src="${CAT_IMG[det.category]}" class="mv-cat-img" title="${det.category}">`:'';
+    const pow=det.power?`<span class="slot-move-power">${det.power}</span>`:'';
+    return `<div class="slot-move-item">
+      <span class="mv-type-badge ${typeClass}">${TIPOS_ES[det.type]||det.type||'?'}</span>
+      ${catImg}
+      <span class="slot-move-name">${mname}</span>
+      ${pow}
     </div>`;
   }).join('');
 }
 
-function toggleModalMove(moveName, isDisabled){
-  if(isDisabled)return;
-  if(_modal.selected.has(moveName)) _modal.selected.delete(moveName);
-  else if(_modal.selected.size<4) _modal.selected.add(moveName);
-  const p=teams[_modal.team][_modal.idx];
-  const filter=document.getElementById('modal-filter').value.toLowerCase().trim();
-  renderModalMoves(p.allMoves,filter);
+function clearSlot(team,slot){
+  teams[team][slot]=null;
+  renderSlot(team,slot);
+  hideAnalysis();
 }
 
-function confirmMoves(){
-  const p=teams[_modal.team][_modal.idx];if(!p)return;
-  p.moves=p.allMoves.filter(m=>_modal.selected.has(m.name));
-  renderSlot(_modal.team,_modal.idx);
-  closeModal();
+function renderSlot(team,slot){
+  const container=document.getElementById(`slots-${team}`);
+  const old=container.children[slot];
+  const newEl=buildSlotEl(team,slot);
+  container.replaceChild(newEl,old);
 }
 
-function closeModal(){
-  document.getElementById('modal-overlay').classList.remove('open');
+function toggleSlotShiny(team,slot){
+  if(!teams[team][slot])return;
+  teams[team][slot].shiny=!teams[team][slot].shiny;
+  const img=document.getElementById(`simg-${team}-${slot}`);
+  if(!img)return;
+  const pdata=DB?.pokemon?.[teams[team][slot].name]||{};
+  img.src=teams[team][slot].shiny
+    ?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pdata.id}.png`
+    :(pdata.sprite||`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pdata.id}.png`);
 }
 
-// Cerrar modal con overlay
-document.getElementById('modal-overlay').addEventListener('click',e=>{
-  if(e.target===document.getElementById('modal-overlay'))closeModal();
-});
+function toggleSlotStats(team,slot){
+  const btn=document.getElementById(`sstats-${team}-${slot}`);
+  const filled=document.getElementById(`sfilled-${team}-${slot}`);
+  const radarWrap=document.getElementById(`sradar-${team}-${slot}`);
+  if(!btn||!filled||!radarWrap)return;
 
-// ── Análisis de batalla ──
-function analyzeTeam(team){
-  const myTeam=teams[team].filter(Boolean);
-  const rivalTeam=teams[team==='a'?'b':'a'].filter(Boolean);
-
-  if(myTeam.length===0){alert('Añade al menos un pokémon a tu equipo.');return;}
-
-  const section=document.getElementById(`analysis-${team}`);
-  const vsLabel=document.getElementById(`analysis-vs-label-${team}`);
-  vsLabel.textContent=document.getElementById(`team-name-${team==='a'?'b':'a'}`).value;
-  section.style.display='block';
-
-  buildMatchupTable(team, myTeam, rivalTeam);
-  buildCoverage(team, myTeam);
-  buildThreats(team, myTeam, rivalTeam);
+  const showing=btn.classList.contains('active');
+  if(showing){
+    btn.classList.remove('active');
+    btn.textContent='STATS';
+    filled.style.display='flex';
+    radarWrap.style.display='none';
+  }else{
+    btn.classList.add('active');
+    btn.textContent='SPRITE';
+    filled.style.display='none';
+    radarWrap.style.display='flex';
+    renderSlotStats(team,slot,radarWrap);
+  }
 }
 
-function multToCellClass(m){
-  if(m>=4)return'mc-4';if(m>=2)return'mc-2';if(m>=1)return'mc-1';if(m>0)return'mc-05';return'mc-0';
-}
+function renderSlotStats(team,slot,container){
+  const poke=teams[team][slot];
+  if(!poke)return;
+  const pdata=DB?.pokemon?.[poke.name]||{};
+  const hasStats=pdata.hp||pdata.attack||pdata.speed;
 
-function buildMatchupTable(team, myTeam, rivalTeam){
-  const table=document.getElementById(`matchup-table-${team}`);
-  if(!rivalTeam.length){
-    table.innerHTML=`<tr><td style="padding:12px;color:#606070;font-size:.6rem">El equipo rival está vacío</td></tr>`;
+  if(!hasStats){
+    container.innerHTML='<div style="color:#444;font-size:.54rem;padding:10px;text-align:center">Stats no disponibles</div>';
     return;
   }
 
-  // Cabecera: pokémon del rival
-  let html=`<thead><tr><th></th>`;
-  for(const p of rivalTeam){
-    html+=`<th><div class="matchup-th-poke"><img src="${p.sprite}" alt="${p.name}"><span>${formatName(p.name)}</span></div></th>`;
+  const size=96;
+  container.innerHTML=`<canvas id="sradar-canvas-${team}-${slot}" width="${size}" height="${size}"></canvas><div class="slot-mini-bars" id="sminibars-${team}-${slot}"></div>`;
+
+  // Dibujar radar
+  const canvas=document.getElementById(`sradar-canvas-${team}-${slot}`);
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const cx=W/2,cy=H/2;
+  const R=Math.min(W,H)/2-16;
+  const N=6;
+  const ao=-Math.PI/2;
+  const col=RADAR_COLORS[team]||RADAR_COLORS.a;
+  const vals=STAT_KEYS.map(s=>(pdata[s.key]||0)/STAT_MAX);
+
+  // Telaraña
+  for(const lvl of [0.25,0.5,0.75,1]){
+    ctx.beginPath();
+    for(let i=0;i<N;i++){const a=ao+(2*Math.PI*i)/N;const[x,y]=[cx+R*lvl*Math.cos(a),cy+R*lvl*Math.sin(a)];i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.closePath();ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.stroke();
   }
-  html+=`</tr></thead><tbody>`;
+  // Polígono
+  ctx.beginPath();
+  for(let i=0;i<N;i++){const a=ao+(2*Math.PI*i)/N;const r=R*vals[i];const[x,y]=[cx+r*Math.cos(a),cy+r*Math.sin(a)];i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+  ctx.closePath();ctx.fillStyle=col.fill;ctx.fill();ctx.strokeStyle=col.stroke;ctx.lineWidth=1.5;ctx.stroke();
 
-  // Filas: mis pokémon vs cada rival
-  for(let i=0;i<myTeam.length;i++){
-    const me=myTeam[i];
-    html+=`<tr><th><div class="matchup-th-poke"><img src="${me.sprite}" alt="${me.name}"><span>${formatName(me.name)}</span></div></th>`;
-    for(let j=0;j<rivalTeam.length;j++){
-      const rival=rivalTeam[j];
-      // Multiplicador de mis moves contra el rival
-      const mult=me.moves.length>0
-        ?bestMultiplier(me.moves,rival.types)
-        :bestTypeMultiplier(me.types,rival.types);
-      const{txt}=multLabel(mult);
-      const cellCls=multToCellClass(mult);
-      html+=`<td><div class="matchup-cell ${cellCls}" onclick="showMatchupDetail('${team}',${i},${j})" title="${formatName(me.name)} vs ${formatName(rival.name)}">${txt}</div></td>`;
-    }
-    html+=`</tr>`;
-  }
-  html+=`</tbody>`;
-  table.innerHTML=html;
-
-  // Guardar datos para el detalle
-  table._myTeam=myTeam;
-  table._rivalTeam=rivalTeam;
-  table._team=team;
-}
-
-function showMatchupDetail(team, myIdx, rivalIdx){
-  const table=document.getElementById(`matchup-table-${team}`);
-  const me=table._myTeam[myIdx];
-  const rival=table._rivalTeam[rivalIdx];
-  const detail=document.getElementById(`matchup-detail-${team}`);
-
-  // Mis moves contra el rival
-  const myMoveRows=me.moves.length>0
-    ?me.moves.filter(m=>m.detail?.power&&m.detail?.category!=='status').map(m=>{
-      let mult=1;
-      for(const dt of rival.types)mult*=(EFF[m.detail.type]?.[dt]??1);
-      mult=Math.round(mult*100)/100;
-      const{txt,cls}=multLabel(mult);
-      return`<div class="detail-move-row">
-        <span class="modal-move-type ${tc(m.detail.type)}">${tn(m.detail.type)}</span>
-        <span class="detail-move-name">${formatName(m.name)}</span>
-        <span class="detail-mult ${cls}">${txt}</span>
-      </div>`;
-    }).join('')
-    :`<div style="color:#606070;font-size:.58rem">Sin moves seleccionados — basado en tipos</div>`;
-
-  // Moves del rival contra mí
-  const rivalMoveRows=rival.moves.length>0
-    ?rival.moves.filter(m=>m.detail?.power&&m.detail?.category!=='status').map(m=>{
-      let mult=1;
-      for(const dt of me.types)mult*=(EFF[m.detail.type]?.[dt]??1);
-      mult=Math.round(mult*100)/100;
-      const{txt,cls}=multLabel(mult);
-      return`<div class="detail-move-row">
-        <span class="modal-move-type ${tc(m.detail.type)}">${tn(m.detail.type)}</span>
-        <span class="detail-move-name">${formatName(m.name)}</span>
-        <span class="detail-mult ${cls}">${txt}</span>
-      </div>`;
-    }).join('')
-    :`<div style="color:#606070;font-size:.58rem">Sin moves seleccionados — basado en tipos</div>`;
-
-  detail.className=`matchup-detail open`;
-  detail.innerHTML=`
-    <div class="detail-title">
-      <img src="${me.sprite}" style="width:28px;height:28px"> ${formatName(me.name)}
-      <span style="color:#e94560;margin:0 4px">VS</span>
-      <img src="${rival.sprite}" style="width:28px;height:28px"> ${formatName(rival.name)}
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div>
-        <div style="font-size:.55rem;font-weight:800;color:#a0a0b0;margin-bottom:5px">TUS MOVES CONTRA ${formatName(rival.name).toUpperCase()}</div>
-        <div class="detail-moves">${myMoveRows}</div>
-      </div>
-      <div>
-        <div style="font-size:.55rem;font-weight:800;color:#a0a0b0;margin-bottom:5px">SUS MOVES CONTRA ${formatName(me.name).toUpperCase()}</div>
-        <div class="detail-moves">${rivalMoveRows}</div>
-      </div>
+  // Mini barras
+  const barsEl=document.getElementById(`sminibars-${team}-${slot}`);
+  barsEl.innerHTML=STAT_KEYS.map(s=>{
+    const val=pdata[s.key]||0;
+    const pct=Math.round((val/STAT_MAX)*100);
+    return `<div class="slot-mini-bar-row ${s.cls}">
+      <span class="slot-mini-bar-label">${s.label}</span>
+      <span class="slot-mini-bar-val">${val}</span>
+      <div class="slot-mini-bar-track"><div class="slot-mini-bar-fill" style="width:${pct}%;background:currentColor"></div></div>
     </div>`;
+  }).join('');
 }
 
-function buildCoverage(team, myTeam){
-  const covered=new Set();
-  for(const p of myTeam){
-    const src=p.moves.length>0?p.moves.filter(m=>m.detail?.power&&m.detail?.category!=='status'):[];
-    if(src.length>0){
-      for(const m of src){
-        for(const [defType] of Object.entries(EFF[m.detail.type]||{})){
-          if((EFF[m.detail.type][defType]||1)>=2)covered.add(defType);
-        }
-      }
-    } else {
-      // Sin moves: usar tipos del pokémon
-      for(const at of p.types){
-        for(const[defType,mult]of Object.entries(EFF[at]||{})){
-          if(mult>=2)covered.add(defType);
-        }
-      }
+// ══════════════════════════════════════
+// MODAL BÚSQUEDA
+// ══════════════════════════════════════
+function openModal(team,slot){
+  activeSlot={team,slot};
+  document.getElementById('modal-title').textContent=`ELIGE EL POKÉMON — SLOT ${slot+1}`;
+  document.getElementById('modal-search').value='';
+  modalSearchQ='';
+  modalPage=0;
+  document.getElementById('modal-overlay').style.display='flex';
+  applyModalFilters();
+  document.getElementById('modal-search').focus();
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('modal-overlay'))closeModalBtn();
+}
+function closeModalBtn(){
+  document.getElementById('modal-overlay').style.display='none';
+}
+
+function buildTypeFilterGrid(){
+  const grid=document.getElementById('type-filter-grid');
+  const types=Object.keys(EFF);
+  grid.innerHTML=types.map(t=>`
+    <button class="type-filter-btn ${TYPE_CLASS[t]||''}" data-type="${t}" onclick="toggleTypeFilter('${t}')">${TIPOS_ES[t]||t}</button>
+  `).join('');
+}
+
+function toggleTypeFilter(type){
+  const idx=modalTypeFilter.indexOf(type);
+  if(idx>=0){
+    modalTypeFilter.splice(idx,1);
+  }else{
+    if(modalTypeFilter.length>=2)return; // máximo 2
+    modalTypeFilter.push(type);
+  }
+  // Actualizar botones
+  document.querySelectorAll('.type-filter-btn').forEach(b=>{
+    b.classList.toggle('active',modalTypeFilter.includes(b.dataset.type));
+  });
+  modalPage=0;
+  applyModalFilters();
+}
+
+// Filtro legendario
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('#legend-filter .filter-btn');
+  if(btn){
+    document.querySelectorAll('#legend-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    modalLegendFilter=btn.dataset.val;
+    modalPage=0;
+    applyModalFilters();
+  }
+  const btn2=e.target.closest('#style-filter .filter-btn');
+  if(btn2){
+    document.querySelectorAll('#style-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn2.classList.add('active');
+    modalStyleFilter=btn2.dataset.val;
+    modalPage=0;
+    applyModalFilters();
+  }
+});
+
+document.getElementById('modal-search').addEventListener('input',e=>{
+  modalSearchQ=e.target.value.toLowerCase().trim();
+  modalPage=0;
+  applyModalFilters();
+});
+
+function applyModalFilters(){
+  if(!DB){modalFiltered=[];renderModalGrid();return;}
+  modalFiltered=allPokemon.filter(({name})=>{
+    const pdata=DB.pokemon[name];
+    if(!pdata)return false;
+    // Nombre
+    if(modalSearchQ&&!name.includes(modalSearchQ)&&!(pdata.name_es||'').toLowerCase().includes(modalSearchQ))return false;
+    // Tipos
+    if(modalTypeFilter.length>0){
+      for(const t of modalTypeFilter)if(!(pdata.types||[]).includes(t))return false;
+    }
+    // Legendario
+    if(modalLegendFilter==='legendary'&&!pdata.is_legendary)return false;
+    if(modalLegendFilter==='normal'&&pdata.is_legendary)return false;
+    // Estilo (físico/especial: el mayor de attack vs sp_attack)
+    if(modalStyleFilter!=='all'){
+      const atk=pdata.attack||0,spa=pdata.sp_attack||0;
+      if(modalStyleFilter==='physical'&&spa>atk)return false;
+      if(modalStyleFilter==='special'&&atk>=spa)return false;
+    }
+    return true;
+  });
+  renderModalGrid();
+}
+
+function renderModalGrid(){
+  const grid=document.getElementById('modal-grid');
+  const page=modalFiltered.slice(0,MODAL_PAGE_SIZE*(modalPage+1));
+  grid.innerHTML=page.map(({name})=>{
+    const pdata=DB.pokemon[name];
+    const types=(pdata.types||[]).map(t=>`<span class="type-badge ${TYPE_CLASS[t]||''}">${TIPOS_ES[t]||t}</span>`).join('');
+    const sprite=pdata.sprite||`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pdata.id}.png`;
+    return `<div class="modal-poke-card" onclick="addToSlot('${name}')">
+      <img src="${sprite}" alt="${name}" loading="lazy" width="80" height="80">
+      <div class="modal-poke-name">${pdata.name_es||name}</div>
+      <div class="modal-poke-num">N.º ${pdata.id}</div>
+      <div class="modal-poke-types">${types}</div>
+      <button class="modal-add-btn" onclick="event.stopPropagation();addToSlot('${name}')">+ AÑADIR</button>
+    </div>`;
+  }).join('');
+
+  const loadMore=document.getElementById('modal-load-more');
+  loadMore.style.display=modalFiltered.length>MODAL_PAGE_SIZE*(modalPage+1)?'block':'none';
+}
+
+function loadMoreModal(){
+  modalPage++;
+  renderModalGrid();
+}
+
+function addToSlot(name){
+  const {team,slot}=activeSlot;
+  if(!team&&team!==0)return;
+  teams[team][slot]={name,shiny:false,selectedMoves:[]};
+  renderSlot(team,slot);
+  closeModalBtn();
+  hideAnalysis();
+}
+
+// ══════════════════════════════════════
+// MODAL MOVES
+// ══════════════════════════════════════
+function openMovesModal(team,slot){
+  const poke=teams[team][slot];
+  if(!poke)return;
+  activeMovesSlot={team,slot};
+
+  document.getElementById('moves-modal-title').textContent=`MOVES — ${(DB?.pokemon?.[poke.name]?.name_es||poke.name).toUpperCase()}`;
+  document.getElementById('moves-modal-search').value='';
+  document.getElementById('moves-modal-overlay').style.display='flex';
+  renderMovesModal(poke,'');
+  document.getElementById('moves-modal-search').focus();
+}
+
+function renderMovesModal(poke,filter){
+  const pdata=DB?.pokemon?.[poke.name];
+  if(!pdata){document.getElementById('moves-modal-body').innerHTML='<tr><td colspan="6">Sin datos</td></tr>';return;}
+
+  let moves=pdata.moves||[];
+  if(filter)moves=moves.filter(m=>m.name.includes(filter.toLowerCase()));
+
+  const selMoves=poke.selectedMoves||[];
+
+  document.getElementById('moves-modal-body').innerHTML=moves.map(m=>{
+    const det=m.detail||(DB?.moves?.[m.name])||{};
+    const isStatus=!det.power||det.category==='status';
+    const checked=selMoves.includes(m.name);
+    const typeClass=TYPE_CLASS[det.type]||'';
+    const catImg=det.category&&CAT_IMG[det.category]?`<img src="${CAT_IMG[det.category]}" style="width:32px;height:auto" title="${det.category}">`:'';
+    return `<tr class="${checked?'mv-selected':''}" onclick="toggleMoveSelect('${m.name}')">
+      <td><input type="checkbox" class="mv-check" ${checked?'checked':''} onclick="event.stopPropagation();toggleMoveSelect('${m.name}')"></td>
+      <td style="font-weight:700;white-space:nowrap">${m.name}</td>
+      <td><span class="mv-type-badge ${typeClass}">${TIPOS_ES[det.type]||det.type||'?'}</span></td>
+      <td>${catImg}</td>
+      <td style="text-align:center;font-weight:800;color:${isStatus?'#444':'#ffa502'}">${det.power||'—'}</td>
+      <td style="text-align:center;color:#888">${det.accuracy||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleMoveSelect(moveName){
+  const {team,slot}=activeMovesSlot;
+  const poke=teams[team][slot];
+  if(!poke)return;
+  const sel=poke.selectedMoves||[];
+  const idx=sel.indexOf(moveName);
+  if(idx>=0){
+    sel.splice(idx,1);
+  }else{
+    if(sel.length>=4)return; // máx 4
+    sel.push(moveName);
+  }
+  poke.selectedMoves=sel;
+  // Refrescar tabla
+  const filter=document.getElementById('moves-modal-search').value;
+  renderMovesModal(poke,filter);
+}
+
+document.getElementById('moves-modal-search').addEventListener('input',e=>{
+  const {team,slot}=activeMovesSlot;
+  const poke=teams[team][slot];
+  if(poke)renderMovesModal(poke,e.target.value);
+});
+
+function closeMovesModal(e){
+  if(e.target===document.getElementById('moves-modal-overlay'))closeMovesModalBtn();
+}
+function closeMovesModalBtn(){
+  document.getElementById('moves-modal-overlay').style.display='none';
+  // Actualizar la lista de moves visible en el slot
+  const {team,slot}=activeMovesSlot;
+  if(team){
+    const poke=teams[team][slot];
+    if(poke){
+      const movesList=document.querySelector(`#slots-${team}>div:nth-child(${slot+1}) .slot-moves-list`);
+      if(movesList)movesList.innerHTML=buildMovesListHtml(poke.name,poke.selectedMoves);
     }
   }
-  const allTypes=Object.keys(TIPOS_ES);
-  document.getElementById(`coverage-${team}`).innerHTML=allTypes.map(t=>
-    `<span class="type-badge ${tc(t)} coverage-badge${covered.has(t)?' covered':''}">${tn(t)}</span>`
-  ).join('');
+  hideAnalysis();
 }
 
-function buildThreats(team, myTeam, rivalTeam){
-  const container=document.getElementById(`threats-${team}`);
-  if(!rivalTeam.length){container.innerHTML='';return;}
+// ══════════════════════════════════════
+// ANÁLISIS
+// ══════════════════════════════════════
+function analyzeTeams(){
+  const teamA=teams.a.filter(Boolean);
+  const teamB=teams.b.filter(Boolean);
+  if(!teamA.length||!teamB.length){
+    alert('Cada equipo debe tener al menos 1 Pokémon');return;
+  }
 
-  // Pokémon del rival que pueden hacer ×2 o más a algún pokémon mío
+  renderAnalysis('a',teamA,teamB);
+  renderAnalysis('b',teamB,teamA);
+
+  document.getElementById('analysis-a').style.display='block';
+  document.getElementById('analysis-b').style.display='block';
+
+  // Scroll suave al análisis
+  document.getElementById('analysis-a').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function hideAnalysis(){
+  document.getElementById('analysis-a').style.display='none';
+  document.getElementById('analysis-b').style.display='none';
+}
+
+// Calcula el mejor multiplicador que puede hacer myPoke contra rival
+// considerando los moves seleccionados (o tipos si no hay moves)
+function bestMultiplierAgainst(myPoke,rivalTypes){
+  const sel=myPoke.selectedMoves||[];
+  const pdata=DB?.pokemon?.[myPoke.name]||{};
+  const myTypes=pdata.types||[];
+
+  let best=0;
+
+  if(sel.length>0){
+    for(const mname of sel){
+      const moveData=pdata.moves?.find(m=>m.name===mname);
+      const det=moveData?.detail||(DB?.moves?.[mname])||{};
+      if(!det.power||det.category==='status')continue;
+      let mult=1;
+      for(const rt of rivalTypes)mult*=(EFF[det.type]?.[rt]??1);
+      best=Math.max(best,Math.round(mult*100)/100);
+    }
+  }else{
+    // Sin moves: usar tipos propios como atacante
+    for(const myT of myTypes){
+      let mult=1;
+      for(const rt of rivalTypes)mult*=(EFF[myT]?.[rt]??1);
+      best=Math.max(best,Math.round(mult*100)/100);
+    }
+  }
+  return best;
+}
+
+// Multiplicador defensivo: cuánto daño recibe myPoke de rivalPoke
+function worstMultiplierReceived(myPoke,rivalPoke){
+  const myPdata=DB?.pokemon?.[myPoke.name]||{};
+  const myTypes=myPdata.types||[];
+  const rivalPdata=DB?.pokemon?.[rivalPoke.name]||{};
+  const rivalTypes=rivalPdata.types||[];
+  const rivalSel=rivalPoke.selectedMoves||[];
+
+  let worst=0;
+  if(rivalSel.length>0){
+    for(const mname of rivalSel){
+      const moveData=rivalPdata.moves?.find(m=>m.name===mname);
+      const det=moveData?.detail||(DB?.moves?.[mname])||{};
+      if(!det.power||det.category==='status')continue;
+      let mult=1;
+      for(const mt of myTypes)mult*=(EFF[det.type]?.[mt]??1);
+      worst=Math.max(worst,Math.round(mult*100)/100);
+    }
+  }else{
+    for(const rt of rivalTypes){
+      let mult=1;
+      for(const mt of myTypes)mult*=(EFF[rt]?.[mt]??1);
+      worst=Math.max(worst,Math.round(mult*100)/100);
+    }
+  }
+  return worst;
+}
+
+function renderAnalysis(mySide,myTeam,rivalTeam){
+  const summaryEl=document.getElementById(`summary-${mySide}`);
+  const matchupEl=document.getElementById(`matchup-${mySide}`);
+
+  // ── Resumen ──
+  // Amenazas: rivales que hacen ×2 o más a alguno de mis pokémon
   const threats=[];
   for(const rival of rivalTeam){
-    const victims=[];
-    for(const me of myTeam){
-      const mult=rival.moves.length>0
-        ?bestMultiplier(rival.moves,me.types)
-        :bestTypeMultiplier(rival.types,me.types);
-      if(mult>=2)victims.push({name:me.name,mult});
-    }
-    if(victims.length>0){
-      threats.push({rival,victims});
-    }
+    const rivalPdata=DB?.pokemon?.[rival.name]||{};
+    let maxDmg=0;
+    for(const mine of myTeam)maxDmg=Math.max(maxDmg,worstMultiplierReceived(mine,rival));
+    if(maxDmg>=2)threats.push({name:rivalPdata.name_es||rival.name,mult:maxDmg});
   }
 
-  if(!threats.length){
-    container.innerHTML=`<div style="color:#2ed573;font-size:.6rem;margin-top:6px">✓ Ningún pokémon rival representa una amenaza clara</div>`;
-    return;
+  // Cobertura: tipos que cubren mis moves ofensivos
+  const coveredTypes=new Set();
+  for(const mine of myTeam){
+    const pdata=DB?.pokemon?.[mine.name]||{};
+    const sel=mine.selectedMoves||[];
+    if(sel.length>0){
+      for(const mname of sel){
+        const moveData=pdata.moves?.find(m=>m.name===mname);
+        const det=moveData?.detail||(DB?.moves?.[mname])||{};
+        if(det.type&&det.power)coveredTypes.add(det.type);
+      }
+    }else{
+      for(const t of pdata.types||[])coveredTypes.add(t);
+    }
   }
+  const allTypes=Object.keys(EFF);
+  const uncovered=allTypes.filter(t=>!coveredTypes.has(t));
 
-  const rivalName=document.getElementById(`team-name-${team==='a'?'b':'a'}`).value;
-  container.innerHTML=`<div style="font-size:.58rem;font-weight:800;color:#ff4757;margin:8px 0 5px">⚠ AMENAZAS DEL ${rivalName.toUpperCase()}</div>`+
-    threats.map(t=>{
-      const victimStr=t.victims.map(v=>{const{txt}=multLabel(v.mult);return`${formatName(v.name)} ${txt}`;}).join(', ');
-      return`<div class="threat-row">
-        <img src="${t.rival.sprite}" alt="${t.rival.name}">
-        <span class="threat-name">${formatName(t.rival.name)}</span>
-        <span class="threat-reason">Amenaza a: ${victimStr}</span>
-      </div>`;
+  summaryEl.innerHTML=`
+    <div class="summary-card">
+      <div class="summary-card-title">⚠ AMENAZAS RIVALES</div>
+      <div class="summary-card-content">
+        ${threats.length===0
+          ?'<span class="threat-tag threat-ok">Sin amenazas ×2</span>'
+          :threats.map(t=>`<span class="threat-tag threat-danger">${t.name} (×${t.mult})</span>`).join('')}
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">🗺 COBERTURA</div>
+      <div class="summary-card-content">
+        ${uncovered.length===0
+          ?'<span class="threat-tag threat-ok">Cobertura total</span>'
+          :`<span style="color:#666;font-size:.56rem">Sin cubrir: </span>${uncovered.slice(0,8).map(t=>`<span class="threat-tag threat-neutral"><span class="type-badge ${TYPE_CLASS[t]||''}" style="font-size:.46rem">${TIPOS_ES[t]||t}</span></span>`).join('')}`}
+      </div>
+    </div>`;
+
+  // ── Tabla matchups ──
+  // Filas = mis pokémon / Columnas = rival
+  const colHeaders=rivalTeam.map(p=>{
+    const pd=DB?.pokemon?.[p.name]||{};
+    return `<th>${pd.name_es||p.name}</th>`;
+  }).join('');
+
+  const rows=myTeam.map(mine=>{
+    const minePd=DB?.pokemon?.[mine.name]||{};
+    const cells=rivalTeam.map(rival=>{
+      const rivalPd=DB?.pokemon?.[rival.name]||{};
+      const rivalTypes=rivalPd.types||[];
+      const mult=bestMultiplierAgainst(mine,rivalTypes);
+      const {txt,cls}=multLabel(mult);
+      return `<td><span class="matchup-cell ${cls}" title="Mi ${minePd.name_es||mine.name} vs ${rivalPd.name_es||rival.name}">${txt}</span></td>`;
     }).join('');
+    return `<tr><td class="td-label">${minePd.name_es||mine.name}</td>${cells}</tr>`;
+  }).join('');
+
+  matchupEl.innerHTML=`
+    <table class="matchup-table">
+      <thead><tr><th class="th-row-label">Mi equipo \\ Rival</th>${colHeaders}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
-// ── Guardar equipo en API ──
-async function saveTeam(team){
-  const members=teams[team].filter(Boolean);
-  if(members.length===0){alert('El equipo está vacío.');return;}
-  const name=document.getElementById(`team-name-${team}`).value||`Equipo ${team.toUpperCase()}`;
-  try{
-    const res=await fetch('/api/teams',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        name,
-        pokemon:members.map(p=>({
-          pokemon_id:p.id,
-          move_ids:[] // simplificado: IDs no disponibles en frontend sin fetch extra
-        }))
-      })
-    });
-    if(res.ok){
-      const d=await res.json();
-      alert(`✓ Equipo "${name}" guardado (ID: ${d.id})`);
-    } else {
-      alert('Error guardando el equipo.');
-    }
-  }catch(e){
-    alert('No se pudo conectar con la API. ¿Está corriendo el backend?');
-  }
-}
-
-// ── Menú hamburguesa ──
-document.getElementById('nav-btn').addEventListener('click',e=>{
-  e.stopPropagation();
-  document.getElementById('nav-dropdown').classList.toggle('open');
-});
-document.addEventListener('click',()=>document.getElementById('nav-dropdown').classList.remove('open'));
-
-// ── Iniciar ──
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.search-wrap'))
-    document.querySelectorAll('.suggestions').forEach(s=>s.style.display='none');
-});
-
-init();
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+loadPokedex();
