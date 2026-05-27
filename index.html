@@ -9,14 +9,20 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Menú hamburguesa -->
+<header style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
+  <div style="width:42px"></div>
+  <div style="flex:1;text-align:center;">
+    <h1>⚔ POKÉMON COUNTER FINDER</h1>
+    <div class="status-bar" id="status-bar">...</div>
+  </div>
   <nav class="nav-menu">
     <button class="nav-btn" id="nav-btn">☰</button>
     <div class="nav-dropdown" id="nav-dropdown">
-      <a href="index.html">⚔ Counter Finder</a>
-      <a href="teams.html" class="active">👥 Battle Teams</a>
+      <a href="index.html" class="active">⚔ Counter Finder</a>
+      <a href="teams.html">BATALLA POR EQUIPOS</a>
     </div>
   </nav>
+</header>
   <!-- Tooltip global para badges de tipo -->
   <div id="mv-global-tooltip" style="display:none;position:fixed;z-index:9999;background:#1a1a2e;border:1px solid #4a9eff;border-radius:8px;padding:8px 12px;font-size:.65rem;font-weight:700;line-height:1.9;color:#eaeaea;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.7);white-space:nowrap;"></div>
 

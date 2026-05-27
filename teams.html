@@ -3,129 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokémon Battle Teams</title>
+  <title>Batalla por Equipos</title>
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/teams.css">
 </head>
 <body>
 
-  <!-- Menú hamburguesa -->
+<header>
+  <div class="nav-placeholder"></div>
+  <div class="header-center">
+    <h1>BATALLA POR EQUIPOS</h1>
+    <div class="status-bar" id="status-bar"><span class="spinner"></span> Cargando...</div>
+  </div>
   <nav class="nav-menu">
     <button class="nav-btn" id="nav-btn">☰</button>
     <div class="nav-dropdown" id="nav-dropdown">
       <a href="index.html">⚔ Counter Finder</a>
-      <a href="teams.html" class="active">👥 Battle Teams</a>
+      <a href="teams.html" class="active">BATALLA POR EQUIPOS</a>
     </div>
   </nav>
+</header>
 
-  <!-- Header -->
-  <header>
-    <h1>👥 BATTLE TEAMS</h1>
-    <div class="status-bar" id="status-bar"><span class="spinner"></span> Cargando...</div>
-  </header>
+<div class="teams-layout">
 
-  <!-- Layout: col A | botón central | col B -->
-  <div class="teams-layout">
-
-    <!-- ══ EQUIPO A ══ -->
-    <div class="team-col team-a" id="col-a">
-      <div class="team-header">
-        <div class="team-title-row">
-          <input class="team-name-input" id="team-name-a" value="Equipo A" maxlength="24">
-          <button class="btn-clear-team" onclick="clearTeam('a')">✕ Limpiar</button>
-        </div>
-      </div>
-      <div class="team-slots" id="slots-a">
-        <!-- generados por JS -->
-      </div>
-      <!-- Análisis equipo A -->
-      <div class="analysis-section" id="analysis-a">
-        <div class="analysis-title" id="analysis-title-a">ANÁLISIS</div>
-        <!-- dashboard + tabla generados por JS -->
-        <div id="analysis-content-a"></div>
+  <!-- EQUIPO A -->
+  <div class="team-col team-a">
+    <div class="team-header">
+      <div class="team-title-row">
+        <input class="team-name-input" id="team-name-a" value="Equipo A" maxlength="24">
+        <button class="btn-clear-team" onclick="clearTeam('a')">✕ Limpiar</button>
       </div>
     </div>
-
-    <!-- ══ Botón central ══ -->
-    <div class="analyze-center">
-      <button class="btn-analyze-main" onclick="analyzeBattle()">⚡ ANALIZAR</button>
-    </div>
-
-    <!-- ══ EQUIPO B ══ -->
-    <div class="team-col team-b" id="col-b">
-      <div class="team-header">
-        <div class="team-title-row">
-          <input class="team-name-input" id="team-name-b" value="Equipo B" maxlength="24">
-          <button class="btn-clear-team" onclick="clearTeam('b')">✕ Limpiar</button>
-        </div>
-      </div>
-      <div class="team-slots" id="slots-b">
-        <!-- generados por JS -->
-      </div>
-      <div class="analysis-section" id="analysis-b">
-        <div class="analysis-title" id="analysis-title-b">ANÁLISIS</div>
-        <div id="analysis-content-b"></div>
-      </div>
-    </div>
-
-  </div><!-- /teams-layout -->
-
-  <!-- ══ Modal búsqueda de Pokémon ══ -->
-  <div class="modal-overlay" id="modal-poke-overlay">
-    <div class="modal-search-poke" id="modal-poke-box">
-      <div class="modal-head">
-        <div class="modal-head-title" id="modal-poke-title">ELIGE EL POKÉMON</div>
-        <button class="modal-close-btn" onclick="closePokeModal()">✕</button>
-      </div>
-      <div class="modal-filters">
-        <!-- Fila 1: búsqueda por nombre -->
-        <div class="filter-row">
-          <input class="modal-name-input" id="modal-name-filter" placeholder="Buscar por nombre..." autocomplete="off">
-          <span class="modal-result-count" id="modal-result-count"></span>
-        </div>
-        <!-- Fila 2: filtro por tipo (hasta 2) -->
-        <div class="filter-row" id="type-filter-row">
-          <span class="filter-label">Tipo:</span>
-          <!-- generado por JS -->
-        </div>
-        <!-- Fila 3: otros filtros -->
-        <div class="filter-row">
-          <span class="filter-label">Filtros:</span>
-          <button class="filter-toggle-btn" id="filter-legendary" onclick="toggleFilter('legendary')">⭐ Legendario</button>
-          <button class="filter-toggle-btn" id="filter-physical" onclick="toggleFilter('physical')">⚔ Físico</button>
-          <button class="filter-toggle-btn" id="filter-special" onclick="toggleFilter('special')">✦ Especial</button>
-        </div>
-      </div>
-      <div class="modal-poke-grid" id="modal-poke-grid"></div>
-      <div class="modal-load-more" id="modal-load-more-wrap">
-        <button class="btn-load-more" id="btn-load-more" onclick="loadMorePokemon()">Ver más</button>
-      </div>
-    </div>
+    <div class="team-slots" id="slots-a"></div>
   </div>
 
-  <!-- ══ Modal selección de moves ══ -->
-  <div class="modal-moves-overlay" id="modal-moves-overlay">
-    <div class="modal-moves-box" id="modal-moves-box">
-      <div class="modal-moves-head">
-        <div>
-          <div class="modal-moves-title" id="modal-moves-title">MOVIMIENTOS</div>
-          <div class="modal-moves-sub">Selecciona hasta 4 movimientos ofensivos</div>
-        </div>
-        <button class="modal-close-btn" onclick="closeMovesModal()">✕</button>
-      </div>
-      <div class="modal-moves-filter">
-        <input type="text" id="modal-moves-filter-input" placeholder="Filtrar por nombre, tipo, físico, especial..." autocomplete="off">
-      </div>
-      <div class="modal-moves-count-bar">Seleccionados: <span id="modal-moves-count">0</span>/4</div>
-      <div class="modal-moves-list" id="modal-moves-list"></div>
-      <div class="modal-moves-footer">
-        <button class="btn-cancel" onclick="closeMovesModal()">Cancelar</button>
-        <button class="btn-confirm-moves" id="btn-confirm-moves" onclick="confirmMoves()">Confirmar</button>
-      </div>
-    </div>
+  <!-- VS central -->
+  <div class="vs-center">
+    <button class="btn-vs" onclick="analyzeBattle()" title="Analizar batalla">VS</button>
   </div>
 
-  <script src="js/teams.js"></script>
+  <!-- EQUIPO B -->
+  <div class="team-col team-b">
+    <div class="team-header">
+      <div class="team-title-row">
+        <input class="team-name-input" id="team-name-b" value="Equipo B" maxlength="24">
+        <button class="btn-clear-team" onclick="clearTeam('b')">✕ Limpiar</button>
+      </div>
+    </div>
+    <div class="team-slots" id="slots-b"></div>
+  </div>
+
+</div>
+
+<!-- MODAL: búsqueda de pokémon -->
+<div class="modal-overlay" id="modal-poke-overlay">
+  <div class="modal-poke-box" id="modal-poke-box">
+    <div class="modal-poke-head">
+      <div class="modal-poke-title" id="modal-poke-title">ELIGE UN POKÉMON</div>
+      <button class="modal-close-btn" onclick="closePokeModal()">✕</button>
+    </div>
+    <div class="modal-filters">
+      <div class="filter-row">
+        <input class="modal-name-input" id="modal-name-filter" placeholder="Buscar por nombre..." autocomplete="off">
+        <span class="modal-result-count" id="modal-result-count"></span>
+      </div>
+      <div class="filter-row" id="type-filter-row"></div>
+      <div class="filter-row">
+        <span class="filter-label">Filtros:</span>
+        <button class="filter-toggle-btn" id="filter-legendary" onclick="toggleFilter('legendary')">⭐ Legendario</button>
+        <button class="filter-toggle-btn" id="filter-physical"  onclick="toggleFilter('physical')">⚔ Físico</button>
+        <button class="filter-toggle-btn" id="filter-special"   onclick="toggleFilter('special')">✦ Especial</button>
+      </div>
+    </div>
+    <div class="modal-poke-grid" id="modal-poke-grid"></div>
+    <div class="modal-load-more" id="modal-load-more-wrap">
+      <button class="btn-load-more" onclick="loadMorePokemon()">Ver más</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: moves -->
+<div class="modal-moves-overlay" id="modal-moves-overlay">
+  <div class="modal-moves-box" id="modal-moves-box">
+    <div class="modal-moves-head">
+      <div>
+        <div class="modal-moves-title" id="modal-moves-title">MOVIMIENTOS</div>
+        <div class="modal-moves-sub">Selecciona hasta 4 movimientos</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeMovesModal()">✕</button>
+    </div>
+    <div class="modal-moves-filter-row">
+      <input type="text" id="modal-moves-filter-input" placeholder="Filtrar..." autocomplete="off">
+    </div>
+    <div class="modal-moves-count-bar">Seleccionados: <span id="modal-moves-count">0</span>/4</div>
+    <div class="modal-moves-table-wrap">
+      <table class="modal-moves-table" id="modal-moves-table">
+        <colgroup>
+          <col class="mc-chk"><col class="mc-name"><col class="mc-type">
+          <col class="mc-cat"><col class="mc-pow"><col class="mc-acc">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>✓</th>
+            <th data-sort="name">Movimiento <span class="sort-arrow-m">↕</span></th>
+            <th data-sort="type">Tipo <span class="sort-arrow-m">↕</span></th>
+            <th data-sort="cat">Categoría <span class="sort-arrow-m">↕</span></th>
+            <th data-sort="pow">Potencia <span class="sort-arrow-m">↕</span></th>
+            <th data-sort="acc">Precisión <span class="sort-arrow-m">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="modal-moves-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-moves-footer">
+      <button class="btn-cancel" onclick="closeMovesModal()">Cancelar</button>
+      <button class="btn-confirm-moves" id="btn-confirm-moves" onclick="confirmMoves()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: análisis -->
+<div class="modal-analysis-overlay" id="modal-analysis-overlay">
+  <div class="modal-analysis-box">
+    <div class="modal-analysis-head">
+      <div class="modal-analysis-title" id="modal-analysis-title">⚡ ANÁLISIS DE BATALLA</div>
+      <button class="modal-close-btn" onclick="closeAnalysisModal()">✕</button>
+    </div>
+    <div class="modal-analysis-body" id="modal-analysis-body"></div>
+  </div>
+</div>
+
+<script src="js/teams.js"></script>
 </body>
 </html>
