@@ -35,7 +35,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .col-atk .search-input{background:#1f1500;border:2px solid #5a3a00;color:#eaeaea;}
 .col-atk .search-input:focus{border-color:#ffaa33;}
 .search-input::placeholder{color:#606070;}
-.suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;border-radius:10px;max-height:240px;overflow-y:auto;z-index:200;display:none;}
+.suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;border-radius:10px;max-height:240px;overflow-y:auto;z-index:50;display:none;}
 .col-def .suggestions{background:#0a1830;border:1px solid #1a3a6e;}
 .col-atk .suggestions{background:#1f1500;border:1px solid #5a3a00;}
 .sug-item{display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;font-size:.72rem;font-weight:600;transition:background .15s;}
