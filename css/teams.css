@@ -262,7 +262,6 @@ canvas.radar-canvas{display:block;margin:0 auto;}
 /* +15% letra en th/td */
 .modal-moves-table thead th{position:sticky;top:0;padding:7px 9px;font-size:.69rem;font-weight:800;text-transform:uppercase;text-align:left;background:#0d1e3a;color:#4a9eff;border-bottom:1px solid #1a3a6e;cursor:pointer;white-space:nowrap;user-select:none;}
 .modal-moves-box.team-b .modal-moves-table thead th{background:#1f1200;color:#ffaa33;border-color:#5a3a00;}
-.modal-moves-table thead th:hover{background:rgba(255,255,255,.06);}
 
 .modal-moves-box.team-a .modal-moves-table thead th:hover{background:rgb(24, 22, 136);}
 .modal-moves-box.team-b .modal-moves-table thead th:hover{background:#7e5200;}
