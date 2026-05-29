@@ -108,6 +108,7 @@ async function init(){
         allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
           detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
       })).sort((a,b)=>a.id-b.id);
+      _evolvesFromSet=null; // reset cache
       document.getElementById('status-bar').innerHTML=
         `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon disponibles</span>`;
     }
@@ -169,7 +170,7 @@ function buildSlotEl(team,idx){
     ?p.moves.map(m=>{const d=m.detail||{};return`<div class="move-entry">
       <span class="move-entry-name">${formatName(m.name)}</span>
       <span class="move-entry-type ${tc(d.type)}">${tn(d.type)}</span>
-      <img class="move-entry-cat" src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="">
+      <div class="move-entry-cat"><img src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="${d.category||''}"></div>
       <span class="move-entry-pow ${powerClass(d.power)}">${d.power??'—'}</span>
       <span class="move-entry-acc">${d.accuracy!=null?d.accuracy+'%':'—'}</span>
     </div>`;}).join('')
@@ -367,15 +368,16 @@ function renderPokeGrid(){
     const statsBars=STAT_KEYS.map(s=>{const v=p[s.key]||0,pct=Math.round(v/255*100);
       return`<div class="mini-stat-row"><span class="mini-stat-label">${s.label}</span><div class="mini-stat-bar-bg"><div class="mini-stat-bar ${s.cls}" style="width:${pct}%"></div></div><span class="mini-stat-val">${v}</span></div>`;
     }).join('');
+    const safeN=p.name.replace(/[^a-z0-9]/g,'-');
     return`<div class="modal-poke-card${chosen?' chosen':''}" onclick="addFromModal('${p.name}')" role="button" tabindex="0" aria-label="${formatName(p.name)}, ${chosen?'ya en equipo':'añadir al equipo'}">
       ${chosen?`<button class="modal-card-remove-x" onclick="event.stopPropagation();removeFromModal('${p.name}')" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)}">✕</button>`:''}
-      <img class="modal-poke-img" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
-      <div class="modal-poke-num">N.º${p.id}</div>
+      <div class="modal-card-media">
+        <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
+        <canvas class="modal-poke-radar" id="mpr-${safeN}" width="110" height="90" style="display:none" aria-label="Stats ${formatName(p.name)}"></canvas>
+      </div>
       <div class="modal-poke-name">${formatName(p.name)}</div>
-      <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
-      <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this)" aria-expanded="false">STATS</button>
-      <div class="modal-stats-wrap"><div class="slot-stats-bars">${statsBars}</div></div>
+      <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
   }).join('');
   // Keyboard
@@ -397,12 +399,19 @@ function removeFromModal(name){
   renderPokeGrid();
 }
 
-function toggleModalStats(btn){
-  const w=btn.nextElementSibling;
-  w.classList.toggle('open');
-  const open=w.classList.contains('open');
-  btn.textContent=open?'SPRITE':'STATS';
-  btn.setAttribute('aria-expanded',open);
+function toggleModalStats(btn,safeN,pname){
+  const img=document.getElementById(`mpi-${safeN}`);
+  const cv=document.getElementById(`mpr-${safeN}`);
+  const goStats=img.style.display!=='none';
+  if(goStats){
+    img.style.display='none';cv.style.display='block';
+    btn.textContent='SPRITE';btn.setAttribute('aria-expanded','true');
+    const p=allPokemon.find(x=>x.name===pname);
+    if(p)setTimeout(()=>drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a'),20);
+  }else{
+    img.style.display='block';cv.style.display='none';
+    btn.textContent='STATS';btn.setAttribute('aria-expanded','false');
+  }
 }
 
 function loadMorePokemon(){_mP.shown+=BATCH;renderPokeGrid();}
@@ -619,11 +628,14 @@ function buildAnalysisSection(side,myTeam,rivalTeam,myName,rivalName){
   </div>`;
 }
 
-// ── Última evolución de una cadena ──
+// Precalcular set de nombres que son evolvesFrom para O(1) lookup
+let _evolvesFromSet=null;
+function getEvolvesFromSet(){
+  if(!_evolvesFromSet){_evolvesFromSet=new Set(allPokemon.filter(p=>p.evolvesFrom).map(p=>p.evolvesFrom));}
+  return _evolvesFromSet;
+}
 function getLastEvolution(pokemon){
-  // Comprobar si algún otro pokémon evoluciona desde éste
-  const evolvesInto=allPokemon.find(p=>p.evolvesFrom===pokemon.name);
-  return !evolvesInto; // true si es última evo
+  return !getEvolvesFromSet().has(pokemon.name);
 }
 
 function buildRecs(myTeam,rivalTeam,side){
@@ -665,7 +677,7 @@ function buildRecs(myTeam,rivalTeam,side){
     });
     const strongBadges=strongAgainst.slice(0,3).map(r=>`<span class="rec-weak-tag rwt-good">${formatName(r.name)}</span>`).join('');
     return`<div class="rec-row" id="rec-row-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}">
-      <div class="rec-row-main">
+      <div class="rec-row-main" id="rec-main-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}">
         <img class="rec-row-img" src="${p.sprite}" alt="${formatName(p.name)}">
         <div class="rec-row-info">
           <div class="rec-row-name">${formatName(p.name)}</div>
@@ -679,9 +691,6 @@ function buildRecs(myTeam,rivalTeam,side){
       </div>
       <div class="rec-stats-panel" id="rec-stats-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}">
         <canvas class="rec-radar-canvas" id="rec-radar-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}" width="200" height="160" aria-label="Stats de ${formatName(p.name)}"></canvas>
-        <div class="rec-stats-bars">${STAT_KEYS.map(s=>{const v=p[s.key]||0,pct=Math.round(v/255*100);
-          return`<div class="mini-stat-row"><span class="mini-stat-label">${s.label}</span><div class="mini-stat-bar-bg"><div class="mini-stat-bar ${s.cls}" style="width:${pct}%"></div></div><span class="mini-stat-val">${v}</span></div>`;
-        }).join('')}</div>
       </div>
     </div>`;
   }).join('');
@@ -695,15 +704,16 @@ function buildRecs(myTeam,rivalTeam,side){
 function toggleRecStats(btn,pname,side){
   const safeId=pname.replace(/[^a-z0-9]/g,'-');
   const panel=document.getElementById(`rec-stats-${side}-${safeId}`);
-  if(!panel)return;
+  const main=document.getElementById(`rec-main-${side}-${safeId}`);
+  if(!panel||!main)return;
   const open=!panel.classList.contains('open');
   panel.classList.toggle('open',open);
+  main.style.display=open?'none':'flex';
   btn.textContent=open?'SPRITE':'STATS';
   btn.setAttribute('aria-expanded',open);
   if(open){
-    const canvasId=`rec-radar-${side}-${safeId}`;
     const p=allPokemon.find(x=>x.name===pname);
-    if(p)setTimeout(()=>drawRadarOnCanvas(canvasId,p,side==='a'?'a':'b'),30);
+    if(p)setTimeout(()=>drawRadarOnCanvas(`rec-radar-${side}-${safeId}`,p,side),30);
   }
 }
 
@@ -741,20 +751,32 @@ function drawRadarOnCanvas(canvasId,p,team){
 // ── Swap pokemon recomendado ──
 let _swapPending={pname:null,side:null};
 function swapRecPokemon(pname,side){
-  const myTeamSide=side;
-  const myTeam=teams[myTeamSide].filter(Boolean);
-  if(!myTeam.length){showToast('No hay pokémon en el equipo para cambiar.','warn');return;}
   _swapPending={pname,side};
-  // Mostrar overlay de selección
   const overlay=document.getElementById('swap-overlay');
   const grid=document.getElementById('swap-grid');
-  grid.innerHTML=myTeam.map((p,i)=>{
-    const realIdx=teams[myTeamSide].indexOf(p);
-    return`<div class="swap-card" onclick="confirmSwap(${realIdx})" role="button" tabindex="0" aria-label="Cambiar por ${formatName(p.name)}">
+  const title=document.getElementById('swap-title');
+  const freeIdx=teams[side].map((s,i)=>s===null?i:null).filter(i=>i!==null);
+  const filled=teams[side].filter(Boolean);
+  if(!filled.length&&!freeIdx.length){showToast('No hay equipo.','warn');return;}
+  const hasFree=freeIdx.length>0;
+  title.textContent=hasFree?'¿EN QUÉ SLOT LO AÑADES?':'¿QUÉ POKÉMON CAMBIAS?';
+  let html='';
+  if(hasFree){
+    freeIdx.forEach(i=>{
+      html+=`<div class="swap-card" onclick="confirmSwap(${i})" role="button" tabindex="0" aria-label="Slot libre ${i+1}">
+        <div class="swap-slot-empty">＋</div>
+        <div class="swap-card-name">Slot ${i+1}</div>
+      </div>`;
+    });
+  }
+  filled.forEach(p=>{
+    const realIdx=teams[side].indexOf(p);
+    html+=`<div class="swap-card" onclick="confirmSwap(${realIdx})" role="button" tabindex="0" aria-label="${hasFree?'Reemplazar':'Cambiar por'} ${formatName(p.name)}">
       <img src="${p.sprite}" alt="${formatName(p.name)}">
       <div class="swap-card-name">${formatName(p.name)}</div>
     </div>`;
-  }).join('');
+  });
+  grid.innerHTML=html;
   grid.querySelectorAll('.swap-card').forEach(c=>{
     c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}});
   });
