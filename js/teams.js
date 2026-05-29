@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════
-//  teams.js — Batalla por equipos v2
+//  teams.js — Batalla por equipos v3
 // ══════════════════════════════════════════════════════
 
 const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada'};
@@ -76,6 +76,20 @@ const BATCH=50;
 const _mM={team:null,idx:null,selected:new Set(),sort:'default',allMoves:[]};
 
 // ══════════════════════════════
+//  TOAST / NOTIFICACIONES
+// ══════════════════════════════
+function showToast(msg,type='info'){
+  let c=document.getElementById('toast-container');
+  if(!c){c=document.createElement('div');c.id='toast-container';document.body.appendChild(c);}
+  const t=document.createElement('div');
+  t.className=`poke-toast toast-${type}`;
+  t.innerHTML=msg;
+  c.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('visible'));
+  setTimeout(()=>{t.classList.remove('visible');setTimeout(()=>t.remove(),350);},2800);
+}
+
+// ══════════════════════════════
 //  INIT
 // ══════════════════════════════
 async function init(){
@@ -90,6 +104,7 @@ async function init(){
         is_legendary:!!p.is_legendary,
         hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
         sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
+        evolvesFrom:p.evolves_from||null,
         allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
           detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
       })).sort((a,b)=>a.id-b.id);
@@ -118,15 +133,15 @@ function buildSlotEl(team,idx){
   wrap.className='poke-row'; wrap.id=`poke-row-${team}-${idx}`;
   const p=teams[team][idx];
   if(!p){
-    // Slot vacío
-    const emptyLeft=`<div class="poke-slot-empty" onclick="openPokeModal('${team}')">
-      <div class="slot-empty-plus">＋</div>
+    const emptyLeft=`<div class="poke-slot-empty" onclick="openPokeModal('${team}')" role="button" tabindex="0" aria-label="Añadir pokémon al slot ${idx+1}">
+      <div class="slot-empty-plus" aria-hidden="true">＋</div>
       <div class="slot-empty-label">Slot ${idx+1} — Vacío</div>
     </div>`;
     const emptyRight=`<div style="display:flex;align-items:center;justify-content:center;padding:16px;">
       <span style="color:#9090a8;font-size:.7rem">Sin pokémon</span>
     </div>`;
     wrap.innerHTML=`<div class="poke-row-top">${team==='a'?emptyLeft+emptyRight:emptyRight+emptyLeft}</div>`;
+    wrap.querySelector('.poke-slot-empty').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openPokeModal(team);});
     return wrap;
   }
 
@@ -135,7 +150,6 @@ function buildSlotEl(team,idx){
   const weakTo=(def[4]||[]).concat(def[2]||[]);
   const resistTo=(def[0]||[]).concat(def[0.25]||[]).concat(def[0.5]||[]);
 
-  // Radar + barras stats
   const radarId=`radar-${team}-${idx}`;
   const statsBars=STAT_KEYS.map(s=>{
     const v=p[s.key]||0,pct=Math.round(v/255*100);
@@ -161,19 +175,28 @@ function buildSlotEl(team,idx){
     </div>`;}).join('')
     :`<div class="no-moves-label">Sin moves seleccionados</div>`;
 
+  // En modo stats: nombre arriba, hexágono grande, luego barras de stats (sin imagen, sin tipos, sin número)
+  const statsMode=st.stats;
   const slotContent=`
     <div class="poke-slot-filled">
-      <img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${p.name}"
-        style="${st.stats?'display:none':''}" onerror="this.src='${p.sprite}'">
-      <div class="slot-stats-wrap${st.stats?' open':''}" id="stats-wrap-${team}-${idx}">
-        <canvas class="radar-canvas" id="${radarId}" width="160" height="130"></canvas>
+      <button class="slot-remove-x" onclick="removeSlot('${team}',${idx})" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)} del equipo">✕</button>
+      ${!statsMode?`<img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${formatName(p.name)}"
+        onerror="this.src='${p.sprite}'">`:'' }
+      ${statsMode?`
+      <div class="slot-stats-mode-name">${formatName(p.name)}</div>
+      <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
+        <canvas class="radar-canvas" id="${radarId}" width="160" height="130" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
         <div class="slot-stats-bars">${statsBars}</div>
       </div>
+      `:`
+      <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
       <div class="slot-poke-name">${formatName(p.name)}</div>
+      <div class="slot-num">#${p.id}</div>
       <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+      `}
       <div class="slot-btns">
-        <button class="slot-btn${st.shiny?' active':''}" onclick="toggleShiny('${team}',${idx})">✨</button>
-        <button class="slot-btn${st.stats?' active':''}" onclick="toggleStats('${team}',${idx})">${st.stats?'SPRITE':'STATS'}</button>
+        <button class="slot-btn${st.shiny?' active':''}" onclick="toggleShiny('${team}',${idx})" aria-pressed="${st.shiny}" title="Shiny">✨</button>
+        <button class="slot-btn${st.stats?' active':''}" onclick="toggleStats('${team}',${idx})" aria-pressed="${st.stats}">${st.stats?'SPRITE':'STATS'}</button>
       </div>
     </div>`;
 
@@ -191,10 +214,8 @@ function buildSlotEl(team,idx){
     <div class="poke-row-types">
       ${weakTo.length?`<span class="type-info-chip"><span class="chip-label">Débil a:</span><span class="badge-group">${weakTo.slice(0,8).map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</span></span>`:''}
       ${resistTo.length?`<span class="type-info-chip"><span class="chip-label">Resiste:</span><span class="badge-group">${resistTo.slice(0,8).map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</span></span>`:''}
-    </div>
-    <div class="poke-row-clear"><button class="btn-remove-slot" onclick="removeSlot('${team}',${idx})">✕ Eliminar</button></div>`;
+    </div>`;
 
-  // Dibujar radar tras insertar en DOM
   if(st.stats) setTimeout(()=>drawRadar(radarId,p,team),50);
   return wrap;
 }
@@ -210,43 +231,71 @@ function drawRadar(canvasId,p,team){
   const col=colors[team]||'#4a9eff';
   ctx.clearRect(0,0,W,H);
   const angle=i=>Math.PI/2+i*(2*Math.PI/6);
-  // Grid
   for(let ring=1;ring<=4;ring++){
     ctx.beginPath();
     for(let i=0;i<6;i++){const a=angle(i),rr=r*ring/4;ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
     ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
   }
-  // Axes
   for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
-  // Data
   ctx.beginPath();
   for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/maxV);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
   ctx.closePath();ctx.fillStyle=col.replace(')',',0.25)').replace('rgb','rgba');ctx.fill();
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-  // Labels
   ctx.fillStyle='#b0b0c0';ctx.font='bold 8px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<6;i++){const a=angle(i),lr=r+12;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
 }
 
 // ── Acciones slot ──
-function removeSlot(team,idx){teams[team][idx]=null;slotSt(team,idx).shiny=false;slotSt(team,idx).stats=false;refreshSlot(team,idx);}
-function clearTeam(team){if(!confirm('¿Vaciar el equipo?'))return;for(let i=0;i<6;i++){teams[team][i]=null;_slotState[`${team}-${i}`]={shiny:false,stats:false};}renderAllSlots(team);}
+function removeSlot(team,idx){
+  teams[team][idx]=null;
+  slotSt(team,idx).shiny=false;
+  slotSt(team,idx).stats=false;
+  refreshSlot(team,idx);
+  showToast('Pokémon eliminado del equipo.','info');
+}
+
+function clearTeam(team){
+  // Confirm estilizado
+  showConfirm('¿Vaciar el equipo?',()=>{
+    for(let i=0;i<6;i++){teams[team][i]=null;_slotState[`${team}-${i}`]={shiny:false,stats:false};}
+    renderAllSlots(team);
+    showToast('Equipo vaciado.','warn');
+  });
+}
 
 function toggleShiny(team,idx){
   const st=slotSt(team,idx);st.shiny=!st.shiny;
   const p=teams[team][idx];if(!p)return;
-  const img=document.getElementById(`slot-img-${team}-${idx}`);
-  if(img){
-    if(st.shiny){img.src=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${p.id}.png`;img.onerror=()=>{img.onerror=null;img.src=p.sprite;st.shiny=false;};}
-    else img.src=p.sprite;
-  }
-  // Solo actualizar botones sin re-render completo
   refreshSlot(team,idx);
+  if(st.shiny){
+    const img=document.getElementById(`slot-img-${team}-${idx}`);
+    if(img){img.onerror=()=>{img.onerror=null;img.src=p.sprite;st.shiny=false;refreshSlot(team,idx);};}
+  }
 }
 
 function toggleStats(team,idx){
   const st=slotSt(team,idx);st.stats=!st.stats;
   refreshSlot(team,idx);
+}
+
+// ── Confirm estilizado ──
+function showConfirm(msg,onOk){
+  let overlay=document.getElementById('confirm-overlay');
+  if(!overlay){
+    overlay=document.createElement('div');overlay.id='confirm-overlay';
+    overlay.innerHTML=`<div class="confirm-box">
+      <div class="confirm-msg" id="confirm-msg"></div>
+      <div class="confirm-btns">
+        <button class="btn-cancel" id="confirm-no">Cancelar</button>
+        <button class="btn-confirm-moves" id="confirm-yes">Confirmar</button>
+      </div>
+    </div>`;
+    document.body.appendChild(overlay);
+  }
+  document.getElementById('confirm-msg').textContent=msg;
+  overlay.classList.add('open');
+  document.getElementById('confirm-yes').onclick=()=>{overlay.classList.remove('open');onOk();};
+  document.getElementById('confirm-no').onclick=()=>overlay.classList.remove('open');
 }
 
 // ══════════════════════════════
@@ -255,27 +304,33 @@ function toggleStats(team,idx){
 function buildTypeFilterRow(){
   const row=document.getElementById('type-filter-row');
   row.innerHTML=`<span class="filter-label">Tipo:</span>`+
-    ALL_TYPES.map(t=>`<button class="type-filter-btn ${tc(t)}" data-type="${t}" onclick="toggleTypeFilter('${t}')">${tn(t)}</button>`).join('');
+    ALL_TYPES.map(t=>`<button class="type-filter-btn ${tc(t)}" data-type="${t}" onclick="toggleTypeFilter('${t}')" aria-pressed="false">${tn(t)}</button>`).join('');
 }
 
 function toggleTypeFilter(type){
   const idx=_mP.typeFilters.indexOf(type);
   if(idx>-1)_mP.typeFilters.splice(idx,1);
   else if(_mP.typeFilters.length<2)_mP.typeFilters.push(type);
-  document.querySelectorAll('#type-filter-row .type-filter-btn').forEach(b=>b.classList.toggle('selected',_mP.typeFilters.includes(b.dataset.type)));
+  document.querySelectorAll('#type-filter-row .type-filter-btn').forEach(b=>{
+    const sel=_mP.typeFilters.includes(b.dataset.type);
+    b.classList.toggle('selected',sel);
+    b.setAttribute('aria-pressed',sel);
+  });
   applyPokeFilters();
 }
 
 function toggleFilter(flag){
   _mP.flags[flag]=!_mP.flags[flag];
-  document.getElementById(`filter-${flag}`).classList.toggle('active',_mP.flags[flag]);
+  const btn=document.getElementById(`filter-${flag}`);
+  btn.classList.toggle('active',_mP.flags[flag]);
+  btn.setAttribute('aria-pressed',_mP.flags[flag]);
   applyPokeFilters();
 }
 
 function openPokeModal(team){
   _mP.team=team;_mP.typeFilters=[];_mP.flags={legendary:false,physical:false,special:false};
-  document.querySelectorAll('#type-filter-row .type-filter-btn').forEach(b=>b.classList.remove('selected'));
-  ['legendary','physical','special'].forEach(f=>document.getElementById(`filter-${f}`).classList.remove('active'));
+  document.querySelectorAll('#type-filter-row .type-filter-btn').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+  ['legendary','physical','special'].forEach(f=>{document.getElementById(`filter-${f}`).classList.remove('active');document.getElementById(`filter-${f}`).setAttribute('aria-pressed','false');});
   document.getElementById('modal-name-filter').value='';
   const box=document.getElementById('modal-poke-box');
   box.className=`modal-poke-box${team==='b'?' team-b':''}`;
@@ -283,6 +338,7 @@ function openPokeModal(team){
   document.getElementById('modal-poke-title').textContent=`ELIGE UN POKÉMON PARA EL ${tname.toUpperCase()}`;
   document.getElementById('modal-poke-overlay').classList.add('open');
   document.getElementById('modal-name-filter').oninput=applyPokeFilters;
+  setTimeout(()=>document.getElementById('modal-name-filter').focus(),80);
   applyPokeFilters();
 }
 
@@ -304,7 +360,6 @@ function applyPokeFilters(){
 function renderPokeGrid(){
   const grid=document.getElementById('modal-poke-grid');
   const team=_mP.team;
-  // Nombres ya en el equipo (para marcar como chosen)
   const inTeam=new Set(teams[team].filter(Boolean).map(p=>p.name));
   const slice=_mP.filtered.slice(0,_mP.shown);
   grid.innerHTML=slice.map(p=>{
@@ -312,22 +367,42 @@ function renderPokeGrid(){
     const statsBars=STAT_KEYS.map(s=>{const v=p[s.key]||0,pct=Math.round(v/255*100);
       return`<div class="mini-stat-row"><span class="mini-stat-label">${s.label}</span><div class="mini-stat-bar-bg"><div class="mini-stat-bar ${s.cls}" style="width:${pct}%"></div></div><span class="mini-stat-val">${v}</span></div>`;
     }).join('');
-    return`<div class="modal-poke-card${chosen?' chosen':''}" onclick="addFromModal('${p.name}')">
-      <img class="modal-poke-img" src="${p.sprite}" alt="${p.name}" loading="lazy">
+    return`<div class="modal-poke-card${chosen?' chosen':''}" onclick="addFromModal('${p.name}')" role="button" tabindex="0" aria-label="${formatName(p.name)}, ${chosen?'ya en equipo':'añadir al equipo'}">
+      ${chosen?`<button class="modal-card-remove-x" onclick="event.stopPropagation();removeFromModal('${p.name}')" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)}">✕</button>`:''}
+      <img class="modal-poke-img" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
       <div class="modal-poke-num">N.º${p.id}</div>
       <div class="modal-poke-name">${formatName(p.name)}</div>
       <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
-      <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this)">STATS</button>
+      <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this)" aria-expanded="false">STATS</button>
       <div class="modal-stats-wrap"><div class="slot-stats-bars">${statsBars}</div></div>
     </div>`;
   }).join('');
+  // Keyboard
+  grid.querySelectorAll('.modal-poke-card').forEach(card=>{
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+  });
   document.getElementById('modal-load-more-wrap').style.display=_mP.shown<_mP.filtered.length?'block':'none';
 }
 
+function removeFromModal(name){
+  const team=_mP.team;
+  const idx=teams[team].findIndex(s=>s&&s.name===name);
+  if(idx===-1)return;
+  teams[team][idx]=null;
+  slotSt(team,idx).shiny=false;
+  slotSt(team,idx).stats=false;
+  refreshSlot(team,idx);
+  showToast(`${formatName(name)} quitado del equipo.`,'info');
+  renderPokeGrid();
+}
+
 function toggleModalStats(btn){
-  const w=btn.nextElementSibling;w.classList.toggle('open');
-  btn.textContent=w.classList.contains('open')?'SPRITE':'STATS';
+  const w=btn.nextElementSibling;
+  w.classList.toggle('open');
+  const open=w.classList.contains('open');
+  btn.textContent=open?'SPRITE':'STATS';
+  btn.setAttribute('aria-expanded',open);
 }
 
 function loadMorePokemon(){_mP.shown+=BATCH;renderPokeGrid();}
@@ -335,17 +410,29 @@ function loadMorePokemon(){_mP.shown+=BATCH;renderPokeGrid();}
 function addFromModal(name){
   const team=_mP.team;
   const p=allPokemon.find(x=>x.name===name);if(!p)return;
-  // Buscar primer slot vacío
+  // Si ya está en el equipo, quitarlo (toggle)
+  const existIdx=teams[team].findIndex(s=>s&&s.name===name);
+  if(existIdx!==-1){removeFromModal(name);return;}
   const idx=teams[team].findIndex(s=>s===null);
-  if(idx===-1){alert('El equipo ya está lleno (6 pokémon).');return;}
+  if(idx===-1){showToast('⚠ El equipo ya está lleno (6 pokémon).','warn');return;}
   teams[team][idx]={...p,moves:[]};
   refreshSlot(team,idx);
-  // Marcar como chosen en el grid (sin re-render completo)
+  showToast(`${formatName(name)} añadido al equipo.`,'ok');
+  // Marcar chosen sin re-render
   const cards=document.querySelectorAll(`#modal-poke-grid .modal-poke-card`);
   cards.forEach(c=>{
-    if(c.querySelector('.modal-poke-name')?.textContent===formatName(name))c.classList.add('chosen');
+    if(c.querySelector('.modal-poke-name')?.textContent===formatName(name)){
+      c.classList.add('chosen');
+      // Añadir X
+      if(!c.querySelector('.modal-card-remove-x')){
+        const x=document.createElement('button');
+        x.className='modal-card-remove-x';x.textContent='✕';x.title='Quitar del equipo';
+        x.setAttribute('aria-label',`Quitar ${formatName(name)}`);
+        x.onclick=e=>{e.stopPropagation();removeFromModal(name);};
+        c.prepend(x);
+      }
+    }
   });
-  // No cerrar el modal
 }
 
 function closePokeModal(){document.getElementById('modal-poke-overlay').classList.remove('open');}
@@ -364,7 +451,7 @@ function openMovesModal(team,idx){
   document.getElementById('modal-moves-overlay').classList.add('open');
   renderMovesTable();
   document.getElementById('modal-moves-filter-input').oninput=renderMovesTable;
-  // Sort click handlers
+  setTimeout(()=>document.getElementById('modal-moves-filter-input').focus(),80);
   document.querySelectorAll('#modal-moves-table thead th[data-sort]').forEach(th=>{
     th.onclick=()=>handleMoveSort(th.dataset.sort,th);
   });
@@ -396,7 +483,6 @@ function renderMovesTable(){
     return m.name.includes(q)||formatName(m.name).toLowerCase().includes(q)||tn(d.type||'').toLowerCase().includes(q);
   });
 
-  // Sort
   const s=_mM.sort;
   if(s==='name-asc')list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
   else if(s==='name-desc')list=[...list].sort((a,b)=>b.name.localeCompare(a.name));
@@ -413,11 +499,11 @@ function renderMovesTable(){
     const d=m.detail||{};
     const sel=_mM.selected.has(m.name);
     const dis=!sel&&nSel>=4;
-    return`<tr class="modal-move-row${sel?' selected':''}${dis?' disabled':''}" onclick="toggleMove('${m.name}',${dis})">
-      <td class="mm-chk"><input type="checkbox" class="modal-move-chk" ${sel?'checked':''} readonly onclick="event.stopPropagation()"></td>
+    return`<tr class="modal-move-row${sel?' selected':''}${dis?' disabled':''}" onclick="toggleMove('${m.name}',${dis})" role="row" aria-selected="${sel}" ${dis?'aria-disabled="true"':''}>
+      <td class="mm-chk"><input type="checkbox" class="modal-move-chk" ${sel?'checked':''} tabindex="-1" aria-hidden="true" onclick="event.stopPropagation();toggleMove('${m.name}',${dis})"></td>
       <td class="mm-name">${formatName(m.name)}</td>
       <td><span class="mm-type-badge ${tc(d.type)}">${tn(d.type)}</span></td>
-      <td><img class="mm-cat-img" src="${CAT_IMG[d.category]||CAT_IMG.status}" alt=""></td>
+      <td><img class="mm-cat-img" src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="${d.category||''}"></td>
       <td class="mm-pow ${powerClass(d.power)}">${d.power??'—'}</td>
       <td class="mm-acc">${d.accuracy!=null?d.accuracy+'%':'—'}</td>
     </tr>`;
@@ -434,16 +520,20 @@ function confirmMoves(){
   const p=teams[_mM.team][_mM.idx];if(!p)return;
   p.moves=_mM.allMoves.filter(m=>_mM.selected.has(m.name));
   closeMovesModal();refreshSlot(_mM.team,_mM.idx);
+  showToast(`Movimientos guardados para ${formatName(p.name)}.`,'ok');
 }
 
-function closeMovesModal(){document.getElementById('modal-moves-overlay').classList.remove('open');}
+function closeMovesModal(){
+  // Al cerrar sin confirmar, mantenemos la selección previa (no borramos)
+  document.getElementById('modal-moves-overlay').classList.remove('open');
+}
 
 // ══════════════════════════════
 //  ANÁLISIS
 // ══════════════════════════════
 function analyzeBattle(){
   const tA=teams.a.filter(Boolean),tB=teams.b.filter(Boolean);
-  if(!tA.length&&!tB.length){alert('Añade pokémon a al menos un equipo.');return;}
+  if(!tA.length&&!tB.length){showToast('⚠ Añade pokémon a al menos un equipo.','warn');return;}
   const nameA=document.getElementById('team-name-a').value;
   const nameB=document.getElementById('team-name-b').value;
   document.getElementById('modal-analysis-title').textContent=`⚡ ${nameA.toUpperCase()} VS ${nameB.toUpperCase()}`;
@@ -456,7 +546,6 @@ function analyzeBattle(){
 function buildAnalysisSection(side,myTeam,rivalTeam,myName,rivalName){
   if(!myTeam.length)return`<div style="color:#9090a8;font-size:.7rem;padding:12px">${myName} está vacío.</div>`;
 
-  // Cobertura ofensiva
   const covered=new Set();
   for(const p of myTeam){
     const off=p.moves.filter(m=>m.detail?.power&&m.detail?.category!=='status');
@@ -465,36 +554,47 @@ function buildAnalysisSection(side,myTeam,rivalTeam,myName,rivalName){
   }
   const covBadges=ALL_TYPES.map(t=>`<span class="type-badge ${tc(t)} cov-badge${covered.has(t)?' covered':''}">${tn(t)}</span>`).join('');
 
-  // Amenazas
   let threatHtml='';
   if(rivalTeam.length){
     const threats=rivalTeam.map(rival=>{
       const victims=myTeam.map(me=>({me,mult:bestMult(rival,me)})).filter(x=>x.mult>=2);
       return{rival,victims};
     }).filter(t=>t.victims.length>0);
-    threatHtml=threats.length
-      ?threats.map(t=>`<div class="threat-row">
-          <img class="threat-img" src="${t.rival.sprite}">
-          <span class="threat-name">${formatName(t.rival.name)}</span>
-          <span class="threat-victims">${t.victims.map(v=>{const{txt}=multLabel(v.mult);return`${formatName(v.me.name)} ${txt}`;}).join(', ')}</span>
-        </div>`).join('')
-      :`<div class="no-threats">✓ Sin amenazas claras</div>`;
-  }else threatHtml=`<div style="color:#9090a8;font-size:.6rem">Rival vacío</div>`;
+    if(threats.length){
+      // Dos columnas separadas por divisor rojo
+      const half=Math.ceil(threats.length/2);
+      const col1=threats.slice(0,half);
+      const col2=threats.slice(half);
+      const renderThreat=t=>`<div class="threat-row">
+        <img class="threat-img" src="${t.rival.sprite}" alt="${formatName(t.rival.name)}">
+        <span class="threat-name">${formatName(t.rival.name)}</span>
+        <span class="threat-victims">${t.victims.map(v=>{const{txt}=multLabel(v.mult);return`${formatName(v.me.name)} ${txt}`;}).join(', ')}</span>
+      </div>`;
+      threatHtml=`<div class="threat-two-cols">
+        <div class="threat-col">${col1.map(renderThreat).join('')}</div>
+        <div class="threat-col-divider"></div>
+        <div class="threat-col">${col2.map(renderThreat).join('')}</div>
+      </div>`;
+    }else{
+      threatHtml=`<div class="no-threats">✓ Sin amenazas claras</div>`;
+    }
+  }else{
+    threatHtml=`<div style="color:#9090a8;font-size:.6rem">Rival vacío</div>`;
+  }
 
-  // Tabla matchups
   let tableHTML='';
   if(rivalTeam.length){
     let thead=`<thead><tr><th></th>`;
-    for(const r of rivalTeam)thead+=`<th><div class="matchup-th-rival"><img src="${r.sprite}"><span>${formatName(r.name)}</span></div></th>`;
+    for(const r of rivalTeam)thead+=`<th><div class="matchup-th-rival"><img src="${r.sprite}" alt="${formatName(r.name)}"><span>${formatName(r.name)}</span></div></th>`;
     thead+=`</tr></thead>`;
     let tbody=`<tbody>`;
     for(let i=0;i<myTeam.length;i++){
       const me=myTeam[i];
-      tbody+=`<tr><th class="matchup-th-me"><div style="display:flex;align-items:center;gap:4px"><img src="${me.sprite}" style="width:26px;height:26px"> ${formatName(me.name)}</div></th>`;
+      tbody+=`<tr><th class="matchup-th-me"><div style="display:flex;align-items:center;gap:4px"><img src="${me.sprite}" alt="${formatName(me.name)}" style="width:36px;height:36px"> ${formatName(me.name)}</div></th>`;
       for(let j=0;j<rivalTeam.length;j++){
         const mult=bestMult(me,rivalTeam[j]);
         const{txt,mc}=multLabel(mult);
-        tbody+=`<td><div class="mc ${mc}" onclick="showDetail('${side}',${i},${j})">${txt}</div></td>`;
+        tbody+=`<td><div class="mc ${mc}" onclick="showDetail('${side}',${i},${j})" role="button" tabindex="0" aria-label="${formatName(me.name)} vs ${formatName(rivalTeam[j].name)}: ${txt}">${txt}</div></td>`;
       }
       tbody+=`</tr>`;
     }
@@ -502,18 +602,15 @@ function buildAnalysisSection(side,myTeam,rivalTeam,myName,rivalName){
     tableHTML=`<div class="matchup-wrap"><table class="matchup-table">${thead}${tbody}</table></div>`;
   }
 
-  // Detalle (inicialmente oculto)
   const detailId=`matchup-detail-${side}`;
-
-  // Pokémon recomendados vs el rival
   const recsHTML=buildRecs(myTeam,rivalTeam,side);
 
   return`<div class="analysis-team-section analysis-team-${side}" id="analysis-section-${side}"
     data-my='${JSON.stringify(myTeam.map(p=>p.name))}' data-rival='${JSON.stringify(rivalTeam.map(p=>p.name))}'>
     <div class="analysis-team-title">📊 ${myName.toUpperCase()} VS ${rivalName.toUpperCase()}</div>
     <div class="dash-grid">
-      <div class="dash-card"><div class="dash-card-title">COBERTURA OFENSIVA</div><div class="coverage-types">${covBadges}</div></div>
-      <div class="dash-card"><div class="dash-card-title">⚠ AMENAZAS DEL RIVAL</div><div class="threat-list">${threatHtml}</div></div>
+      <div class="dash-card dash-card-coverage"><div class="dash-card-title">COBERTURA OFENSIVA</div><div class="coverage-types">${covBadges}</div></div>
+      <div class="dash-card dash-card-threats"><div class="dash-card-title">⚠ AMENAZAS DEL RIVAL</div>${threatHtml}</div>
     </div>
     ${tableHTML}
     <div class="matchup-detail" id="${detailId}"></div>
@@ -522,21 +619,25 @@ function buildAnalysisSection(side,myTeam,rivalTeam,myName,rivalName){
   </div>`;
 }
 
+// ── Última evolución de una cadena ──
+function getLastEvolution(pokemon){
+  // Comprobar si algún otro pokémon evoluciona desde éste
+  const evolvesInto=allPokemon.find(p=>p.evolvesFrom===pokemon.name);
+  return !evolvesInto; // true si es última evo
+}
+
 function buildRecs(myTeam,rivalTeam,side){
   if(!rivalTeam.length)return'';
-  // Tipos del rival combinados — buscar pokémon fuertes contra ellos
   const rivalTypes=[...new Set(rivalTeam.flatMap(p=>p.types))];
-  // Tipos que son fuertes contra los tipos del rival
   const goodTypes=[];
   for(const at of ALL_TYPES){
     let totalMult=0;
-    for(const rt of rivalTypes) totalMult+=(EFF[at]?.[rt]??1);
+    for(const rt of rivalTypes)totalMult+=(EFF[at]?.[rt]??1);
     if(totalMult/rivalTypes.length>1)goodTypes.push({type:at,score:totalMult});
   }
   goodTypes.sort((a,b)=>b.score-a.score);
   const topTypes=goodTypes.slice(0,4).map(x=>x.type);
 
-  // Buscar pokémon de esos tipos (de la DB, excluyendo los ya en ambos equipos)
   const inUse=new Set([...teams.a,...teams.b].filter(Boolean).map(p=>p.name));
   const recs=[];
   if(allPokemon.length>0){
@@ -546,6 +647,8 @@ function buildRecs(myTeam,rivalTeam,side){
         if(inUse.has(p.name))continue;
         if(!p.types.includes(t))continue;
         if(recs.some(r=>r.name===p.name))continue;
+        // Solo última evolución
+        if(!getLastEvolution(p))continue;
         recs.push(p);
       }
       if(recs.length>=8)break;
@@ -554,16 +657,31 @@ function buildRecs(myTeam,rivalTeam,side){
   if(!recs.length)return'';
 
   const recsHTML=recs.map(p=>{
-    const def=calcDefense(p.types);
-    const w4=def[4]||[],w2=def[2]||[];
-    const weakBadges=[...w4.slice(0,2).map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×4</span>`),
-      ...w2.slice(0,3-w4.length).map(t=>`<span class="rec-weak-tag rwt-good">${tn(t)} ×2</span>`)].join('');
-    return`<div class="rec-row">
-      <img class="rec-row-img" src="${p.sprite}" alt="${p.name}">
-      <div class="rec-row-info">
-        <div class="rec-row-name">${formatName(p.name)}</div>
-        <div class="rec-row-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
-        ${weakBadges?`<div class="rec-why-row"><span class="rec-why-label">Débil a:</span>${weakBadges}</div>`:''}
+    // "Fuerte contra" — pokémon del rival a los que hace superefectivo
+    const strongAgainst=rivalTeam.filter(rival=>{
+      let best=0;
+      for(const at of p.types){let m=1;for(const dt of rival.types)m*=(EFF[at]?.[dt]??1);if(m>best)best=m;}
+      return best>=2;
+    });
+    const strongBadges=strongAgainst.slice(0,3).map(r=>`<span class="rec-weak-tag rwt-good">${formatName(r.name)}</span>`).join('');
+    return`<div class="rec-row" id="rec-row-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}">
+      <div class="rec-row-main">
+        <img class="rec-row-img" src="${p.sprite}" alt="${formatName(p.name)}">
+        <div class="rec-row-info">
+          <div class="rec-row-name">${formatName(p.name)}</div>
+          <div class="rec-row-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+          ${strongBadges?`<div class="rec-why-row"><span class="rec-why-label">Fuerte contra:</span>${strongBadges}</div>`:''}
+          <div class="rec-row-actions">
+            <button class="rec-btn-stats" onclick="toggleRecStats(this,'${p.name}','${side}')" aria-expanded="false">STATS</button>
+            <button class="rec-btn-add" onclick="swapRecPokemon('${p.name}','${side}')">＋ Añadir</button>
+          </div>
+        </div>
+      </div>
+      <div class="rec-stats-panel" id="rec-stats-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}">
+        <canvas class="rec-radar-canvas" id="rec-radar-${side}-${p.name.replace(/[^a-z0-9]/g,'-')}" width="200" height="160" aria-label="Stats de ${formatName(p.name)}"></canvas>
+        <div class="rec-stats-bars">${STAT_KEYS.map(s=>{const v=p[s.key]||0,pct=Math.round(v/255*100);
+          return`<div class="mini-stat-row"><span class="mini-stat-label">${s.label}</span><div class="mini-stat-bar-bg"><div class="mini-stat-bar ${s.cls}" style="width:${pct}%"></div></div><span class="mini-stat-val">${v}</span></div>`;
+        }).join('')}</div>
       </div>
     </div>`;
   }).join('');
@@ -574,7 +692,94 @@ function buildRecs(myTeam,rivalTeam,side){
   </div>`;
 }
 
-// Detalle al hacer click en celda de la tabla
+function toggleRecStats(btn,pname,side){
+  const safeId=pname.replace(/[^a-z0-9]/g,'-');
+  const panel=document.getElementById(`rec-stats-${side}-${safeId}`);
+  if(!panel)return;
+  const open=!panel.classList.contains('open');
+  panel.classList.toggle('open',open);
+  btn.textContent=open?'SPRITE':'STATS';
+  btn.setAttribute('aria-expanded',open);
+  if(open){
+    const canvasId=`rec-radar-${side}-${safeId}`;
+    const p=allPokemon.find(x=>x.name===pname);
+    if(p)setTimeout(()=>drawRadarOnCanvas(canvasId,p,side==='a'?'a':'b'),30);
+  }
+}
+
+function drawRadarOnCanvas(canvasId,p,team){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-18;
+  const vals=STAT_KEYS.map(s=>p[s.key]||0);
+  const colors={a:'#4a9eff',b:'#ffaa33'};
+  const col=colors[team]||'#4a9eff';
+  ctx.clearRect(0,0,W,H);
+  const angle=i=>Math.PI/2+i*(2*Math.PI/6);
+  for(let ring=1;ring<=4;ring++){
+    ctx.beginPath();
+    for(let i=0;i<6;i++){const a=angle(i),rr=r*ring/4;ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
+    ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
+  }
+  for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
+  ctx.beginPath();
+  for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
+  ctx.closePath();ctx.fillStyle=col.replace(')',',0.22)').replace('rgb','rgba');ctx.fill();
+  ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+  // Valores encima de cada punto
+  ctx.font='bold 9px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<6;i++){
+    const a=angle(i);
+    const rr=r*(vals[i]/255);
+    const lx=cx+rr*Math.cos(a),ly=cy-rr*Math.sin(a);
+    ctx.fillStyle='#fff';ctx.fillText(vals[i],lx,ly);
+  }
+  ctx.fillStyle='#b0b0c0';ctx.font='bold 8px Nunito';
+  for(let i=0;i<6;i++){const a=angle(i),lr=r+14;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
+}
+
+// ── Swap pokemon recomendado ──
+let _swapPending={pname:null,side:null};
+function swapRecPokemon(pname,side){
+  const myTeamSide=side;
+  const myTeam=teams[myTeamSide].filter(Boolean);
+  if(!myTeam.length){showToast('No hay pokémon en el equipo para cambiar.','warn');return;}
+  _swapPending={pname,side};
+  // Mostrar overlay de selección
+  const overlay=document.getElementById('swap-overlay');
+  const grid=document.getElementById('swap-grid');
+  grid.innerHTML=myTeam.map((p,i)=>{
+    const realIdx=teams[myTeamSide].indexOf(p);
+    return`<div class="swap-card" onclick="confirmSwap(${realIdx})" role="button" tabindex="0" aria-label="Cambiar por ${formatName(p.name)}">
+      <img src="${p.sprite}" alt="${formatName(p.name)}">
+      <div class="swap-card-name">${formatName(p.name)}</div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.swap-card').forEach(c=>{
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}});
+  });
+  overlay.classList.add('open');
+}
+
+function confirmSwap(slotIdx){
+  const{pname,side}=_swapPending;
+  const newP=allPokemon.find(x=>x.name===pname);
+  if(!newP){closeSwapOverlay();return;}
+  teams[side][slotIdx]={...newP,moves:[]};
+  slotSt(side,slotIdx).shiny=false;
+  slotSt(side,slotIdx).stats=false;
+  refreshSlot(side,slotIdx);
+  closeSwapOverlay();
+  showToast(`${formatName(pname)} añadido al equipo. Re-analizando...`,'ok');
+  // Re-analizar
+  setTimeout(analyzeBattle,300);
+}
+
+function closeSwapOverlay(){
+  document.getElementById('swap-overlay').classList.remove('open');
+}
+
+// Detalle matchup
 function showDetail(side,myIdx,rivalIdx){
   const section=document.getElementById(`analysis-section-${side}`);
   const myNames=JSON.parse(section.dataset.my);
@@ -582,7 +787,6 @@ function showDetail(side,myIdx,rivalIdx){
   const me=allPokemon.find(p=>p.name===myNames[myIdx])||(teams[side==='a'?'a':'b'].filter(Boolean)[myIdx]);
   const rival=allPokemon.find(p=>p.name===rivalNames[rivalIdx])||(teams[side==='a'?'b':'a'].filter(Boolean)[rivalIdx]);
   if(!me||!rival)return;
-  // Buscar moves del equipo actual
   const meFull=teams[side].filter(Boolean)[myIdx]||me;
   const rivalFull=teams[side==='a'?'b':'a'].filter(Boolean)[rivalIdx]||rival;
 
@@ -599,10 +803,10 @@ function showDetail(side,myIdx,rivalIdx){
   detail.className='matchup-detail open';
   detail.innerHTML=`
     <div class="detail-header">
-      <img src="${meFull.sprite}" style="width:30px;height:30px">
+      <img src="${meFull.sprite}" alt="${formatName(meFull.name)}" style="width:36px;height:36px">
       ${formatName(meFull.name)}
       <span class="detail-vs-label">VS</span>
-      <img src="${rivalFull.sprite}" style="width:30px;height:30px">
+      <img src="${rivalFull.sprite}" alt="${formatName(rivalFull.name)}" style="width:36px;height:36px">
       ${formatName(rivalFull.name)}
     </div>
     <div class="detail-cols">
@@ -618,8 +822,22 @@ function closeAnalysisModal(){document.getElementById('modal-analysis-overlay').
 // ══════════════════════════════
 document.getElementById('nav-btn').addEventListener('click',e=>{e.stopPropagation();document.getElementById('nav-dropdown').classList.toggle('open');});
 document.addEventListener('click',()=>document.getElementById('nav-dropdown').classList.remove('open'));
+
+// Modal Pokémon: clic fuera cierra
 document.getElementById('modal-poke-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-poke-overlay'))closePokeModal();});
-document.getElementById('modal-moves-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-moves-overlay'))closeMovesModal();});
+
+// Modal Moves: clic fuera NO cierra (confirmar o cancelar con botones)
+// Quitamos el listener de cierre por clic fuera
 document.getElementById('modal-analysis-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-analysis-overlay'))closeAnalysisModal();});
+
+// Escape key support
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('swap-overlay').classList.contains('open')){closeSwapOverlay();return;}
+    if(document.getElementById('modal-analysis-overlay').classList.contains('open')){closeAnalysisModal();return;}
+    if(document.getElementById('modal-moves-overlay').classList.contains('open')){closeMovesModal();return;}
+    if(document.getElementById('modal-poke-overlay').classList.contains('open')){closePokeModal();return;}
+  }
+});
 
 init();
