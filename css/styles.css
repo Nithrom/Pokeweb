@@ -90,7 +90,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .moves-table thead th{position:sticky;top:0;padding:5px 4px;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;text-align:left;z-index:2;white-space:nowrap;cursor:pointer;user-select:none;}
 .moves-table thead th.th-c{text-align:center;}
 .col-def .moves-table thead th{background:#0d1e3a;color:#4a9eff;border-bottom:1px solid #1a3a6e;}
-.col-def .moves-table thead th:hover{background:rgb(26, 25, 85);}
+.col-def .moves-table thead th:hover{background:rgb(24, 22, 136);}
 .col-atk .moves-table thead th{background:#201500;color:#ffaa33;border-bottom:1px solid #5a3a00;}
 .col-atk .moves-table thead th:hover{background:#7e5200;}
 .col-def .moves-table tbody tr{border-bottom:1px solid #111d30;}
