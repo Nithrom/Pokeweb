@@ -186,8 +186,7 @@ function buildSlotEl(team,idx){
       ${statsMode?`
       <div class="slot-stats-mode-name">${formatName(p.name)}</div>
       <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
-        <canvas class="radar-canvas" id="${radarId}" width="160" height="130" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
-        <div class="slot-stats-bars">${statsBars}</div>
+        <canvas class="radar-canvas" id="${radarId}" width="220" height="200" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
       </div>
       `:`
       <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
@@ -204,6 +203,13 @@ function buildSlotEl(team,idx){
   const movesPanel=`
     <div class="poke-moves-panel">
       <div class="moves-panel-label">MOVIMIENTOS</div>
+      <div class="move-entry move-entry-header">
+        <span class="move-header-col">Movimiento</span>
+        <span class="move-header-col">Tipo</span>
+        <span class="move-header-col">Cat.</span>
+        <span class="move-header-col">POT</span>
+        <span class="move-header-col">PREC</span>
+      </div>
       ${movesHtml}
       <button class="btn-edit-moves" onclick="openMovesModal('${team}',${idx})">
         ${p.moves.length>0?'✏ Editar moves':'＋ Añadir moves'}
@@ -225,11 +231,9 @@ function buildSlotEl(team,idx){
 function drawRadar(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-16;
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-22;
   const vals=STAT_KEYS.map(s=>p[s.key]||0);
-  const maxV=255;
-  const colors={a:'#4a9eff',b:'#ffaa33'};
-  const col=colors[team]||'#4a9eff';
+  const col=(team==='b')?'#ffaa33':'#4a9eff';
   ctx.clearRect(0,0,W,H);
   const angle=i=>Math.PI/2+i*(2*Math.PI/6);
   for(let ring=1;ring<=4;ring++){
@@ -239,11 +243,19 @@ function drawRadar(canvasId,p,team){
   }
   for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
   ctx.beginPath();
-  for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/maxV);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
-  ctx.closePath();ctx.fillStyle=col.replace(')',',0.25)').replace('rgb','rgba');ctx.fill();
+  for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
+  ctx.closePath();ctx.fillStyle=col+'40';ctx.fill();
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-  ctx.fillStyle='#b0b0c0';ctx.font='bold 8px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<6;i++){const a=angle(i),lr=r+12;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
+  // Labels
+  ctx.fillStyle='#b0b0c0';ctx.font='bold 9px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<6;i++){const a=angle(i),lr=r+14;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
+  // Valores en cada vértice del polígono
+  ctx.font='bold 10px Nunito';ctx.fillStyle='#ffffff';
+  for(let i=0;i<6;i++){
+    const a=angle(i),rr=r*(vals[i]/255);
+    const vx=cx+rr*Math.cos(a),vy=cy-rr*Math.sin(a);
+    ctx.fillText(vals[i],vx,vy);
+  }
 }
 
 // ── Acciones slot ──
@@ -375,8 +387,13 @@ function renderPokeGrid(){
         <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
         <canvas class="modal-poke-radar" id="mpr-${safeN}" width="110" height="90" style="display:none" aria-label="Stats ${formatName(p.name)}"></canvas>
       </div>
-      <div class="modal-poke-name">${formatName(p.name)}</div>
-      ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
+      <div class="modal-poke-meta" id="mpmt-${safeN}">
+        <div class="modal-poke-num">N.º${p.id}</div>
+        <div class="modal-poke-name">${formatName(p.name)}</div>
+        <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+        ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
+      </div>
+      <div class="modal-poke-name-stats" id="mpns-${safeN}" style="display:none">${formatName(p.name)}</div>
       <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
   }).join('');
@@ -402,14 +419,20 @@ function removeFromModal(name){
 function toggleModalStats(btn,safeN,pname){
   const img=document.getElementById(`mpi-${safeN}`);
   const cv=document.getElementById(`mpr-${safeN}`);
+  const meta=document.getElementById(`mpmt-${safeN}`);
+  const nameStats=document.getElementById(`mpns-${safeN}`);
   const goStats=img.style.display!=='none';
   if(goStats){
     img.style.display='none';cv.style.display='block';
+    if(meta)meta.style.display='none';
+    if(nameStats)nameStats.style.display='block';
     btn.textContent='SPRITE';btn.setAttribute('aria-expanded','true');
     const p=allPokemon.find(x=>x.name===pname);
     if(p)setTimeout(()=>drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a'),20);
   }else{
     img.style.display='block';cv.style.display='none';
+    if(meta)meta.style.display='';
+    if(nameStats)nameStats.style.display='none';
     btn.textContent='STATS';btn.setAttribute('aria-expanded','false');
   }
 }
@@ -635,8 +658,15 @@ function getEvolvesFromSet(){
   return _evolvesFromSet;
 }
 function getLastEvolution(pokemon){
-  return !getEvolvesFromSet().has(pokemon.name);
+  const s=getEvolvesFromSet();
+  return !s.has(pokemon.name);
 }
+// Debug: exponer para consola
+window._debugEvo=(name)=>{
+  const p=allPokemon.find(x=>x.name===name);
+  console.log('evolvesFrom:',p?.evolvesFrom,'isLast:',getLastEvolution(p));
+  console.log('others that evoFrom this:',[...getEvolvesFromSet()].filter(n=>n===name));
+};
 
 function buildRecs(myTeam,rivalTeam,side){
   if(!rivalTeam.length)return'';
