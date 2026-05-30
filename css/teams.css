@@ -501,5 +501,5 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
   .mc { width: 36px; height: 26px; font-size: .42rem; }
   .btn-vs { font-size: 18px; }
   .swap-grid { grid-template-columns: repeat(3, 1fr); }
-  .status-bar span{font-size: 0.3rem;}
+  .status-bar span{font-size: 0.5rem;}
 }
