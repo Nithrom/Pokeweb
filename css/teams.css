@@ -98,7 +98,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(9px,1.4vw,17px);color:
 /* Stats reemplaza imagen */
 .slot-stats-wrap{display:none;width:100%;align-items:center;justify-content:center;}
 .slot-stats-wrap.open{display:flex;}
-canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;}
+canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:12px;}
 .slot-stats-bars{display:flex;flex-direction:column;gap:3px;width:100%;}
 .mini-stat-row{display:flex;align-items:center;gap:4px;}
 .mini-stat-label{font-size:.5rem;font-weight:800;color:#9090a8;width:28px;flex-shrink:0;text-align:right;}
