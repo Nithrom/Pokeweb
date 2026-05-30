@@ -396,7 +396,7 @@ function renderPokeGrid(){
           <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
         </div>
         <div class="modal-poke-meta" id="mpmt-${safeN}">
-          <div class="modal-poke-num">${p.id>9999?'???':'N.º'+p.id}</div>
+          <div class="modal-poke-num">${p.id>9999?'???':'N.º '+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
           ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
