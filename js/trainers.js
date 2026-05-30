@@ -7,6 +7,7 @@ let TRAINERS_DB = null;
 
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
+  IS_TRAINER_PAGE = true; // bloquear edición equipo rival
   // teams.js ya cargó DB y allPokemon, esperamos si no está listo
   let tries = 0;
   while((!DB || !allPokemon.length) && tries < 30){
@@ -26,11 +27,7 @@ async function initTrainers(){
     document.getElementById('status-bar').textContent = 'Sin DB de entrenadores.';
   }
 
-  // Lado B no editable: interceptar clicks en slots-b
-  document.getElementById('slots-b').addEventListener('click', e=>{
-    // Bloquear apertura de modal pokémon para el equipo rival
-    e.stopPropagation();
-  }, true);
+  // Lado B: openPokeModal bloqueado via IS_TRAINER_PAGE flag en teams.js
 }
 
 // ── Selectores ────────────────────────────────────────
@@ -119,7 +116,7 @@ function loadTrainer(){
   // Actualizar cabecera rival
   document.getElementById('trainer-b-name').textContent = trainer.name || 'Rival';
   document.getElementById('trainer-b-game').textContent = gameName;
-  document.getElementById('team-name-b').value = trainer.name || 'Rival';
+  const tnb=document.getElementById('team-name-b'); if(tnb) tnb.value!==undefined ? tnb.value=trainer.name||'Rival' : tnb.textContent=trainer.name||'Rival';
 
   // Limpiar slots B
   for(let i=0;i<6;i++){
@@ -151,8 +148,8 @@ function loadTrainer(){
   });
 
   renderAllSlots('b');
-  // Marcar slots B como no editables visualmente
-  markRivalSlots();
+  // Añadir badge de nivel tras render
+  setTimeout(()=>addLevelBadges(), 60);
 
   showToast(`Equipo de ${trainer.name} cargado.`, 'ok');
 }
@@ -205,23 +202,21 @@ function renderTrainerSprite(trainer, team){
   container.parentElement.insertBefore(wrap, container);
 }
 
-function markRivalSlots(){
-  // Añadir badge de nivel y bloquear interacción en slots B
+function addLevelBadges(){
   for(let i=0;i<6;i++){
     const p = teams.b[i];
     if(!p) continue;
     const slotEl = document.getElementById(`poke-row-b-${i}`);
     if(!slotEl) continue;
-    // Añadir badge de nivel
     const filled = slotEl.querySelector('.poke-slot-filled');
     if(filled && p.trainerLevel){
-      const badge = document.createElement('div');
-      badge.className='rival-level-badge';
-      badge.textContent=`Nv.${p.trainerLevel}`;
-      filled.appendChild(badge);
+      if(!filled.querySelector('.rival-level-badge')){
+        const badge = document.createElement('div');
+        badge.className='rival-level-badge';
+        badge.textContent=`Nv.${p.trainerLevel}`;
+        filled.appendChild(badge);
+      }
     }
-    // Ocultar botones de edición en slots B
-    slotEl.querySelectorAll('.btn-edit-moves,.slot-remove-x').forEach(b=>b.style.display='none');
   }
 }
 
@@ -236,7 +231,7 @@ function clearTrainer(){
     if(sprite) sprite.remove();
     document.getElementById('trainer-b-name').textContent='Rival';
     document.getElementById('trainer-b-game').textContent='';
-    document.getElementById('team-name-b').value='Rival';
+    const tnb2=document.getElementById('team-name-b'); if(tnb2) tnb2.value!==undefined ? tnb2.value='Rival' : tnb2.textContent='Rival';
     document.getElementById('sel-trainer').value='';
     document.getElementById('btn-load-trainer').disabled=true;
     renderAllSlots('b');
@@ -250,12 +245,6 @@ window.openPokeModal = function(team){
   if(team === 'b') return; // bloquear edición del rival
   _origOpenPokeModal(team);
 };
-
-// ── Nav ───────────────────────────────────────────────
-document.getElementById('nav-btn').addEventListener('click', e=>{
-  e.stopPropagation();
-  document.getElementById('nav-dropdown').classList.toggle('open');
-});
 
 // ── Init ──────────────────────────────────────────────
 initTrainers();

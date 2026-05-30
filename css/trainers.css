@@ -30,6 +30,7 @@
   color:#9090a8;
   text-transform:uppercase;
 }
+.nav-dropdown { z-index: 300; }
 .sel-dropdown{
   background:#0a0a12;
   border:1px solid #1a3a6e;
@@ -113,7 +114,7 @@
 }
 .trainer-sprite-name{
   font-family:'Press Start 2P',monospace;
-  font-size:7px;
+  font-size:9px;
   color:#ffaa33;
   margin-top:6px;
   text-align:center;
@@ -125,10 +126,7 @@
   margin-top:2px;
 }
 .trainer-sprite-type{
-  font-size:.52rem;
-  color:#9090a8;
-  font-weight:700;
-  text-transform:uppercase;
+  display:none;
 }
 
 /* ── Slot rival bloqueado (no editable) ── */

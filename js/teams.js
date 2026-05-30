@@ -64,6 +64,8 @@ function bestMult(attacker,defender){
 
 // ── Estado global ──
 let DB=null, allPokemon=[];
+let RIVAL_TEAM='b'; // en trainers.html el equipo rival no es editable
+let IS_TRAINER_PAGE=false; // true en trainers.html
 const teams={a:Array(6).fill(null),b:Array(6).fill(null)};
 const _slotState={};
 function slotSt(team,idx){const k=`${team}-${idx}`;if(!_slotState[k])_slotState[k]={shiny:false,stats:false};return _slotState[k];}
@@ -96,7 +98,7 @@ async function init(){
   renderAllSlots('a'); renderAllSlots('b');
   buildTypeFilterRow();
   try{
-    const res=await fetch('data/pokemon_db.json')
+    const res=await fetch('data/pokemon_db.json');
     if(res.ok){
       DB=await res.json();
       allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
@@ -148,7 +150,7 @@ function buildSlotEl(team,idx){
       <span style="color:#9090a8;font-size:.7rem">Sin pokémon</span>
     </div>`;
     wrap.innerHTML=`<div class="poke-row-top">${team==='a'?emptyLeft+emptyRight:emptyRight+emptyLeft}</div>`;
-    wrap.querySelector('.poke-slot-empty').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openPokeModal(team);});
+    if(!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)) wrap.querySelector('.poke-slot-empty').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openPokeModal(team);});
     return wrap;
   }
 
@@ -186,11 +188,11 @@ function buildSlotEl(team,idx){
   const statsMode=st.stats;
   const slotContent=`
     <div class="poke-slot-filled">
-      <button class="slot-remove-x" onclick="removeSlot('${team}',${idx})" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)} del equipo">✕</button>
+      ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="slot-remove-x" onclick="removeSlot('${team}',${idx})" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)} del equipo">✕</button>`:''}
       ${!statsMode?`<img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${formatName(p.name)}"
         onerror="this.src='${p.sprite}'">`:'' }
       ${statsMode?`
-      
+      <div class="slot-stats-mode-name">${formatName(p.name)}</div>
       <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
         <canvas class="radar-canvas" id="${radarId}" width="220" height="200" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
       </div>
@@ -201,7 +203,7 @@ function buildSlotEl(team,idx){
       <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       `}
       <div class="slot-btns">
-        <button class="slot-btn${st.shiny?' active':''}" onclick="toggleShiny('${team}',${idx})" aria-pressed="${st.shiny}" title="Shiny">✨</button>
+        ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="slot-btn${st.shiny?' active':''}" onclick="toggleShiny('${team}',${idx})" aria-pressed="${st.shiny}" title="Shiny">✨</button>`:''}
         <button class="slot-btn${st.stats?' active':''}" onclick="toggleStats('${team}',${idx})" aria-pressed="${st.stats}">${st.stats?'SPRITE':'STATS'}</button>
       </div>
     </div>`;
@@ -217,9 +219,7 @@ function buildSlotEl(team,idx){
         <span class="move-header-col">PREC</span>
       </div>
       ${movesHtml}
-      <button class="btn-edit-moves" onclick="openMovesModal('${team}',${idx})">
-        ${p.moves.length>0?'✏ Editar moves':'＋ Añadir moves'}
-      </button>
+      ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="btn-edit-moves" onclick="openMovesModal('${team}',${idx})">${p.moves.length>0?'✏ Editar moves':'＋ Añadir moves'}</button>`:''}
     </div>`;
 
   wrap.innerHTML=`
@@ -246,7 +246,7 @@ function _drawRadarCore(ctx,cx,cy,r,vals,col){
   for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
   ctx.closePath();ctx.fillStyle=col+'38';ctx.fill();
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-  const labelR=r+16;
+  const labelR=r+20;
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<6;i++){
     const a=angle(i);
@@ -261,7 +261,7 @@ function drawRadar(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-28;
+  const r=Math.min(W,H)/2-20;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
@@ -399,11 +399,12 @@ function renderPokeGrid(){
           <div class="modal-poke-num">${p.id>9999?'???':'N.º'+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
-          ${p.is_legendary?'<span class="modal-poke-legendary" title="Legendario">⭐</span>':''}
+          ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
         </div>
       </div>
       <div class="modal-card-radar-wrap" id="mcrw-${safeN}" style="display:none">
         <canvas class="modal-poke-radar" id="mpr-${safeN}" width="160" height="140" aria-label="Stats ${formatName(p.name)}"></canvas>
+        <div class="modal-poke-name-stats">${formatName(p.name)}</div>
       </div>
       <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
@@ -769,7 +770,7 @@ function drawRadarOnCanvas(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-28;
+  const r=Math.min(W,H)/2-20;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
