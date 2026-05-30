@@ -388,17 +388,21 @@ function renderPokeGrid(){
     const safeN=p.name.replace(/[^a-z0-9]/g,'-');
     return`<div class="modal-poke-card${chosen?' chosen':''}" onclick="addFromModal('${p.name}')" role="button" tabindex="0" aria-label="${formatName(p.name)}, ${chosen?'ya en equipo':'añadir al equipo'}">
       ${chosen?`<button class="modal-card-remove-x" onclick="event.stopPropagation();removeFromModal('${p.name}')" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)}">✕</button>`:''}
-      <div class="modal-card-media">
-        <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
-        <canvas class="modal-poke-radar" id="mpr-${safeN}" width="110" height="90" style="display:none" aria-label="Stats ${formatName(p.name)}"></canvas>
+      <div class="modal-card-visual" id="mcv-${safeN}">
+        <div class="modal-card-media">
+          <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
+        </div>
+        <div class="modal-poke-meta" id="mpmt-${safeN}">
+          <div class="modal-poke-num">N.º${p.id}</div>
+          <div class="modal-poke-name">${formatName(p.name)}</div>
+          <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+          ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
+        </div>
       </div>
-      <div class="modal-poke-meta" id="mpmt-${safeN}">
-        <div class="modal-poke-num">N.º${p.id}</div>
-        <div class="modal-poke-name">${formatName(p.name)}</div>
-        <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
-        ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
+      <div class="modal-card-radar-wrap" id="mcrw-${safeN}" style="display:none">
+        <canvas class="modal-poke-radar" id="mpr-${safeN}" width="160" height="140" aria-label="Stats ${formatName(p.name)}"></canvas>
+        <div class="modal-poke-name-stats">${formatName(p.name)}</div>
       </div>
-      <div class="modal-poke-name-stats" id="mpns-${safeN}" style="display:none">${formatName(p.name)}</div>
       <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
   }).join('');
@@ -422,27 +426,23 @@ function removeFromModal(name){
 }
 
 function toggleModalStats(btn,safeN,pname){
-  const img=document.getElementById(`mpi-${safeN}`);
+  const visual=document.getElementById(`mcv-${safeN}`);
+  const radarWrap=document.getElementById(`mcrw-${safeN}`);
   const cv=document.getElementById(`mpr-${safeN}`);
-  const meta=document.getElementById(`mpmt-${safeN}`);
-  const nameStats=document.getElementById(`mpns-${safeN}`);
-  const goStats=img.style.display!=='none';
+  const goStats=visual&&visual.style.display!=='none';
   if(goStats){
-    img.style.display='none';cv.style.display='block';
-    if(meta)meta.style.display='none';
-    if(nameStats)nameStats.style.display='block';
+    if(visual)visual.style.display='none';
+    if(radarWrap)radarWrap.style.display='';
     btn.textContent='SPRITE';btn.setAttribute('aria-expanded','true');
     const p=allPokemon.find(x=>x.name===pname);
     if(p)setTimeout(()=>{
-      // Ajustar canvas al ancho real de la tarjeta
-      const card=cv.closest('.modal-poke-card');
-      if(card){const w=card.clientWidth;cv.width=w;cv.height=Math.round(w*0.85);}
+      const card=btn.closest('.modal-poke-card');
+      if(card&&cv){const w=card.clientWidth-20;cv.width=w;cv.height=Math.round(w*0.82);}
       drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a');
     },20);
   }else{
-    img.style.display='block';cv.style.display='none';
-    if(meta)meta.style.display='';
-    if(nameStats)nameStats.style.display='none';
+    if(visual)visual.style.display='';
+    if(radarWrap)radarWrap.style.display='none';
     btn.textContent='STATS';btn.setAttribute('aria-expanded','false');
   }
 }

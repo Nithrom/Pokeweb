@@ -221,7 +221,7 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;}
 .modal-card-remove-x{position:absolute;top:4px;left:4px;background:rgba(255,71,87,.2);border:1px solid rgba(255,71,87,.6);color:#ff6b7a;border-radius:50%;width:20px;height:20px;font-size:.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;padding:0;line-height:1;transition:background .15s;}
 .modal-card-remove-x:hover{background:rgba(255,71,87,.5);}
 
-.modal-card-media{display:flex;align-items:center;justify-content:center;width:100%;height:95px;}
+.modal-card-media{display:flex;align-items:center;justify-content:center;width:100%;min-height:95px;}
 .modal-poke-img{width:90px;height:90px;image-rendering:auto;}
 .modal-poke-radar{display:block;}
 .modal-poke-num{font-size:.52rem;color:#9090a8;font-weight:700;}
@@ -449,6 +449,8 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;}
 .move-entry-header .move-header-col{font-size:.5rem;font-weight:800;text-transform:uppercase;color:#9090a8;text-align:center;}
 .move-entry-header .move-header-col:first-child{text-align:left;}
 
-/* Radar en modal-poke-card: ocupa todo el ancho de la tarjeta */
-.modal-poke-card .modal-card-media{flex-direction:column;}
-.modal-poke-card .modal-poke-radar{width:100%!important;height:auto!important;max-width:none!important;}
+/* Radar modal-poke-card */
+.modal-card-visual{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;}
+.modal-card-radar-wrap{display:flex;flex-direction:column;align-items:center;width:100%;gap:4px;}
+.modal-card-radar-wrap .modal-poke-name-stats{font-size:.68rem;font-weight:800;color:#eaeaea;text-align:center;}
+.modal-poke-radar{display:block;width:100%;height:auto;}
