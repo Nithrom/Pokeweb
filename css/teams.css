@@ -111,7 +111,7 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
 /* Panel de moves */
 .poke-moves-panel{padding:10px 12px;display:flex;flex-direction:column;gap:5px;}
 .team-b .poke-moves-panel{order:1;}
-.moves-panel-label{font-family:'Press Start 2P',monospace;font-size:8px;margin-bottom:5px;}
+.moves-panel-label{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:5px;}
 .team-a .moves-panel-label{color:#4a9eff;}
 .team-b .moves-panel-label{color:#ffaa33;}
 .move-entry{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;align-items:center;gap:4px;padding:4px 6px;border-radius:6px;border:1px solid;}
