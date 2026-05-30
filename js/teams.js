@@ -238,7 +238,7 @@ function _drawRadarCore(ctx,cx,cy,r,vals,col){
   }
   for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
   // Polígono (radio -5%)
-  const pr=r*0.75;
+  const pr=r*0.5;
   ctx.beginPath();
   for(let i=0;i<6;i++){const a=angle(i),rr=pr*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
   ctx.closePath();ctx.fillStyle=col+'38';ctx.fill();
