@@ -99,15 +99,21 @@ async function init(){
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
       DB=await res.json();
-      allPokemon=Object.entries(DB.pokemon).map(([name,p])=>({
-        name,id:p.id,types:p.types,sprite:p.sprite,
-        is_legendary:!!p.is_legendary,
-        hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
-        sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
-        evolvesFrom:p.evolves_from||null,
-        allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
-          detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
-      })).sort((a,b)=>a.id-b.id);
+      allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
+        // Para formas alternativas (id>1025) que solo tienen sprite base, usar official-artwork
+        let sprite=p.sprite||'';
+        if(sprite&&sprite.includes('/pokemon/'+p.id+'.png'))
+          sprite=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
+        return{
+          name,id:p.id,types:p.types,sprite,
+          is_legendary:!!p.is_legendary,
+          hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
+          sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
+          evolvesFrom:p.evolves_from||null,
+          allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
+            detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
+        };
+      }).sort((a,b)=>a.id-b.id);
       _evolvesFromSet=null; // reset cache
       document.getElementById('status-bar').innerHTML=
         `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon disponibles</span>`;
@@ -230,20 +236,16 @@ function buildSlotEl(team,idx){
 // ── Radar hexagonal ──
 function _drawRadarCore(ctx,cx,cy,r,vals,col){
   const angle=i=>Math.PI/2+i*(2*Math.PI/6);
-  // Rejilla
   for(let ring=1;ring<=4;ring++){
     ctx.beginPath();
     for(let i=0;i<6;i++){const a=angle(i),rr=r*ring/4;ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
     ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
   }
   for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
-  // Polígono (radio -5%)
-  const pr=r*0.5;
   ctx.beginPath();
-  for(let i=0;i<6;i++){const a=angle(i),rr=pr*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
+  for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
   ctx.closePath();ctx.fillStyle=col+'38';ctx.fill();
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-  // Labels: nombre encima, valor debajo — offset generoso para no cortarse
   const labelR=r+20;
   ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<6;i++){
@@ -259,7 +261,6 @@ function drawRadar(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  // Margen generoso para que los labels no se corten
   const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
@@ -395,7 +396,7 @@ function renderPokeGrid(){
           <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
         </div>
         <div class="modal-poke-meta" id="mpmt-${safeN}">
-          <div class="modal-poke-num">N.º${p.id}</div>
+          <div class="modal-poke-num">${p.id>9999?'???':'N.º'+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
           ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
@@ -439,7 +440,13 @@ function toggleModalStats(btn,safeN,pname){
     const p=allPokemon.find(x=>x.name===pname);
     if(p)setTimeout(()=>{
       const card=btn.closest('.modal-poke-card');
-      if(card&&cv){const w=card.clientWidth-20;cv.width=w;cv.height=Math.round(w*0.82);}
+      if(card&&cv){
+        const w=card.clientWidth-20;
+        // Altura fija igual a la zona imagen+meta para no agrandar la card
+        const mediaH=card.querySelector('.modal-card-media')?.offsetHeight||90;
+        const metaH=card.querySelector('.modal-poke-meta')?.offsetHeight||70;
+        cv.width=w; cv.height=mediaH+metaH;
+      }
       drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a');
     },20);
   }else{

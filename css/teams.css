@@ -76,7 +76,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(9px,1.4vw,17px);color:
 .slot-remove-x{position:absolute;top:5px;left:5px;background:rgba(255,71,87,.18);border:1px solid rgba(255,71,87,.5);color:#ff4757;border-radius:50%;width:22px;height:22px;font-size:.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .15s;z-index:2;padding:0;}
 .slot-remove-x:hover{background:rgba(255,71,87,.45);}
 
-.slot-img{width:150px;height:150px;image-rendering:auto;display:block;cursor:pointer;transition:transform .15s;}
+.slot-img{width:150px;height:150px;image-rendering:auto;object-fit:contain;display:block;cursor:pointer;transition:transform .15s;}
 .slot-img:hover{transform:scale(1.04);}
 .slot-poke-name{font-family:'Press Start 2P',monospace;font-size:clamp(7px,.7vw,9px);text-align:center;margin:5px 0;line-height:1.6;}
 .team-a .slot-poke-name{color:#4a9eff;}
@@ -222,7 +222,7 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;}
 .modal-card-remove-x:hover{background:rgba(255,71,87,.5);}
 
 .modal-card-media{display:flex;align-items:center;justify-content:center;width:100%;min-height:95px;}
-.modal-poke-img{width:90px;height:90px;image-rendering:auto;}
+.modal-poke-img{width:90px;height:90px;image-rendering:auto;object-fit:contain;}
 .modal-poke-radar{display:block;}
 .modal-poke-num{font-size:.52rem;color:#9090a8;font-weight:700;}
 .modal-poke-name{font-size:.68rem;font-weight:800;color:#eaeaea;line-height:1.3;}
