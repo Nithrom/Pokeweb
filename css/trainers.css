@@ -13,11 +13,18 @@
 }
 .selector-inner{
   display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  max-width:900px;
+  margin:0 auto;
+}
+.selector-groups{
+  display:flex;
   align-items:flex-end;
   gap:10px;
   flex-wrap:wrap;
-  max-width:900px;
-  margin:0 auto;
+  justify-content:center;
 }
 .selector-group{
   display:flex;
@@ -26,11 +33,10 @@
 }
 .selector-label{
   font-family:'Press Start 2P',monospace;
-  font-size:6px;
+  font-size:8px;
   color:#9090a8;
   text-transform:uppercase;
 }
-.nav-dropdown { z-index: 300; }
 .sel-dropdown{
   background:#0a0a12;
   border:1px solid #1a3a6e;
@@ -53,6 +59,7 @@
   color:#e94560;
   padding-bottom:8px;
   opacity:.6;
+  align-self:flex-end;
 }
 .btn-load-trainer{
   font-family:'Press Start 2P',monospace;
@@ -65,7 +72,6 @@
   cursor:pointer;
   transition:background .15s,transform .1s;
   white-space:nowrap;
-  margin-left:auto;
 }
 .btn-load-trainer:hover:not(:disabled){
   background:rgba(233,69,96,.3);
@@ -114,7 +120,7 @@
 }
 .trainer-sprite-name{
   font-family:'Press Start 2P',monospace;
-  font-size:9px;
+  font-size:7px;
   color:#ffaa33;
   margin-top:6px;
   text-align:center;
@@ -126,7 +132,10 @@
   margin-top:2px;
 }
 .trainer-sprite-type{
-  display:none;
+  font-size:.52rem;
+  color:#9090a8;
+  font-weight:700;
+  text-transform:uppercase;
 }
 
 /* ── Slot rival bloqueado (no editable) ── */
