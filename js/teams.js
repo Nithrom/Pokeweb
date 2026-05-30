@@ -228,34 +228,39 @@ function buildSlotEl(team,idx){
 }
 
 // ── Radar hexagonal ──
-function drawRadar(canvasId,p,team){
-  const canvas=document.getElementById(canvasId);if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-22;
-  const vals=STAT_KEYS.map(s=>p[s.key]||0);
-  const col=(team==='b')?'#ffaa33':'#4a9eff';
-  ctx.clearRect(0,0,W,H);
+function _drawRadarCore(ctx,cx,cy,r,vals,col){
   const angle=i=>Math.PI/2+i*(2*Math.PI/6);
+  // Rejilla
   for(let ring=1;ring<=4;ring++){
     ctx.beginPath();
     for(let i=0;i<6;i++){const a=angle(i),rr=r*ring/4;ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
     ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
   }
   for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
+  // Polígono
   ctx.beginPath();
   for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
-  ctx.closePath();ctx.fillStyle=col+'40';ctx.fill();
+  ctx.closePath();ctx.fillStyle=col+'38';ctx.fill();
   ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
-  // Labels
-  ctx.fillStyle='#b0b0c0';ctx.font='bold 9px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<6;i++){const a=angle(i),lr=r+14;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
-  // Valores en cada vértice del polígono
-  ctx.font='bold 10px Nunito';ctx.fillStyle='#ffffff';
+  // Labels: nombre encima, valor debajo — ambos fuera del polígono
+  const labelR=r+20;
+  ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<6;i++){
-    const a=angle(i),rr=r*(vals[i]/255);
-    const vx=cx+rr*Math.cos(a),vy=cy-rr*Math.sin(a);
-    ctx.fillText(vals[i],vx,vy);
+    const a=angle(i);
+    const lx=cx+labelR*Math.cos(a), ly=cy-labelR*Math.sin(a);
+    ctx.font='bold 10.4px Nunito';ctx.fillStyle='#b0b0c0';
+    ctx.fillText(STAT_KEYS[i].label,lx,ly-7);
+    ctx.font='bold 11.5px Nunito';ctx.fillStyle='#ffffff';
+    ctx.fillText(vals[i],lx,ly+7);
   }
+}
+function drawRadar(canvasId,p,team){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const r=Math.min(W,H)/2-28;
+  ctx.clearRect(0,0,W,H);
+  _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
 
 // ── Acciones slot ──
@@ -428,7 +433,12 @@ function toggleModalStats(btn,safeN,pname){
     if(nameStats)nameStats.style.display='block';
     btn.textContent='SPRITE';btn.setAttribute('aria-expanded','true');
     const p=allPokemon.find(x=>x.name===pname);
-    if(p)setTimeout(()=>drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a'),20);
+    if(p)setTimeout(()=>{
+      // Ajustar canvas al ancho real de la tarjeta
+      const card=cv.closest('.modal-poke-card');
+      if(card){const w=card.clientWidth;cv.width=w;cv.height=Math.round(w*0.85);}
+      drawRadarOnCanvas(`mpr-${safeN}`,p,_mP.team||'a');
+    },20);
   }else{
     img.style.display='block';cv.style.display='none';
     if(meta)meta.style.display='';
@@ -750,32 +760,10 @@ function toggleRecStats(btn,pname,side){
 function drawRadarOnCanvas(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-18;
-  const vals=STAT_KEYS.map(s=>p[s.key]||0);
-  const colors={a:'#4a9eff',b:'#ffaa33'};
-  const col=colors[team]||'#4a9eff';
+  const W=canvas.width,H=canvas.height;
+  const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
-  const angle=i=>Math.PI/2+i*(2*Math.PI/6);
-  for(let ring=1;ring<=4;ring++){
-    ctx.beginPath();
-    for(let i=0;i<6;i++){const a=angle(i),rr=r*ring/4;ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
-    ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();
-  }
-  for(let i=0;i<6;i++){const a=angle(i);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy-r*Math.sin(a));ctx.strokeStyle='rgba(255,255,255,.15)';ctx.stroke();}
-  ctx.beginPath();
-  for(let i=0;i<6;i++){const a=angle(i),rr=r*(vals[i]/255);ctx.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));}
-  ctx.closePath();ctx.fillStyle=col.replace(')',',0.22)').replace('rgb','rgba');ctx.fill();
-  ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
-  // Valores encima de cada punto
-  ctx.font='bold 9px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<6;i++){
-    const a=angle(i);
-    const rr=r*(vals[i]/255);
-    const lx=cx+rr*Math.cos(a),ly=cy-rr*Math.sin(a);
-    ctx.fillStyle='#fff';ctx.fillText(vals[i],lx,ly);
-  }
-  ctx.fillStyle='#b0b0c0';ctx.font='bold 8px Nunito';
-  for(let i=0;i<6;i++){const a=angle(i),lr=r+14;ctx.fillText(STAT_KEYS[i].label,cx+lr*Math.cos(a),cy-lr*Math.sin(a));}
+  _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
 
 // ── Swap pokemon recomendado ──

@@ -448,3 +448,7 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;}
 .move-entry-header{background:none!important;border-color:transparent!important;padding:2px 6px!important;margin-bottom:1px;}
 .move-entry-header .move-header-col{font-size:.5rem;font-weight:800;text-transform:uppercase;color:#9090a8;text-align:center;}
 .move-entry-header .move-header-col:first-child{text-align:left;}
+
+/* Radar en modal-poke-card: ocupa todo el ancho de la tarjeta */
+.modal-poke-card .modal-card-media{flex-direction:column;}
+.modal-poke-card .modal-poke-radar{width:100%!important;height:auto!important;max-width:none!important;}
