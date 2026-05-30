@@ -192,7 +192,6 @@ function buildSlotEl(team,idx){
       ${!statsMode?`<img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${formatName(p.name)}"
         onerror="this.src='${p.sprite}'">`:'' }
       ${statsMode?`
-      <div class="slot-stats-mode-name">${formatName(p.name)}</div>
       <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
         <canvas class="radar-canvas" id="${radarId}" width="220" height="200" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
       </div>
@@ -262,7 +261,7 @@ function drawRadar(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-28;
+  const r=Math.min(W,H)/2-32;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
@@ -772,7 +771,7 @@ function drawRadarOnCanvas(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-28;
+  const r=Math.min(W,H)/2-32;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }

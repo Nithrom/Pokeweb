@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    trainers.css — estilos específicos de trainers.html
 ══════════════════════════════════════════════════════ */
-
+.nav-dropdown { z-index: 300; }
 /* ── Barra selectora ── */
 .trainer-selector-bar{
   background:#0d0d1a;
