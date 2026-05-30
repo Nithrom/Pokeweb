@@ -19,11 +19,12 @@
       <h1>⚔ POKÉMON COUNTER FINDER</h1>
       <div class="status-bar" id="status-bar">...</div>
     </div>
-    <nav class="nav-menu">
-      <button class="nav-btn" id="nav-btn">☰</button>
-      <div class="nav-dropdown" id="nav-dropdown">
-        <a href="index.html" class="active">INICIO</a>
-        <a href="teams.html">BATALLA POR EQUIPOS</a>
+    <nav class="nav-menu" aria-label="Menú principal">
+      <button class="nav-btn" id="nav-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-dropdown">☰</button>
+      <div class="nav-dropdown" id="nav-dropdown" role="menu">
+        <a href="index.html"  class="active" role="menuitem" aria-current="page">INICIO</a>
+        <a href="teams.html" role="menuitem">BATALLA POR EQUIPOS</a>
+        <a href="trainers.html" role="menuitem">BATALLA CONTRA ENTRENADORES</a>
       </div>
     </nav>
   </header>
