@@ -11,7 +11,7 @@ body{background:#0a0a12;color:#eaeaea;font-family:'Nunito',sans-serif;min-height
 .nav-btn:hover{background:rgba(255,255,255,.1);}
 .nav-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#0d1526;border:1px solid #1a3a6e;border-radius:10px;min-width:200px;padding:6px 0;box-shadow:0 8px 24px rgba(0,0,0,.6);z-index:100;}
 .nav-dropdown.open{display:block;}
-.nav-dropdown a{display:flex;align-items:center;gap:10px;padding:9px 16px;color:#eaeaea;text-decoration:none;font-size:.7rem;font-weight:700;transition:background .15s;}
+.nav-dropdown a{display:flex;align-items:center;gap:10px;padding:9px 16px;color:#eaeaea;text-decoration:none;font-size:.7rem;font-weight:700;transition:background .15s;z-index:300;}
 .nav-dropdown a:hover{background:rgba(74,158,255,.1);color:#4a9eff;}
 .nav-dropdown a.active{color:#4a9eff;}
 
