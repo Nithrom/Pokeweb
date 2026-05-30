@@ -55,7 +55,7 @@ h1{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,24px);color
 .col-def .poke-card{background:#0a1830;border:1px solid #1a3a6e;}
 .col-atk .poke-card{background:#1f1500;border:1px solid #5a3a00;}
 .poke-card img{width:255px;height:255px;image-rendering:auto;display:block;margin:0 auto 10px;}
-.poke-name{font-family:'Press Start 2P',monospace;font-size:24px;margin-bottom:7px;line-height:1.7;}
+.poke-name{font-family:'Press Start 2P',monospace;font-size:16px;margin-bottom:7px;line-height:1.7;}
 .col-def .poke-name{color:#4a9eff;}
 .col-atk .poke-name{color:#ffaa33;}
 .poke-num{font-size:.6rem;color:#606070;margin-bottom:7px;}
