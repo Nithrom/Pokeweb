@@ -227,7 +227,31 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
 .modal-poke-num{font-size:.52rem;color:#9090a8;font-weight:700;}
 .modal-poke-name{font-size:.68rem;font-weight:800;color:#eaeaea;line-height:1.3;}
 .modal-poke-types{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin:2px 0;}
-.modal-poke-legendary{font-size:.5rem;color:#ffd700;font-weight:800;}
+
+.modal-poke-legendary {
+  position: absolute;
+  top: 6px;
+  right: 6px; /* o left:6px si prefieres izquierda */
+  font-size: .75rem;
+  cursor: default;
+}
+.modal-poke-legendary[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  border: 1px solid #4a9eff;
+  color: #eaeaea;
+  font-size: .55rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
 .btn-modal-stats{font-size:.54rem;font-weight:800;padding:3px 8px;border-radius:5px;border:1px solid #1a3a6e;background:none;color:#9090a8;cursor:pointer;transition:background .12s;margin-top:2px;}
 .btn-modal-stats:hover{background:rgba(74,158,255,.15);color:#4a9eff;}
 .modal-poke-box.team-b .btn-modal-stats:hover{background:rgba(255,170,51,.15);color:#ffaa33;}
@@ -420,6 +444,20 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid #1a3a6e;border-top-color:#4a9eff;border-radius:50%;animation:spin .8s linear infinite;margin-right:4px;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+.swap-slot-empty{font-size:1.8rem;opacity:.35;line-height:1.2;}
+.modal-poke-meta{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
+.modal-poke-name-stats{font-size:.68rem;font-weight:800;color:#eaeaea;text-align:center;line-height:1.3;margin-bottom:2px;}
+/* Cabecera move-entry */
+.move-entry-header{background:none!important;border-color:transparent!important;padding:2px 6px!important;margin-bottom:1px;}
+.move-entry-header .move-header-col{font-size:.5rem;font-weight:800;text-transform:uppercase;color:#9090a8;text-align:center;}
+.move-entry-header .move-header-col:first-child{text-align:left;}
+
+/* Radar modal-poke-card */
+.modal-card-visual{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;}
+.modal-card-radar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.modal-card-radar-wrap .modal-poke-name-stats{font-size:.68rem;font-weight:800;color:#eaeaea;text-align:center;}
+.modal-poke-radar{display:block;width:100%;height:auto;}
+
 /* Responsive */
 @media(max-width:1100px){
   .team-a .poke-row-top{grid-template-columns:280px 1fr;}
@@ -441,16 +479,27 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
   .threat-two-cols{grid-template-columns:1fr;}
   .threat-col-divider{display:none;}
 }
-.swap-slot-empty{font-size:1.8rem;opacity:.35;line-height:1.2;}
-.modal-poke-meta{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
-.modal-poke-name-stats{font-size:.68rem;font-weight:800;color:#eaeaea;text-align:center;line-height:1.3;margin-bottom:2px;}
-/* Cabecera move-entry */
-.move-entry-header{background:none!important;border-color:transparent!important;padding:2px 6px!important;margin-bottom:1px;}
-.move-entry-header .move-header-col{font-size:.5rem;font-weight:800;text-transform:uppercase;color:#9090a8;text-align:center;}
-.move-entry-header .move-header-col:first-child{text-align:left;}
-
-/* Radar modal-poke-card */
-.modal-card-visual{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;}
-.modal-card-radar-wrap{display:flex;flex-direction:column;align-items:center;width:100%;gap:4px;}
-.modal-card-radar-wrap .modal-poke-name-stats{font-size:.68rem;font-weight:800;color:#eaeaea;text-align:center;}
-.modal-poke-radar{display:block;width:100%;height:auto;}
+@media (max-width: 480px) {
+  .modal-poke-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 7px; padding: 8px; }
+  .modal-poke-card { padding: 8px 6px; }
+  .modal-poke-img { width: 72px; height: 72px; }
+  .modal-poke-box { border-radius: 10px; }
+  .modal-filters { padding: 8px 10px; gap: 6px; }
+  .modal-name-input { font-size: .65rem; padding: 6px 10px; }
+  .type-filter-btn { font-size: .5rem; padding: 3px 7px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .threat-two-cols { grid-template-columns: 1fr; }
+  .threat-col-divider { display: none; }
+  .poke-row-top { grid-template-columns: 1fr !important; }
+  .slot-img { width: 110px; height: 110px; }
+  .team-name-input { font-size: 6px; }
+  .modal-moves-box { max-height: 85vh; }
+  .modal-moves-table { font-size: .6rem; }
+  .recs-grid { grid-template-columns: 1fr; }
+  .detail-cols { grid-template-columns: 1fr; }
+  .matchup-th-rival img { width: 36px; height: 36px; }
+  .mc { width: 36px; height: 26px; font-size: .42rem; }
+  h1 { font-size: 8px; }
+  .btn-vs { font-size: 18px; }
+  .swap-grid { grid-template-columns: repeat(3, 1fr); }
+}
