@@ -32,31 +32,27 @@ async function initTrainers(){
 
 // ── Selectores ────────────────────────────────────────
 function buildGenSelector(){
-  const selGen = document.getElementById('sel-gen');
-  // Obtener gens únicas
-  const gens = [...new Set(TRAINERS_DB.games.map(g=>g.gen))].sort((a,b)=>a-b);
-  selGen.innerHTML = '<option value="">— Gen —</option>' +
-    gens.map(g=>`<option value="${g}">Generación ${g}</option>`).join('');
-  selGen.disabled = false;
-  selGen.onchange = onGenChange;
-}
-
-function onGenChange(){
-  const gen = parseInt(document.getElementById('sel-gen').value);
   const selGame = document.getElementById('sel-game');
-  const selTrainer = document.getElementById('sel-trainer');
-  selTrainer.innerHTML = '<option value="">— Entrenador —</option>';
-  selTrainer.disabled = true;
-  document.getElementById('btn-load-trainer').disabled = true;
-
-  if(!gen){ selGame.innerHTML='<option value="">— Juego —</option>'; selGame.disabled=true; return; }
-
-  const games = TRAINERS_DB.games.filter(g=>g.gen===gen);
-  selGame.innerHTML = '<option value="">— Juego —</option>' +
-    games.map(g=>`<option value="${g.slug}">${g.name}</option>`).join('');
+  const gens = [...new Set(TRAINERS_DB.games.map(g=>g.gen))].sort((a,b)=>a-b);
+  selGame.innerHTML = '<option value="">— Juego —</option>';
+  gens.forEach(gen=>{
+    const og = document.createElement('optgroup');
+    og.label = `Gen ${gen}`;
+    TRAINERS_DB.games.filter(g=>g.gen===gen).forEach(g=>{
+      const opt = document.createElement('option');
+      opt.value = g.slug;
+      opt.textContent = `- ${g.name}`;
+      og.appendChild(opt);
+    });
+    selGame.appendChild(og);
+  });
   selGame.disabled = false;
-  selGame.value = '';
   selGame.onchange = onGameChange;
+  // Ocultar selector de gen
+  const selGenGroup = document.getElementById('sel-gen')?.closest('.selector-group');
+  const arrow = selGenGroup?.nextElementSibling;
+  if(selGenGroup) selGenGroup.style.display='none';
+  if(arrow && arrow.classList.contains('selector-arrow')) arrow.style.display='none';
 }
 
 function onGameChange(){
@@ -196,7 +192,7 @@ function renderTrainerSprite(trainer, team){
   wrap.innerHTML = `
     <img class="trainer-sprite" src="${trainer.sprite}" alt="${trainer.name}" onerror="this.style.display='none'">
     <div class="trainer-sprite-name">${trainer.name}</div>
-    ${trainer.specialty?`<div class="trainer-sprite-type">Tipo: ${trainer.specialty}</div>`:''}
+
     ${trainer.badge?`<div class="trainer-sprite-badge">${trainer.badge}</div>`:''}
   `;
   container.parentElement.insertBefore(wrap, container);
@@ -244,6 +240,24 @@ const _origOpenPokeModal = window.openPokeModal;
 window.openPokeModal = function(team){
   if(team === 'b') return; // bloquear edición del rival
   _origOpenPokeModal(team);
+};
+
+// ── Radar 20% más pequeño en trainers ────────────────
+const _origDrawRadar2=drawRadar;
+drawRadar=function(canvasId,p,team){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,r=Math.min(W,H)/2-28;
+  ctx.clearRect(0,0,W,H);
+  _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff',0.8);
+};
+const _origDrawRadarOnCanvas2=drawRadarOnCanvas;
+drawRadarOnCanvas=function(canvasId,p,team){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,r=Math.min(W,H)/2-28;
+  ctx.clearRect(0,0,W,H);
+  _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff',0.8);
 };
 
 // ── Init ──────────────────────────────────────────────
