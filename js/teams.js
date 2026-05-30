@@ -260,7 +260,7 @@ function drawRadar(canvasId,p,team){
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
   // Margen generoso para que los labels no se corten
-  const r=Math.min(W,H)/2-38;
+  const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
@@ -763,7 +763,7 @@ function drawRadarOnCanvas(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-38;
+  const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
