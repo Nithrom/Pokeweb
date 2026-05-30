@@ -399,12 +399,11 @@ function renderPokeGrid(){
           <div class="modal-poke-num">${p.id>9999?'???':'N.º '+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
-          ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
+          ${p.is_legendary?'<div class="modal-poke-legendary">⭐</div>':''}
         </div>
       </div>
       <div class="modal-card-radar-wrap" id="mcrw-${safeN}" style="display:none">
         <canvas class="modal-poke-radar" id="mpr-${safeN}" width="160" height="140" aria-label="Stats ${formatName(p.name)}"></canvas>
-        <div class="modal-poke-name-stats">${formatName(p.name)}</div>
       </div>
       <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
