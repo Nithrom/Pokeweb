@@ -192,7 +192,6 @@ function buildSlotEl(team,idx){
       ${!statsMode?`<img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${formatName(p.name)}"
         onerror="this.src='${p.sprite}'">`:'' }
       ${statsMode?`
-      <div class="slot-stats-mode-name">${formatName(p.name)}</div>
       <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
         <canvas class="radar-canvas" id="${radarId}" width="220" height="200" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
       </div>
