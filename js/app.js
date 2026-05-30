@@ -601,7 +601,7 @@ async function searchByType(typeEn,side){
     pokemons=Object.entries(DB.pokemon).filter(([,p])=>p.types.includes(typeEn)).map(([name,p])=>({name,id:p.id,types:p.types,sprite:p.sprite})).sort((a,b)=>a.id-b.id);
   } else {
     try{
-      const r=await fetch('http://localhost:5000/pokemon')
+      const r=await fetch('data/pokemon_db.json')
       const d=await r.json();
       const ids=d.pokemon.map(p=>{const parts=p.pokemon.url.split('/');return{name:p.pokemon.name,id:parseInt(parts[parts.length-2])};}).filter(p=>p.id<=1025).sort((a,b)=>a.id-b.id);
       for(let i=0;i<ids.length;i+=20){

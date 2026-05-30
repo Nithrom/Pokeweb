@@ -96,7 +96,7 @@ async function init(){
   renderAllSlots('a'); renderAllSlots('b');
   buildTypeFilterRow();
   try{
-    const res=await fetch('http://localhost:5000/pokemon');
+    const res=await fetch('data/pokemon_db.json')
     if(res.ok){
       DB=await res.json();
       allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
