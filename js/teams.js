@@ -198,7 +198,7 @@ function buildSlotEl(team,idx){
       `:`
       <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
       <div class="slot-poke-name">${formatName(p.name)}</div>
-      <div class="slot-num">#${p.id}</div>
+      <div class="slot-num">N.º ${p.id}</div>
       <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       `}
       <div class="slot-btns">
@@ -395,7 +395,7 @@ function renderPokeGrid(){
           <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
         </div>
         <div class="modal-poke-meta" id="mpmt-${safeN}">
-          <div class="modal-poke-num">${p.id>9999?'???':'N.º'+p.id}</div>
+          <div class="modal-poke-num">${p.id>9999?'???':'N.º '+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
           ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
