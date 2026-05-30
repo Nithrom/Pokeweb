@@ -198,7 +198,7 @@ function buildSlotEl(team,idx){
       `:`
       <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
       <div class="slot-poke-name">${formatName(p.name)}</div>
-      <div class="slot-num">#${p.id}</div>
+      <div class="slot-num">N.º ${p.id}</div>
       <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       `}
       <div class="slot-btns">
