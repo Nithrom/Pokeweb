@@ -485,7 +485,7 @@ async function selectPokemon(name,side){
     const{types,sprite,id,allMoves}=await getPokemonData(name);
     document.getElementById(isLeft?'img-def':'img-atk').src=sprite;
     document.getElementById(isLeft?'name-def':'name-atk').textContent=formatName(name);
-    document.getElementById(isLeft?'id-def':'id-atk').textContent=id>9999?'???':'N.º'+id;
+    document.getElementById(isLeft?'id-def':'id-atk').textContent=id>9999?'???':''+id;
     document.getElementById(isLeft?'types-def':'types-atk').innerHTML=types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('');
     // Reset shiny button
     const shinyBtn=document.getElementById(isLeft?'shiny-btn-def':'shiny-btn-atk');
