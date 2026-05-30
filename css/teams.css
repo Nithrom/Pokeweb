@@ -231,27 +231,11 @@ canvas.radar-canvas{display:block;width:100%;height:auto;max-width:220px;margin:
 .modal-poke-legendary {
   position: absolute;
   top: 6px;
-  right: 6px; /* o left:6px si prefieres izquierda */
+  right: 6px; /* o left:6px ponerlo a la izquierda */
   font-size: .75rem;
   cursor: default;
 }
-.modal-poke-legendary[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a1a2e;
-  border: 1px solid #4a9eff;
-  color: #eaeaea;
-  font-size: .55rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 10;
-}
+
 .btn-modal-stats{font-size:.54rem;font-weight:800;padding:3px 8px;border-radius:5px;border:1px solid #1a3a6e;background:none;color:#9090a8;cursor:pointer;transition:background .12s;margin-top:2px;}
 .btn-modal-stats:hover{background:rgba(74,158,255,.15);color:#4a9eff;}
 .modal-poke-box.team-b .btn-modal-stats:hover{background:rgba(255,170,51,.15);color:#ffaa33;}
