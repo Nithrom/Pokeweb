@@ -192,13 +192,14 @@ function buildSlotEl(team,idx){
       ${!statsMode?`<img class="slot-img" id="slot-img-${team}-${idx}" src="${imgSrc}" alt="${formatName(p.name)}"
         onerror="this.src='${p.sprite}'">`:'' }
       ${statsMode?`
+      <div class="slot-stats-mode-name">${formatName(p.name)}</div>
       <div class="slot-stats-wrap open" id="stats-wrap-${team}-${idx}">
         <canvas class="radar-canvas" id="${radarId}" width="220" height="200" aria-label="Hexágono de estadísticas de ${formatName(p.name)}"></canvas>
       </div>
       `:`
       <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
       <div class="slot-poke-name">${formatName(p.name)}</div>
-      <div class="slot-num">N.º ${p.id}</div>
+      <div class="slot-num">#${p.id}</div>
       <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       `}
       <div class="slot-btns">
@@ -233,7 +234,8 @@ function buildSlotEl(team,idx){
 }
 
 // ── Radar hexagonal ──
-function _drawRadarCore(ctx,cx,cy,r,vals,col){
+function _drawRadarCore(ctx,cx,cy,r,vals,col,scale=1){
+  r=r*scale;
   const angle=i=>Math.PI/2+i*(2*Math.PI/6);
   for(let ring=1;ring<=4;ring++){
     ctx.beginPath();
@@ -260,7 +262,7 @@ function drawRadar(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-32;
+  const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
@@ -395,7 +397,7 @@ function renderPokeGrid(){
           <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
         </div>
         <div class="modal-poke-meta" id="mpmt-${safeN}">
-          <div class="modal-poke-num">${p.id>9999?'???':'N.º '+p.id}</div>
+          <div class="modal-poke-num">${p.id>9999?'???':'N.º'+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
           <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
           ${p.is_legendary?'<div class="modal-poke-legendary">⭐ Legendario</div>':''}
@@ -584,8 +586,9 @@ function closeMovesModal(){
 function analyzeBattle(){
   const tA=teams.a.filter(Boolean),tB=teams.b.filter(Boolean);
   if(!tA.length&&!tB.length){showToast('⚠ Añade pokémon a al menos un equipo.','warn');return;}
-  const nameA=document.getElementById('team-name-a').value;
-  const nameB=document.getElementById('team-name-b').value;
+  const elA=document.getElementById('team-name-a'),elB=document.getElementById('team-name-b');
+  const nameA=elA?.value??elA?.textContent??'Equipo A';
+  const nameB=elB?.value??elB?.textContent??'Equipo B';
   document.getElementById('modal-analysis-title').textContent=`⚡ ${nameA.toUpperCase()} VS ${nameB.toUpperCase()}`;
   document.getElementById('modal-analysis-body').innerHTML=
     buildAnalysisSection('a',tA,tB,nameA,nameB)+
@@ -769,7 +772,7 @@ function drawRadarOnCanvas(canvasId,p,team){
   const canvas=document.getElementById(canvasId);if(!canvas)return;
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height;
-  const r=Math.min(W,H)/2-32;
+  const r=Math.min(W,H)/2-28;
   ctx.clearRect(0,0,W,H);
   _drawRadarCore(ctx,W/2,H/2,r,STAT_KEYS.map(s=>p[s.key]||0),(team==='b')?'#ffaa33':'#4a9eff');
 }
