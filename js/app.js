@@ -97,7 +97,7 @@ function setupSearch(inputId,sugId,side){
     if(isNum){const n=parseInt(q);matches=allPokemon.filter(p=>p.id===n||String(p.id).startsWith(q)).slice(0,8);}
     else{if(q.length<2){sug.style.display='none';return;}matches=allPokemon.filter(p=>p.name.includes(q)).slice(0,8);}
     if(!matches.length){sug.style.display='none';return;}
-    sug.innerHTML=matches.map(p=>`<div class="sug-item" data-name="${p.name}"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png" loading="lazy"><span>${formatName(p.name)}</span><span class="sug-num">N.º${p.id}</span></div>`).join('');
+    sug.innerHTML=matches.map(p=>`<div class="sug-item" data-name="${p.name}"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png" loading="lazy"><span>${formatName(p.name)}</span><span class="sug-num">${p.id>9999?"???":"N.º"+p.id}</span></div>`).join('');
     sug.style.display='block';
     sug.querySelectorAll('.sug-item').forEach(el=>el.addEventListener('click',()=>{sug.style.display='none';input.value=formatName(el.dataset.name);selectPokemon(el.dataset.name,side);}));
   });
@@ -485,7 +485,7 @@ async function selectPokemon(name,side){
     const{types,sprite,id,allMoves}=await getPokemonData(name);
     document.getElementById(isLeft?'img-def':'img-atk').src=sprite;
     document.getElementById(isLeft?'name-def':'name-atk').textContent=formatName(name);
-    document.getElementById(isLeft?'id-def':'id-atk').textContent=id;
+    document.getElementById(isLeft?'id-def':'id-atk').textContent=id>9999?'???':'N.º'+id;
     document.getElementById(isLeft?'types-def':'types-atk').innerHTML=types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('');
     // Reset shiny button
     const shinyBtn=document.getElementById(isLeft?'shiny-btn-def':'shiny-btn-atk');
