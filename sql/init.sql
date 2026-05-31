@@ -78,21 +78,26 @@ CREATE TABLE IF NOT EXISTS type_effectiveness (
 -- ── Juegos / Versiones ─────────────────────────
 CREATE TABLE IF NOT EXISTS games (
   id        TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name      VARCHAR(60) NOT NULL,   -- 'HeartGold / SoulSilver'
-  region    VARCHAR(30) NOT NULL,   -- 'Johto'
+  slug      VARCHAR(40) NOT NULL UNIQUE,  -- 'heartgold-soulsilver'
+  name      VARCHAR(60) NOT NULL,         -- 'HeartGold / SoulSilver'
+  region    VARCHAR(30) NOT NULL,         -- 'Johto'
   gen       TINYINT UNSIGNED NOT NULL
 );
 
 -- ── Entrenadores (líderes, altos mandos...) ────
 CREATE TABLE IF NOT EXISTS trainers (
-  id          SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name        VARCHAR(60) NOT NULL,
-  name_es     VARCHAR(60) NOT NULL,
-  trainer_class ENUM('gym_leader','elite_four','champion','rival','boss') NOT NULL,
-  game_id     TINYINT UNSIGNED NOT NULL,
-  gym_order   TINYINT UNSIGNED NULL,   -- orden del gimnasio (1-8), NULL si no aplica
-  badge_name  VARCHAR(40) NULL,
-  sprite_url  TEXT NULL,
+  id            SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug          VARCHAR(80) NOT NULL,   -- único por juego: 'brock-badgerock'
+  name          VARCHAR(60) NOT NULL,
+  name_es       VARCHAR(60) NOT NULL,
+  trainer_class VARCHAR(20) NOT NULL,     -- gym, elite4, champion, kahuna, captain, other
+  game_id       TINYINT UNSIGNED NOT NULL,
+  gym_order     TINYINT UNSIGNED NULL,
+  badge_name    VARCHAR(40) NULL,
+  specialty     VARCHAR(40) NULL,         -- badgerock, rematchice, halafighting...
+  location      VARCHAR(60) NULL,
+  sprite_url    TEXT NULL,
+  UNIQUE KEY uq_trainer_game_slug (game_id, slug),
   FOREIGN KEY (game_id) REFERENCES games(id)
 );
 

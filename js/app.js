@@ -56,17 +56,35 @@ const TYPE_POOL={normal:[143,113,241,234,289,446],fighting:[68,107,297,448,534,6
 let allPokemon=[],typeCache={},moveDetailCache={};
 let DB=null;
 
+function applyPokedexDb(db){
+  DB=db;
+  allPokemon=Object.entries(DB.pokemon).map(([name,p])=>({name,id:p.id})).sort((a,b)=>a.id-b.id);
+  for(const[name,p]of Object.entries(DB.pokemon)){
+    typeCache[name]={types:p.types,sprite:p.sprite,id:p.id,allMoves:p.moves};
+  }
+  if(DB.moves)for(const[mn,detail]of Object.entries(DB.moves))moveDetailCache['__'+mn]=detail;
+}
+
 async function loadPokedex(){
+  if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
+    try{
+      const db=await loadPokemonDbFromApi();
+      applyPokedexDb(db);
+      setPokemonDataSource('api', getApiBase() + '/db/pokemon'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
+      if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      document.getElementById('search-def').disabled=false;
+      document.getElementById('search-atk').disabled=false;
+      return;
+    }catch(e){console.warn('API pokedex',e);}
+  }
   try{
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
-      DB=await res.json();
-      allPokemon=Object.entries(DB.pokemon).map(([name,p])=>({name,id:p.id})).sort((a,b)=>a.id-b.id);
-      for(const[name,p]of Object.entries(DB.pokemon)){
-        typeCache[name]={types:p.types,sprite:p.sprite,id:p.id,allMoves:p.moves};
-      }
-      if(DB.moves)for(const[mn,detail]of Object.entries(DB.moves))moveDetailCache['__'+mn]=detail;
-      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon disponibles</span>`;
+      applyPokedexDb(await res.json());
+      setPokemonDataSource('json','data/pokemon_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
+      if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       document.getElementById('search-def').disabled=false;
       document.getElementById('search-atk').disabled=false;
       return;
@@ -76,10 +94,15 @@ async function loadPokedex(){
     const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
     const data=await res.json();
     allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));
-    document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon disponibles</span>`;
+    setPokemonDataSource('pokeapi','Sin DB local'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
+    if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     document.getElementById('search-def').disabled=false;
     document.getElementById('search-atk').disabled=false;
-  }catch(e){document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';}
+  }catch(e){
+    setPokemonDataSource('none',''); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';
+  }
 }
 
 function formatName(n){return n.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}

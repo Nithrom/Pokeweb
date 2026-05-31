@@ -95,33 +95,57 @@ function showToast(msg,type='info'){
 // ══════════════════════════════
 //  INIT
 // ══════════════════════════════
-async function init(){
-  renderAllSlots('a'); renderAllSlots('b');
-  buildTypeFilterRow();
+function applyPokemonDb(db){
+  DB=db;
+  allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
+    let sprite=p.sprite||'';
+    if(sprite&&sprite.includes('/pokemon/'+p.id+'.png'))
+      sprite=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
+    return{
+      name,id:p.id,types:p.types,sprite,
+      is_legendary:!!p.is_legendary,
+      hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
+      sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
+      evolvesFrom:p.evolves_from||null,
+      allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
+        detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
+    };
+  }).sort((a,b)=>a.id-b.id);
+  _evolvesFromSet=null;
+  document.getElementById('status-bar').innerHTML=
+    `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon</span>`;
+  // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+  if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']);
+}
+
+async function loadPokemonDb(){
+  let triedApi=false;
+  if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
+    triedApi=true;
+    try{
+      const db=await loadPokemonDbFromApi();
+      applyPokemonDb(db);
+      setPokemonDataSource('api', getApiBase() + '/db/pokemon'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      return true;
+    }catch(e){console.warn('API pokemon falló, usando JSON',e);}
+  }
   try{
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
-      DB=await res.json();
-      allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
-        // Para formas alternativas (id>1025) que solo tienen sprite base, usar official-artwork
-        let sprite=p.sprite||'';
-        if(sprite&&sprite.includes('/pokemon/'+p.id+'.png'))
-          sprite=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
-        return{
-          name,id:p.id,types:p.types,sprite,
-          is_legendary:!!p.is_legendary,
-          hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
-          sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
-          evolvesFrom:p.evolves_from||null,
-          allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
-            detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
-        };
-      }).sort((a,b)=>a.id-b.id);
-      _evolvesFromSet=null; // reset cache
-      document.getElementById('status-bar').innerHTML=
-        `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon disponibles</span>`;
+      applyPokemonDb(await res.json());
+      setPokemonDataSource('json', triedApi ? 'API falló · data/pokemon_db.json' : 'data/pokemon_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      return true;
     }
-  }catch(e){document.getElementById('status-bar').textContent='Sin DB local.';}
+  }catch(e){}
+  setPokemonDataSource('none','Sin pokemon_db.json ni API'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+  document.getElementById('status-bar').textContent='Sin DB (activa Flask + import_db.py).';
+  return false;
+}
+
+async function init(){
+  renderAllSlots('a'); renderAllSlots('b');
+  buildTypeFilterRow();
+  await loadPokemonDb();
 }
 
 // ══════════════════════════════

@@ -18817,7 +18817,24 @@
             "types": [
               "dragon"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "dragon-dance",
+                "name_display": "Dragon Dance"
+              },
+              {
+                "name": "dragon-rage",
+                "name_display": "Dragon Rage"
+              },
+              {
+                "name": "assurance",
+                "name_display": "Assurance"
+              },
+              {
+                "name": "dragon-tail",
+                "name_display": "Dragon Tail"
+              }
+            ]
           },
           {
             "name": "druddigon",
@@ -18868,67 +18885,6 @@
               {
                 "name": "assurance",
                 "name_display": "Assurance"
-              }
-            ]
-          },
-          {
-            "name": "fraxure",
-            "name_display": "Fraxure",
-            "level": 41,
-            "types": [
-              "dragon"
-            ],
-            "moves": []
-          },
-          {
-            "name": "druddigon",
-            "name_display": "Druddigon",
-            "level": 41,
-            "types": [
-              "dragon"
-            ],
-            "moves": [
-              {
-                "name": "revenge",
-                "name_display": "Revenge"
-              },
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              },
-              {
-                "name": "dragon-tail",
-                "name_display": "Dragon Tail"
-              },
-              {
-                "name": "rock-slide",
-                "name_display": "Rock Slide"
-              }
-            ]
-          },
-          {
-            "name": "haxorus",
-            "name_display": "Haxorus",
-            "level": 43,
-            "types": [
-              "dragon"
-            ],
-            "moves": [
-              {
-                "name": "dragon-dance",
-                "name_display": "Dragon Dance"
-              },
-              {
-                "name": "dragon-tail",
-                "name_display": "Dragon Tail"
-              },
-              {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
               }
             ]
           }
@@ -31245,20 +31201,20 @@
             ],
             "moves": [
               {
-                "name": "solar-beam",
-                "name_display": "Solar Beam"
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               },
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "petal-blizzard",
+                "name_display": "Petal Blizzard"
               },
               {
-                "name": "grassy-terrain",
-                "name_display": "Grassy Terrain"
+                "name": "poison-sting",
+                "name_display": "Poison Sting"
               },
               {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               }
             ]
           }

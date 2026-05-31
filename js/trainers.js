@@ -221,36 +221,86 @@ function updateLoadTrainerButton(){
   const gen=getGameGen(slug);
   const needsStarter=!!slug&&!!GEN_STARTERS[gen];
   const starterOk=!needsStarter||!!starterEl.value;
-  const trainerOk=trainerVal!==''&&!isNaN(parseInt(trainerVal));
+  const trainerOk=!!trainerVal&&(useApi()||!isNaN(parseInt(trainerVal)));
   document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk);
+}
+
+function normalizeTrainerFromApi(t){
+  return{
+    id:t.id,
+    slug:t.slug,
+    name:t.name,
+    type:t.type,
+    order:t.order,
+    location:t.location||'',
+    badge:t.badge||'',
+    specialty:t.specialty||'',
+    sprite:t.sprite,
+    team:(t.team||[]).map(m=>({
+      name:m.name,
+      name_display:m.name_es||formatName(m.name),
+      level:m.level,
+      types:m.types_en||m.types||[],
+      moves:(m.moves||[]).map(mv=>({
+        name:mv.name,
+        name_display:mv.name_es||mv.name_display||formatName(mv.name),
+      })),
+    })),
+  };
+}
+
+async function loadTrainersForGame(slug){
+  if(!slug)return[];
+  if(useApi()){
+    const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`);
+    const normalized=list.map(normalizeTrainerFromApi);
+    if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
+    TRAINERS_DB.trainers[slug]=normalized;
+    return normalized;
+  }
+  return TRAINERS_DB.trainers[slug]||[];
 }
 
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
-  IS_TRAINER_PAGE = true; // bloquear edición equipo rival
-  // teams.js ya cargó DB y allPokemon, esperamos si no está listo
-  let tries = 0;
-  while((!DB || !allPokemon.length) && tries < 30){
+  IS_TRAINER_PAGE=true;
+  let tries=0;
+  while((!DB||!allPokemon.length)&&tries<50){
     await new Promise(r=>setTimeout(r,200));
     tries++;
   }
 
   try{
-    const res = await fetch('data/trainers_db.json');
-    if(!res.ok) throw new Error('No trainers DB');
-    TRAINERS_DB = await res.json();
+    const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
+    if(apiOk){
+      const [games,stats]=await Promise.all([
+        fetchApi('/games'),
+        fetchApi('/stats').catch(()=>({})),
+      ]);
+      TRAINERS_DB={
+        games:games.map(g=>({slug:g.slug,name:g.name,gen:g.gen,region:g.region})),
+        trainers:{},
+        meta:{total_trainers:stats.trainers||287},
+      };
+      setTrainersDataSource('api', getApiBase() + '/trainers'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    }else{
+      const res=await fetch('data/trainers_db.json');
+      if(!res.ok)throw new Error('No trainers DB');
+      TRAINERS_DB=await res.json();
+      setTrainersDataSource('json','data/trainers_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    }
     buildGameSelector();
     resetStarterSelector();
     resetRematchSelector();
     resetDifficultySelector();
-    document.getElementById('status-bar').innerHTML =
+    document.getElementById('status-bar').innerHTML=
       `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
-       <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta.total_trainers} entrenadores</span>`;
+       <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta?.total_trainers||'?'} entrenadores</span>`;
+    if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon','trainers']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
   }catch(e){
-    document.getElementById('status-bar').textContent = 'Sin DB de entrenadores.';
+    setTrainersDataSource('none','Error al cargar entrenadores'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    document.getElementById('status-bar').textContent='Sin DB de entrenadores (Flask + import_db.py).';
   }
-
-  // Lado B: openPokeModal bloqueado via IS_TRAINER_PAGE flag en teams.js
 }
 
 // ── Selectores ────────────────────────────────────────
@@ -297,9 +347,43 @@ function buildStarterSelector(slug){
   sel.onchange=updateLoadTrainerButton;
 }
 
-function onGameChange(){
-  const slug = document.getElementById('sel-game').value;
-  const selTrainer = document.getElementById('sel-trainer');
+function populateTrainerSelect(trainers,sorted){
+  const selTrainer=document.getElementById('sel-trainer');
+  const slug=document.getElementById('sel-game').value;
+  selTrainer.innerHTML='<option value="">— Entrenador —</option>';
+  let lastType='';
+  sorted.forEach((t,i)=>{
+    const typeLabel={gym:'🏟 Líder',kahuna:'🌺 Kahuna',captain:'🏝 Capitán',elite4:'🏆 Alto Mando',champion:'👑 Campeón',other:'⚔ Otro'}[t.type]||'';
+    if(t.type!==lastType){
+      const og=document.createElement('optgroup');
+      og.label={gym:'── Líderes de Gimnasio ──',kahuna:'── Kahunas ──',captain:'── Capitanes ──',elite4:'── Alto Mando ──',champion:'── Campeón ──',other:'── Otros ──'}[t.type]||t.type;
+      selTrainer.appendChild(og);
+      lastType=t.type;
+    }
+    const opt=document.createElement('option');
+    opt.value=useApi()&&t.slug?t.slug:String(i);
+    opt.textContent=`${typeLabel} ${t.name}${t.location?' — '+t.location:''}`;
+    selTrainer.appendChild(opt);
+  });
+  selTrainer.disabled=false;
+  selTrainer.value='';
+  selTrainer._sorted=sorted;
+  selTrainer.onchange=()=>{
+    const val=selTrainer.value;
+    let tr=null;
+    if(useApi()&&val)tr=sorted.find(x=>x.slug===val);
+    else{
+      const idx=parseInt(val);
+      tr=!isNaN(idx)?sorted[idx]:null;
+    }
+    buildTrainerOptionSelectors(slug,tr);
+    updateLoadTrainerButton();
+  };
+}
+
+async function onGameChange(){
+  const slug=document.getElementById('sel-game').value;
+  const selTrainer=document.getElementById('sel-trainer');
   updateLoadTrainerButton();
 
   if(!slug){
@@ -315,41 +399,25 @@ function onGameChange(){
   resetRematchSelector();
   resetDifficultySelector();
 
-  const trainers = TRAINERS_DB.trainers[slug] || [];
-  // Ordenar: gym/kahuna → elite4 → champion → captain (Alola)
-  const sorted = [...trainers].sort((a,b)=>{
-    const typeOrder = {gym:0, kahuna:0, elite4:1, champion:2, captain:3, other:4};
-    const ta = typeOrder[a.type]??4, tb = typeOrder[b.type]??4;
-    if(ta !== tb) return ta-tb;
-    return (a.order||0)-(b.order||0);
+  selTrainer.disabled=true;
+  selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
+
+  let trainers=[];
+  try{
+    trainers=await loadTrainersForGame(slug);
+  }catch(e){
+    selTrainer.innerHTML='<option value="">Error al cargar</option>';
+    return;
+  }
+
+  const sorted=[...trainers].sort((a,b)=>{
+    const typeOrder={gym:0,kahuna:0,elite4:1,champion:2,captain:3,other:4};
+    const ta=typeOrder[a.type]??4,tb=typeOrder[b.type]??4;
+    if(ta!==tb)return ta-tb;
+    return(a.order||0)-(b.order||0);
   });
 
-  selTrainer.innerHTML = '<option value="">— Entrenador —</option>';
-  let lastType = '';
-  sorted.forEach((t,i)=>{
-    const typeLabel = {gym:'🏟 Líder', kahuna:'🌺 Kahuna', captain:'🏝 Capitán', elite4:'🏆 Alto Mando', champion:'👑 Campeón', other:'⚔ Otro'}[t.type]||'';
-    if(t.type !== lastType){
-      const og = document.createElement('optgroup');
-      og.label = {gym:'── Líderes de Gimnasio ──', kahuna:'── Kahunas ──', captain:'── Capitanes ──', elite4:'── Alto Mando ──', champion:'── Campeón ──', other:'── Otros ──'}[t.type]||t.type;
-      selTrainer.appendChild(og);
-      lastType = t.type;
-    }
-    const opt = document.createElement('option');
-    opt.value = i; // índice en sorted
-    opt.textContent = `${typeLabel} ${t.name}${t.location?' — '+t.location:''}`;
-    opt.dataset.idx = trainers.indexOf(t); // índice en array original
-    selTrainer.appendChild(opt);
-  });
-
-  selTrainer.disabled = false;
-  selTrainer.value = '';
-  selTrainer._sorted = sorted;
-  selTrainer.onchange = ()=>{
-    const idx=parseInt(selTrainer.value);
-    const tr=!isNaN(idx)&&selTrainer._sorted?selTrainer._sorted[idx]:null;
-    buildTrainerOptionSelectors(slug,tr);
-    updateLoadTrainerButton();
-  };
+  populateTrainerSelect(trainers,sorted);
   updateLoadTrainerButton();
 }
 
@@ -373,6 +441,19 @@ function applyStarterFilters(team,trainer,slug,starterId){
   return team;
 }
 
+/** Dos bloques idénticos en JSON (error enrich); no confundir con revancha real. */
+function collapseDuplicatedRoster(team){
+  if(!team||team.length<4||team.length%2!==0)return team;
+  const half=team.length/2;
+  const first=team.slice(0,half);
+  const second=team.slice(half);
+  const n0=first.map(p=>p.name);
+  const n1=second.map(p=>p.name);
+  if(n0.length!==n1.length||!n0.every((n,i)=>n===n1[i]))return team;
+  if(isRematchBlockPattern([first,second]))return team;
+  return first;
+}
+
 /** Iniciales rivales, revancha, Challenge Mode (BW2). */
 function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel){
   const peer=getRematchPeer(trainer,slug);
@@ -390,6 +471,7 @@ function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel){
     team=embedded?embedded[0]:[...(trainer.team||[])];
   }
 
+  team=collapseDuplicatedRoster(team);
   team=applyStarterFilters(team,trainer,slug,starterId);
 
   if(trainerHasDifficultyVariants({team},slug)){
@@ -458,14 +540,19 @@ function resolveTrainerPokemon(tp){
 
 // ── Cargar entrenador al lado B ───────────────────────
 function loadTrainer(){
-  const slug = document.getElementById('sel-game').value;
-  const selTrainer = document.getElementById('sel-trainer');
-  const idx = parseInt(selTrainer.value);
-  if(!slug || isNaN(idx)) return;
+  const slug=document.getElementById('sel-game').value;
+  const selTrainer=document.getElementById('sel-trainer');
+  const val=selTrainer.value;
+  if(!slug||!val)return;
 
-  const sorted = selTrainer._sorted;
-  const trainer = sorted[idx];
-  if(!trainer) return;
+  const sorted=selTrainer._sorted;
+  let trainer=null;
+  if(useApi())trainer=sorted?.find(t=>t.slug===val);
+  else{
+    const idx=parseInt(val);
+    if(!isNaN(idx))trainer=sorted[idx];
+  }
+  if(!trainer)return;
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;
