@@ -65,7 +65,7 @@ function onGameChange(){
   const trainers = TRAINERS_DB.trainers[slug] || [];
   // Ordenar: gym primero (por order), luego elite4 (por order), luego champion
   const sorted = [...trainers].sort((a,b)=>{
-    const typeOrder = {gym:0, kahuna:0, captain:0, elite4:1, champion:2, other:3};
+    const typeOrder = {gym:0, kahuna:0, elite4:1, champion:2, captain:3, other:4};
     const ta = typeOrder[a.type]??3, tb = typeOrder[b.type]??3;
     if(ta !== tb) return ta-tb;
     return (a.order||0)-(b.order||0);

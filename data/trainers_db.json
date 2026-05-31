@@ -11445,8 +11445,8 @@
       },
       {
         "name":"Kukui",
-        "type":"elite4",
-        "order":5,
+        "type":"champion",
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -12201,8 +12201,8 @@
       },
       {
         "name":"Hau",
-        "type":"elite4",
-        "order":5,
+        "type":"champion",
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
