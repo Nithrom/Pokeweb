@@ -2,7 +2,7 @@
   "meta":{
     "source":"pokemondb.net",
     "total_games":20,
-    "total_trainers":268
+    "total_trainers":287
   },
   "games":[
     {
@@ -108,21 +108,14 @@
       "name":"Sol / Luna",
       "gen":7,
       "region":"Alola",
-      "trainer_count":5
+      "trainer_count":14
     },
     {
       "slug":"ultra-sun-ultra-moon",
-      "name":"Sol Ultr. / Luna Ultr.",
+      "name":"Ultra Sol / Ultra Luna",
       "gen":7,
       "region":"Alola",
-      "trainer_count":5
-    },
-    {
-      "slug":"sword-shield",
-      "name":"Espada / Escudo",
-      "gen":8,
-      "region":"Galar",
-      "trainer_count":8
+      "trainer_count":15
     },
     {
       "slug":"lets-go-pikachu-eevee",
@@ -130,6 +123,13 @@
       "gen":7,
       "region":"Kanto",
       "trainer_count":13
+    },
+    {
+      "slug":"sword-shield",
+      "name":"Espada / Escudo",
+      "gen":8,
+      "region":"Galar",
+      "trainer_count":8
     },
     {
       "slug":"brilliant-diamond-shining-pearl",
@@ -693,7 +693,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -1289,7 +1289,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -2291,7 +2291,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"lancedragon",
@@ -3249,7 +3249,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"lancedragon",
@@ -3787,7 +3787,7 @@
       {
         "name":"Steven",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"stevensteel",
@@ -4443,7 +4443,7 @@
       {
         "name":"Wallace",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"wallacewater",
@@ -5095,7 +5095,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -5792,7 +5792,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -6682,7 +6682,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -8386,7 +8386,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"rematchdragon",
@@ -9049,7 +9049,7 @@
       {
         "name":"Alder",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -9691,7 +9691,7 @@
       {
         "name":"Iris",
         "type":"champion",
-        "order":0,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -10264,7 +10264,7 @@
       {
         "name":"Diantha",
         "type":"champion",
-        "order":0,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -10946,7 +10946,7 @@
       {
         "name":"Steven",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"rematchsteel",
@@ -11036,6 +11036,172 @@
       }
     ],
     "sun-moon":[
+      {
+        "name":"Hala",
+        "type":"gym",
+        "order":1,
+        "location":"Iki Town",
+        "badge":"",
+        "specialty":"halafighting",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/hala.jpg",
+        "team":[
+          {
+            "name":"mankey",
+            "name_display":"Mankey",
+            "level":14,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"makuhita",
+            "name_display":"Makuhita",
+            "level":14,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"crabrawler",
+            "name_display":"Crabrawler",
+            "level":15,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Olivia",
+        "type":"gym",
+        "order":2,
+        "location":"Ruins of Life",
+        "badge":"",
+        "specialty":"oliviarock",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/olivia.jpg",
+        "team":[
+          {
+            "name":"nosepass",
+            "name_display":"Nosepass",
+            "level":26,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"boldore",
+            "name_display":"Boldore",
+            "level":26,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"lycanroc",
+            "name_display":"Lycanroc (Midnight Form)",
+            "level":27,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Nanu",
+        "type":"gym",
+        "order":3,
+        "location":"Malie City",
+        "badge":"",
+        "specialty":"nanudark",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/nanu.jpg",
+        "team":[
+          {
+            "name":"sableye",
+            "name_display":"Sableye",
+            "level":38,
+            "types":[
+              "dark",
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"krokorok",
+            "name_display":"Krokorok",
+            "level":38,
+            "types":[
+              "ground",
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"persian",
+            "name_display":"Persian",
+            "level":39,
+            "types":[
+              "normal"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Hapu",
+        "type":"gym",
+        "order":4,
+        "location":"Vast Poni Canyon",
+        "badge":"",
+        "specialty":"hapuground",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/hapu.jpg",
+        "team":[
+          {
+            "name":"dugtrio",
+            "name_display":"Alolan Dugtrio",
+            "level":47,
+            "types":[
+              "ground",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"gastrodon",
+            "name_display":"Gastrodon",
+            "level":47,
+            "types":[
+              "water",
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flygon",
+            "name_display":"Flygon",
+            "level":47,
+            "types":[
+              "ground",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"mudsdale",
+            "name_display":"Mudsdale",
+            "level":48,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          }
+        ]
+      },
       {
         "name":"Hala",
         "type":"elite4",
@@ -11280,7 +11446,7 @@
       {
         "name":"Kukui",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -11365,9 +11531,432 @@
             "moves":[]
           }
         ]
+      },
+      {
+        "name":"Ilima",
+        "type":"gym",
+        "order":1,
+        "location":"",
+        "badge":"",
+        "specialty":"ilimanormal",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/ilima.jpg",
+        "team":[
+          {
+            "name":"gumshoos",
+            "name_display":"Gumshoos",
+            "level":15,
+            "types":[
+              "normal"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"smeargle",
+            "name_display":"Smeargle",
+            "level":14,
+            "types":[
+              "normal"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Lana",
+        "type":"gym",
+        "order":2,
+        "location":"",
+        "badge":"",
+        "specialty":"lanawater",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/lana.jpg",
+        "team":[
+          {
+            "name":"chinchou",
+            "name_display":"Chinchou",
+            "level":26,
+            "types":[
+              "water",
+              "electric"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shellder",
+            "name_display":"Shellder",
+            "level":26,
+            "types":[
+              "water"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"araquanid",
+            "name_display":"Araquanid",
+            "level":27,
+            "types":[
+              "water",
+              "bug"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Kiawe",
+        "type":"gym",
+        "order":3,
+        "location":"",
+        "badge":"",
+        "specialty":"kiawefire",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/kiawe.jpg",
+        "team":[
+          {
+            "name":"growlithe",
+            "name_display":"Growlithe",
+            "level":26,
+            "types":[
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"fletchinder",
+            "name_display":"Fletchinder",
+            "level":26,
+            "types":[
+              "fire",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"marowak",
+            "name_display":"Marowak",
+            "level":27,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Mallow",
+        "type":"gym",
+        "order":4,
+        "location":"",
+        "badge":"",
+        "specialty":"mallowgrass",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/mallow.jpg",
+        "team":[
+          {
+            "name":"phantump",
+            "name_display":"Phantump",
+            "level":26,
+            "types":[
+              "ghost",
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shiinotic",
+            "name_display":"Shiinotic",
+            "level":26,
+            "types":[
+              "grass",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"steenee",
+            "name_display":"Steenee",
+            "level":27,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Mina",
+        "type":"gym",
+        "order":7,
+        "location":"",
+        "badge":"",
+        "specialty":"minafairy",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/mina.jpg",
+        "team":[
+          {
+            "name":"klefki",
+            "name_display":"Klefki",
+            "level":61,
+            "types":[
+              "steel",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"granbull",
+            "name_display":"Granbull",
+            "level":61,
+            "types":[
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shiinotic",
+            "name_display":"Shiinotic",
+            "level":61,
+            "types":[
+              "grass",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"wigglytuff",
+            "name_display":"Wigglytuff",
+            "level":61,
+            "types":[
+              "normal",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"ribombee",
+            "name_display":"Ribombee",
+            "level":61,
+            "types":[
+              "bug",
+              "fairy"
+            ],
+            "moves":[]
+          }
+        ]
       }
     ],
     "ultra-sun-ultra-moon":[
+      {
+        "name":"Hala",
+        "type":"gym",
+        "order":1,
+        "location":"Iki Town",
+        "badge":"",
+        "specialty":"rematchfighting",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/hala.jpg",
+        "team":[
+          {
+            "name":"machop",
+            "name_display":"Machop",
+            "level":15,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"makuhita",
+            "name_display":"Makuhita",
+            "level":15,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"crabrawler",
+            "name_display":"Crabrawler",
+            "level":16,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"hariyama",
+            "name_display":"Hariyama",
+            "level":63,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"machamp",
+            "name_display":"Machamp",
+            "level":63,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"bewear",
+            "name_display":"Bewear",
+            "level":63,
+            "types":[
+              "normal",
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"poliwrath",
+            "name_display":"Poliwrath",
+            "level":63,
+            "types":[
+              "water",
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"crabominable",
+            "name_display":"Crabominable",
+            "level":63,
+            "types":[
+              "fighting",
+              "ice"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Olivia",
+        "type":"gym",
+        "order":2,
+        "location":"Ruins of Life",
+        "badge":"",
+        "specialty":"oliviarock",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/olivia.jpg",
+        "team":[
+          {
+            "name":"anorith",
+            "name_display":"Anorith",
+            "level":27,
+            "types":[
+              "rock",
+              "bug"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"lileep",
+            "name_display":"Lileep",
+            "level":27,
+            "types":[
+              "rock",
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"lycanroc",
+            "name_display":"Lycanroc (Midnight Form)",
+            "level":28,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Nanu",
+        "type":"gym",
+        "order":3,
+        "location":"Malie City",
+        "badge":"",
+        "specialty":"rematchdark",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/nanu.jpg",
+        "team":[
+          {
+            "name":"sableye",
+            "name_display":"Sableye",
+            "level":52,
+            "types":[
+              "dark",
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"absol",
+            "name_display":"Absol",
+            "level":52,
+            "types":[
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"persian",
+            "name_display":"Persian",
+            "level":53,
+            "types":[
+              "normal"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Hapu",
+        "type":"gym",
+        "order":4,
+        "location":"Exeggutor Island",
+        "badge":"",
+        "specialty":"hapuground",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/hapu.jpg",
+        "team":[
+          {
+            "name":"golurk",
+            "name_display":"Golurk",
+            "level":53,
+            "types":[
+              "ground",
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"gastrodon",
+            "name_display":"Gastrodon",
+            "level":53,
+            "types":[
+              "water",
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flygon",
+            "name_display":"Flygon",
+            "level":53,
+            "types":[
+              "ground",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"mudsdale",
+            "name_display":"Mudsdale",
+            "level":54,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          }
+        ]
+      },
       {
         "name":"Molayne",
         "type":"elite4",
@@ -11613,7 +12202,7 @@
       {
         "name":"Hau",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -11715,560 +12304,39 @@
             "moves":[]
           }
         ]
-      }
-    ],
-    "sword-shield":[
+      },
       {
-        "name":"Milo",
+        "name":"Ilima",
         "type":"gym",
         "order":1,
-        "location":"Turffield",
+        "location":"",
         "badge":"",
-        "specialty":"rematchgrass",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/milo.jpg",
+        "specialty":"rematchnormal",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/ilima.jpg",
         "team":[
           {
-            "name":"gossifleur",
-            "name_display":"Gossifleur",
-            "level":19,
+            "name":"gumshoos",
+            "name_display":"Gumshoos",
+            "level":51,
             "types":[
-              "grass"
+              "normal"
             ],
             "moves":[]
           },
           {
-            "name":"eldegoss",
-            "name_display":"Eldegoss",
-            "level":20,
+            "name":"smeargle",
+            "name_display":"Smeargle",
+            "level":51,
             "types":[
-              "grass"
+              "normal"
             ],
             "moves":[]
           },
           {
-            "name":"shiftry",
-            "name_display":"Shiftry",
-            "level":60,
+            "name":"komala",
+            "name_display":"Komala",
+            "level":51,
             "types":[
-              "grass",
-              "dark"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"bellossom",
-            "name_display":"Bellossom",
-            "level":61,
-            "types":[
-              "grass"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"cherrim",
-            "name_display":"Cherrim",
-            "level":61,
-            "types":[
-              "grass"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"flapple",
-            "name_display":"Flapple",
-            "level":62,
-            "types":[
-              "grass",
-              "dragon"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Nessa",
-        "type":"gym",
-        "order":2,
-        "location":"Hulbury",
-        "badge":"",
-        "specialty":"rematchwater",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/nessa.jpg",
-        "team":[
-          {
-            "name":"goldeen",
-            "name_display":"Goldeen",
-            "level":22,
-            "types":[
-              "water"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"arrokuda",
-            "name_display":"Arrokuda",
-            "level":23,
-            "types":[
-              "water"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"drednaw",
-            "name_display":"Drednaw",
-            "level":24,
-            "types":[
-              "water",
-              "rock"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"golisopod",
-            "name_display":"Golisopod",
-            "level":60,
-            "types":[
-              "bug",
-              "water"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"pelipper",
-            "name_display":"Pelipper",
-            "level":60,
-            "types":[
-              "water",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"quagsire",
-            "name_display":"Quagsire",
-            "level":61,
-            "types":[
-              "water",
-              "ground"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"toxapex",
-            "name_display":"Toxapex",
-            "level":61,
-            "types":[
-              "poison",
-              "water"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Kabu",
-        "type":"gym",
-        "order":3,
-        "location":"Motostoke",
-        "badge":"",
-        "specialty":"rematchfire",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/kabu.jpg",
-        "team":[
-          {
-            "name":"ninetales",
-            "name_display":"Ninetales",
-            "level":25,
-            "types":[
-              "fire"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"arcanine",
-            "name_display":"Arcanine",
-            "level":25,
-            "types":[
-              "fire"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"centiskorch",
-            "name_display":"Centiskorch",
-            "level":27,
-            "types":[
-              "fire",
-              "bug"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"torkoal",
-            "name_display":"Torkoal",
-            "level":60,
-            "types":[
-              "fire"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"salazzle",
-            "name_display":"Salazzle",
-            "level":61,
-            "types":[
-              "poison",
-              "fire"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Bea",
-        "type":"gym",
-        "order":4,
-        "location":"Stow-on-Side",
-        "badge":"",
-        "specialty":"ghost",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/bea.jpg",
-        "team":[
-          {
-            "name":"hitmontop",
-            "name_display":"Hitmontop",
-            "level":34,
-            "types":[
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"pangoro",
-            "name_display":"Pangoro",
-            "level":34,
-            "types":[
-              "fighting",
-              "dark"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"sirfetchd",
-            "name_display":"Sirfetch'd",
-            "level":35,
-            "types":[
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"machamp",
-            "name_display":"Machamp",
-            "level":36,
-            "types":[
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"hawlucha",
-            "name_display":"Hawlucha",
-            "level":60,
-            "types":[
-              "fighting",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"grapploct",
-            "name_display":"Grapploct",
-            "level":60,
-            "types":[
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"falinks",
-            "name_display":"Falinks",
-            "level":61,
-            "types":[
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"yamask",
-            "name_display":"Galarian Yamask",
-            "level":34,
-            "types":[
-              "ground",
-              "ghost"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"mimikyu",
-            "name_display":"Mimikyu",
-            "level":34,
-            "types":[
-              "ghost",
-              "fairy"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"cursola",
-            "name_display":"Cursola",
-            "level":35,
-            "types":[
-              "ghost"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"gengar",
-            "name_display":"Gengar",
-            "level":36,
-            "types":[
-              "ghost",
-              "poison"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"dusknoir",
-            "name_display":"Dusknoir",
-            "level":60,
-            "types":[
-              "ghost"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"chandelure",
-            "name_display":"Chandelure",
-            "level":60,
-            "types":[
-              "ghost",
-              "fire"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"runerigus",
-            "name_display":"Runerigus",
-            "level":61,
-            "types":[
-              "ground",
-              "ghost"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Opal",
-        "type":"gym",
-        "order":5,
-        "location":"Ballonlea",
-        "badge":"",
-        "specialty":"badgefairy",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/opal.jpg",
-        "team":[
-          {
-            "name":"weezing",
-            "name_display":"Galarian Weezing",
-            "level":36,
-            "types":[
-              "poison",
-              "fairy"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"mawile",
-            "name_display":"Mawile",
-            "level":36,
-            "types":[
-              "steel",
-              "fairy"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"togekiss",
-            "name_display":"Togekiss",
-            "level":37,
-            "types":[
-              "fairy",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"alcremie",
-            "name_display":"Alcremie",
-            "level":38,
-            "types":[
-              "fairy"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Gordie",
-        "type":"gym",
-        "order":6,
-        "location":"Circhester",
-        "badge":"",
-        "specialty":"ice",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/gordie.jpg",
-        "team":[
-          {
-            "name":"barbaracle",
-            "name_display":"Barbaracle",
-            "level":40,
-            "types":[
-              "rock",
-              "water"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"shuckle",
-            "name_display":"Shuckle",
-            "level":40,
-            "types":[
-              "bug",
-              "rock"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"stonjourner",
-            "name_display":"Stonjourner",
-            "level":41,
-            "types":[
-              "rock"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"coalossal",
-            "name_display":"Coalossal",
-            "level":42,
-            "types":[
-              "rock",
-              "fire"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"tyranitar",
-            "name_display":"Tyranitar",
-            "level":61,
-            "types":[
-              "rock",
-              "dark"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"frosmoth",
-            "name_display":"Frosmoth",
-            "level":40,
-            "types":[
-              "ice",
-              "bug"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"darmanitan",
-            "name_display":"Darmanitan (Galarian Standard Mode)",
-            "level":40,
-            "types":[
-              "ice"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"eiscue",
-            "name_display":"Eiscue (Ice Face)",
-            "level":41,
-            "types":[
-              "ice"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"lapras",
-            "name_display":"Lapras",
-            "level":42,
-            "types":[
-              "water",
-              "ice"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"mr-rime",
-            "name_display":"Mr. Rime",
-            "level":60,
-            "types":[
-              "ice",
-              "psychic"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Piers",
-        "type":"gym",
-        "order":7,
-        "location":"Spikemuth",
-        "badge":"",
-        "specialty":"badgedark",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/piers.jpg",
-        "team":[
-          {
-            "name":"scrafty",
-            "name_display":"Scrafty",
-            "level":44,
-            "types":[
-              "dark",
-              "fighting"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"malamar",
-            "name_display":"Malamar",
-            "level":45,
-            "types":[
-              "dark",
-              "psychic"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"skuntank",
-            "name_display":"Skuntank",
-            "level":45,
-            "types":[
-              "poison",
-              "dark"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"obstagoon",
-            "name_display":"Obstagoon",
-            "level":46,
-            "types":[
-              "dark",
               "normal"
             ],
             "moves":[]
@@ -12276,77 +12344,220 @@
         ]
       },
       {
-        "name":"Raihan",
+        "name":"Lana",
         "type":"gym",
-        "order":8,
-        "location":"Hammerlocke",
+        "order":2,
+        "location":"",
         "badge":"",
-        "specialty":"rematchdragon",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/raihan.jpg",
+        "specialty":"rematchwater",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/lana.jpg",
         "team":[
           {
-            "name":"gigalith",
-            "name_display":"Gigalith",
-            "level":46,
+            "name":"lanturn",
+            "name_display":"Lanturn",
+            "level":51,
             "types":[
-              "rock"
+              "water",
+              "electric"
             ],
             "moves":[]
           },
           {
-            "name":"flygon",
-            "name_display":"Flygon",
-            "level":47,
+            "name":"cloyster",
+            "name_display":"Cloyster",
+            "level":51,
             "types":[
-              "ground",
-              "dragon"
+              "water",
+              "ice"
             ],
             "moves":[]
           },
           {
-            "name":"sandaconda",
-            "name_display":"Sandaconda",
-            "level":46,
+            "name":"araquanid",
+            "name_display":"Araquanid",
+            "level":51,
             "types":[
-              "ground"
+              "water",
+              "bug"
             ],
             "moves":[]
-          },
+          }
+        ]
+      },
+      {
+        "name":"Kiawe",
+        "type":"gym",
+        "order":3,
+        "location":"",
+        "badge":"",
+        "specialty":"rematchfire",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/kiawe.jpg",
+        "team":[
           {
-            "name":"duraludon",
-            "name_display":"Duraludon",
-            "level":48,
-            "types":[
-              "steel",
-              "dragon"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"torkoal",
-            "name_display":"Torkoal",
-            "level":60,
+            "name":"arcanine",
+            "name_display":"Arcanine",
+            "level":51,
             "types":[
               "fire"
             ],
             "moves":[]
           },
           {
-            "name":"goodra",
-            "name_display":"Goodra",
-            "level":60,
+            "name":"talonflame",
+            "name_display":"Talonflame",
+            "level":51,
             "types":[
-              "dragon"
+              "fire",
+              "flying"
             ],
             "moves":[]
           },
           {
-            "name":"turtonator",
-            "name_display":"Turtonator",
+            "name":"marowak",
+            "name_display":"Marowak",
+            "level":51,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Mallow",
+        "type":"gym",
+        "order":4,
+        "location":"",
+        "badge":"",
+        "specialty":"rematchgrass",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/mallow.jpg",
+        "team":[
+          {
+            "name":"trevenant",
+            "name_display":"Trevenant",
+            "level":51,
+            "types":[
+              "ghost",
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shiinotic",
+            "name_display":"Shiinotic",
+            "level":51,
+            "types":[
+              "grass",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"tsareena",
+            "name_display":"Tsareena",
+            "level":51,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Sophocles",
+        "type":"gym",
+        "order":5,
+        "location":"",
+        "badge":"",
+        "specialty":"rematchelectric",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/sophocles.jpg",
+        "team":[
+          {
+            "name":"togedemaru",
+            "name_display":"Togedemaru",
             "level":61,
             "types":[
-              "fire",
-              "dragon"
+              "electric",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"magnezone",
+            "name_display":"Magnezone",
+            "level":61,
+            "types":[
+              "electric",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"golem",
+            "name_display":"Alolan Golem",
+            "level":61,
+            "types":[
+              "rock",
+              "electric"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"electivire",
+            "name_display":"Electivire",
+            "level":67,
+            "types":[
+              "electric"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"vikavolt",
+            "name_display":"Vikavolt",
+            "level":67,
+            "types":[
+              "bug",
+              "electric"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Mina",
+        "type":"gym",
+        "order":7,
+        "location":"",
+        "badge":"",
+        "specialty":"minafairy",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/mina.jpg",
+        "team":[
+          {
+            "name":"mawile",
+            "name_display":"Mawile",
+            "level":51,
+            "types":[
+              "steel",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"granbull",
+            "name_display":"Granbull",
+            "level":51,
+            "types":[
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"ribombee",
+            "name_display":"Ribombee",
+            "level":51,
+            "types":[
+              "bug",
+              "fairy"
             ],
             "moves":[]
           }
@@ -13192,7 +13403,7 @@
       {
         "name":"Trace",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -13261,6 +13472,642 @@
             "level":57,
             "types":[
               "electric"
+            ],
+            "moves":[]
+          }
+        ]
+      }
+    ],
+    "sword-shield":[
+      {
+        "name":"Milo",
+        "type":"gym",
+        "order":1,
+        "location":"Turffield",
+        "badge":"",
+        "specialty":"rematchgrass",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/milo.jpg",
+        "team":[
+          {
+            "name":"gossifleur",
+            "name_display":"Gossifleur",
+            "level":19,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"eldegoss",
+            "name_display":"Eldegoss",
+            "level":20,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shiftry",
+            "name_display":"Shiftry",
+            "level":60,
+            "types":[
+              "grass",
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"bellossom",
+            "name_display":"Bellossom",
+            "level":61,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"cherrim",
+            "name_display":"Cherrim",
+            "level":61,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flapple",
+            "name_display":"Flapple",
+            "level":62,
+            "types":[
+              "grass",
+              "dragon"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Nessa",
+        "type":"gym",
+        "order":2,
+        "location":"Hulbury",
+        "badge":"",
+        "specialty":"rematchwater",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/nessa.jpg",
+        "team":[
+          {
+            "name":"goldeen",
+            "name_display":"Goldeen",
+            "level":22,
+            "types":[
+              "water"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"arrokuda",
+            "name_display":"Arrokuda",
+            "level":23,
+            "types":[
+              "water"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"drednaw",
+            "name_display":"Drednaw",
+            "level":24,
+            "types":[
+              "water",
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"golisopod",
+            "name_display":"Golisopod",
+            "level":60,
+            "types":[
+              "bug",
+              "water"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"pelipper",
+            "name_display":"Pelipper",
+            "level":60,
+            "types":[
+              "water",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"quagsire",
+            "name_display":"Quagsire",
+            "level":61,
+            "types":[
+              "water",
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"toxapex",
+            "name_display":"Toxapex",
+            "level":61,
+            "types":[
+              "poison",
+              "water"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Kabu",
+        "type":"gym",
+        "order":3,
+        "location":"Motostoke",
+        "badge":"",
+        "specialty":"rematchfire",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/kabu.jpg",
+        "team":[
+          {
+            "name":"ninetales",
+            "name_display":"Ninetales",
+            "level":25,
+            "types":[
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"arcanine",
+            "name_display":"Arcanine",
+            "level":25,
+            "types":[
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"centiskorch",
+            "name_display":"Centiskorch",
+            "level":27,
+            "types":[
+              "fire",
+              "bug"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"torkoal",
+            "name_display":"Torkoal",
+            "level":60,
+            "types":[
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"salazzle",
+            "name_display":"Salazzle",
+            "level":61,
+            "types":[
+              "poison",
+              "fire"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Bea",
+        "type":"gym",
+        "order":4,
+        "location":"Stow-on-Side",
+        "badge":"",
+        "specialty":"ghost",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/bea.jpg",
+        "team":[
+          {
+            "name":"hitmontop",
+            "name_display":"Hitmontop",
+            "level":34,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"pangoro",
+            "name_display":"Pangoro",
+            "level":34,
+            "types":[
+              "fighting",
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"sirfetchd",
+            "name_display":"Sirfetch'd",
+            "level":35,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"machamp",
+            "name_display":"Machamp",
+            "level":36,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"hawlucha",
+            "name_display":"Hawlucha",
+            "level":60,
+            "types":[
+              "fighting",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"grapploct",
+            "name_display":"Grapploct",
+            "level":60,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"falinks",
+            "name_display":"Falinks",
+            "level":61,
+            "types":[
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"yamask",
+            "name_display":"Galarian Yamask",
+            "level":34,
+            "types":[
+              "ground",
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"mimikyu",
+            "name_display":"Mimikyu",
+            "level":34,
+            "types":[
+              "ghost",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"cursola",
+            "name_display":"Cursola",
+            "level":35,
+            "types":[
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"gengar",
+            "name_display":"Gengar",
+            "level":36,
+            "types":[
+              "ghost",
+              "poison"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"dusknoir",
+            "name_display":"Dusknoir",
+            "level":60,
+            "types":[
+              "ghost"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"chandelure",
+            "name_display":"Chandelure",
+            "level":60,
+            "types":[
+              "ghost",
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"runerigus",
+            "name_display":"Runerigus",
+            "level":61,
+            "types":[
+              "ground",
+              "ghost"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Opal",
+        "type":"gym",
+        "order":5,
+        "location":"Ballonlea",
+        "badge":"",
+        "specialty":"badgefairy",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/opal.jpg",
+        "team":[
+          {
+            "name":"weezing",
+            "name_display":"Galarian Weezing",
+            "level":36,
+            "types":[
+              "poison",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"mawile",
+            "name_display":"Mawile",
+            "level":36,
+            "types":[
+              "steel",
+              "fairy"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"togekiss",
+            "name_display":"Togekiss",
+            "level":37,
+            "types":[
+              "fairy",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"alcremie",
+            "name_display":"Alcremie",
+            "level":38,
+            "types":[
+              "fairy"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Gordie",
+        "type":"gym",
+        "order":6,
+        "location":"Circhester",
+        "badge":"",
+        "specialty":"ice",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/gordie.jpg",
+        "team":[
+          {
+            "name":"barbaracle",
+            "name_display":"Barbaracle",
+            "level":40,
+            "types":[
+              "rock",
+              "water"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"shuckle",
+            "name_display":"Shuckle",
+            "level":40,
+            "types":[
+              "bug",
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"stonjourner",
+            "name_display":"Stonjourner",
+            "level":41,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"coalossal",
+            "name_display":"Coalossal",
+            "level":42,
+            "types":[
+              "rock",
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"tyranitar",
+            "name_display":"Tyranitar",
+            "level":61,
+            "types":[
+              "rock",
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"frosmoth",
+            "name_display":"Frosmoth",
+            "level":40,
+            "types":[
+              "ice",
+              "bug"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"darmanitan",
+            "name_display":"Darmanitan (Galarian Standard Mode)",
+            "level":40,
+            "types":[
+              "ice"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"eiscue",
+            "name_display":"Eiscue (Ice Face)",
+            "level":41,
+            "types":[
+              "ice"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"lapras",
+            "name_display":"Lapras",
+            "level":42,
+            "types":[
+              "water",
+              "ice"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"mr-rime",
+            "name_display":"Mr. Rime",
+            "level":60,
+            "types":[
+              "ice",
+              "psychic"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Piers",
+        "type":"gym",
+        "order":7,
+        "location":"Spikemuth",
+        "badge":"",
+        "specialty":"badgedark",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/piers.jpg",
+        "team":[
+          {
+            "name":"scrafty",
+            "name_display":"Scrafty",
+            "level":44,
+            "types":[
+              "dark",
+              "fighting"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"malamar",
+            "name_display":"Malamar",
+            "level":45,
+            "types":[
+              "dark",
+              "psychic"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"skuntank",
+            "name_display":"Skuntank",
+            "level":45,
+            "types":[
+              "poison",
+              "dark"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"obstagoon",
+            "name_display":"Obstagoon",
+            "level":46,
+            "types":[
+              "dark",
+              "normal"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Raihan",
+        "type":"gym",
+        "order":8,
+        "location":"Hammerlocke",
+        "badge":"",
+        "specialty":"rematchdragon",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/swsh/raihan.jpg",
+        "team":[
+          {
+            "name":"gigalith",
+            "name_display":"Gigalith",
+            "level":46,
+            "types":[
+              "rock"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flygon",
+            "name_display":"Flygon",
+            "level":47,
+            "types":[
+              "ground",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"sandaconda",
+            "name_display":"Sandaconda",
+            "level":46,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"duraludon",
+            "name_display":"Duraludon",
+            "level":48,
+            "types":[
+              "steel",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"torkoal",
+            "name_display":"Torkoal",
+            "level":60,
+            "types":[
+              "fire"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"goodra",
+            "name_display":"Goodra",
+            "level":60,
+            "types":[
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"turtonator",
+            "name_display":"Turtonator",
+            "level":61,
+            "types":[
+              "fire",
+              "dragon"
             ],
             "moves":[]
           }
@@ -14342,7 +15189,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -15514,7 +16361,7 @@
       {
         "name":"Geeta",
         "type":"champion",
-        "order":0,
+        "order":5,
         "location":"",
         "badge":"",
         "specialty":"",
