@@ -4,6 +4,12 @@
 // ══════════════════════════════════════════════════════
 
 let TRAINERS_DB = null;
+/** Caché de equipos canónicos (evita mezclar Rojo/Azul con Amarillo vía API/SQL desactualizado). */
+let _trainersJsonCache = null;
+
+/** Gen 2 / HGSS: gimnasios Johto (orden 1–8) y revancha Kanto (9–16). */
+const DUAL_REGION_GYM_GAMES=new Set(['gold-silver','crystal','heartgold-soulsilver']);
+const KANTO_GYM_ORDER_MIN=9;
 
 // Iniciales por generación (tu elección → equipo rival según el juego)
 const GEN_STARTERS={
@@ -48,7 +54,131 @@ const RIVAL_COUNTER_BY_GEN={
 const HAU_EEVEELUTION={rowlet:'flareon',litten:'vaporeon',popplio:'leafeon'};
 const EEVEELUTIONS=new Set(['vaporeon','jolteon','flareon','espeon','umbreon','leafeon','glaceon','sylveon']);
 
+/** Slugs sin guión (scrape) → slug en pokemon_db / moves */
+const MOVE_SLUG_ALIASES={
+  thundershock:'thunder-shock',
+  thunderpunch:'thunder-punch',
+  poisonpowder:'poison-powder',
+  sonicboom:'sonic-boom',
+  doubleslap:'double-slap',
+  doublekick:'double-kick',
+  selfdestruct:'self-destruct',
+  smokescreen:'smoke-screen',
+  bubblebeam:'bubble-beam',
+  hijumpkick:'high-jump-kick',
+  'hi-jump-kick':'high-jump-kick',
+  pinmissile:'pin-missile',
+  sonicboom:'sonic-boom',
+  thundershock:'thunder-shock',
+  dynamicpunch:'dynamic-punch',
+  dragonbreath:'dragon-breath',
+  smokescreen:'smoke-screen',
+  sandattack:'sand-attack',
+  faintattack:'feint-attack',
+  ancientpower:'ancient-power',
+  stringshot:'string-shot',
+  solarbeam:'solar-beam',
+  extremespeed:'extreme-speed',
+  lightscreen:'light-screen',
+  psychup:'psych-up',
+  perishsong:'perish-song',
+  zapcannon:'zap-cannon',
+  lockon:'lock-on',
+  mirrormove:'mirror-move',
+  cottonspore:'cotton-spore',
+  scaryface:'scary-face',
+  spikecannon:'spike-cannon',
+  defensecurl:'defense-curl',
+  horndrill:'horn-drill',
+  firespin:'fire-spin',
+  fireblast:'fire-blast',
+  hydropump:'hydro-pump',
+  gigadrain:'giga-drain',
+  megadrain:'mega-drain',
+  leechseed:'leech-seed',
+  sleeppowder:'sleep-powder',
+  razorleaf:'razor-leaf',
+  vinewhip:'vine-whip',
+  petaldance:'petal-dance',
+  sunnyday:'sunny-day',
+  raindance:'rain-dance',
+  batonpass:'baton-pass',
+  futuresight:'future-sight',
+  shockwave:'shock-wave',
+  rocktomb:'rock-tomb',
+  armthrust:'arm-thrust',
+  bulkup:'bulk-up',
+  focusenergy:'focus-energy',
+  overheat:'overheat',
+  facade:'facade',
+  teeterdance:'teeter-dance',
+  bellydrum:'belly-drum',
+  slackoff:'slack-off',
+  aerialace:'aerial-ace',
+  endeavor:'endeavor',
+  steelwing:'steel-wing',
+  dragondance:'dragon-dance',
+  calmind:'calm-mind',
+  waterpulse:'water-pulse',
+  sweetkiss:'sweet-kiss',
+  needlearm:'needle-arm',
+  shadowpunch:'shadow-punch',
+  skillswap:'skill-swap',
+  willowisp:'will-o-wisp',
+  iceball:'ice-ball',
+  sheercold:'sheer-cold',
+  meteormash:'meteor-mash',
+  dragonclaw:'dragon-claw',
+  doubleedge:'double-edge',
+  extrasensory:'extrasensory',
+  fakeout:'fake-out',
+  swordsdance:'swords-dance',
+  focuspunch:'focus-punch',
+  hiddenpower:'hidden-power',
+  waterspout:'water-spout',
+  crabhammer:'crabhammer',
+  magnitude:'magnitude',
+  dragondance:'dragon-dance',
+  rapidspin:'rapid-spin',
+  sweetscent:'sweet-scent',
+  megahorn:'megahorn',
+  spikecannon:'spike-cannon',
+  slackoff:'slack-off',
+  megakick:'mega-kick',
+  crosschop:'cross-chop',
+  poisonfang:'poison-fang',
+  leechlife:'leech-life',
+  solarbeam:'solar-beam',
+};
+
+const YELLOW_BLUE_EEVEELUTIONS=[
+  {id:'vaporeon',label:'Vaporeon'},
+  {id:'jolteon',label:'Jolteon'},
+  {id:'flareon',label:'Flareon'},
+];
+
+function needsYellowBlueEeveelution(trainer,slug){
+  return slug==='yellow'&&trainer?.name==='Blue'&&trainer?.type==='champion'
+    &&!!(trainer.teamByEeveelution&&Object.keys(trainer.teamByEeveelution).length);
+}
+
 const MAX_TEAM=6;
+
+function normalizeMoveSlug(name){
+  if(!name)return name;
+  const k=name.toLowerCase().replace(/\s+/g,'');
+  return MOVE_SLUG_ALIASES[k]||MOVE_SLUG_ALIASES[name]||name;
+}
+
+function getTrainerBaseTeam(trainer,starterId,slug,eeveelutionId){
+  if(needsYellowBlueEeveelution(trainer,slug)&&eeveelutionId&&trainer.teamByEeveelution[eeveelutionId]){
+    return JSON.parse(JSON.stringify(trainer.teamByEeveelution[eeveelutionId]));
+  }
+  if(trainer?.teamByStarter&&starterId&&trainer.teamByStarter[starterId]){
+    return JSON.parse(JSON.stringify(trainer.teamByStarter[starterId]));
+  }
+  return JSON.parse(JSON.stringify(trainer?.team||[]));
+}
 
 const DIFFICULTY_LEVEL_GAP=3;
 /** Challenge Mode con equipos distintos (Gen 5). */
@@ -123,7 +253,11 @@ function getEmbeddedRematchBlocks(team){
 function trainerHasRematchVariants(trainer,slug){
   if(!trainer)return false;
   if(getRematchPeer(trainer,slug))return true;
-  return!!getEmbeddedRematchBlocks(trainer.team||[]);
+  const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
+  if(!embedded)return false;
+  // Equipo embebido en un solo JSON: liga/campeón/rival, no gimnasios (evita falsos positivos scrape)
+  if(['gym','kahuna','captain'].includes(trainer.type))return false;
+  return true;
 }
 
 /** Challenge real: solo BW2; primer bloque sin especies repetidas; no es patrón de revancha. */
@@ -141,22 +275,37 @@ function trainerHasDifficultyVariants(trainer,slug){
   return blocks[1].length>b0.length||[...n0].some(n=>n1.has(n));
 }
 
+function isOptionalSelectorActive(idPrefix){
+  const group=document.getElementById(`sel-${idPrefix}-group`);
+  return !!(group&&!group.hasAttribute('hidden'));
+}
+
+function setOptionalSelectorVisible(idPrefix,show){
+  const group=document.getElementById(`sel-${idPrefix}-group`);
+  const arrow=document.getElementById(`arrow-before-${idPrefix}`);
+  const sel=document.getElementById(`sel-${idPrefix}`);
+  for(const el of [group,arrow]){
+    if(!el)continue;
+    if(show){
+      el.removeAttribute('hidden');
+      el.removeAttribute('aria-hidden');
+    }else{
+      el.setAttribute('hidden','');
+      el.setAttribute('aria-hidden','true');
+    }
+  }
+  if(sel){
+    sel.disabled=!show;
+    if(!show)sel.value=idPrefix==='rematch'?'first':'normal';
+  }
+}
+
 function setRematchSelectorVisible(show){
-  const group=document.getElementById('sel-rematch-group');
-  const arrow=document.getElementById('arrow-before-rematch');
-  const sel=document.getElementById('sel-rematch');
-  if(group)group.hidden=!show;
-  if(arrow)arrow.hidden=!show;
-  if(sel)sel.disabled=!show;
+  setOptionalSelectorVisible('rematch',show);
 }
 
 function setDifficultySelectorVisible(show){
-  const group=document.getElementById('sel-difficulty-group');
-  const arrow=document.getElementById('arrow-before-difficulty');
-  const sel=document.getElementById('sel-difficulty');
-  if(group)group.hidden=!show;
-  if(arrow)arrow.hidden=!show;
-  if(sel)sel.disabled=!show;
+  setOptionalSelectorVisible('difficulty',show);
 }
 
 function resetRematchSelector(){
@@ -205,13 +354,43 @@ function buildDifficultySelector(slug,trainer){
   sel.onchange=updateLoadTrainerButton;
 }
 
-/** Revancha y dificultad por separado: solo los que apliquen al entrenador. */
+function resetEeveelutionSelector(){
+  const sel=document.getElementById('sel-eeveelution');
+  if(sel){
+    sel.value='vaporeon';
+    sel.onchange=onEeveelutionChange;
+  }
+  setOptionalSelectorVisible('eeveelution',false);
+}
+
+function buildEeveelutionSelector(slug,trainer){
+  if(!needsYellowBlueEeveelution(trainer,slug)){
+    resetEeveelutionSelector();
+    return;
+  }
+  const sel=document.getElementById('sel-eeveelution');
+  setOptionalSelectorVisible('eeveelution',true);
+  sel.innerHTML=YELLOW_BLUE_EEVEELUTIONS.map(e=>
+    `<option value="${e.id}">${e.label}</option>`).join('');
+  if(!sel.value||!trainer.teamByEeveelution[sel.value])sel.value='vaporeon';
+  sel.onchange=onEeveelutionChange;
+}
+
+function onEeveelutionChange(){
+  updateLoadTrainerButton();
+  const selTrainer=document.getElementById('sel-trainer');
+  if(selTrainer?.value)loadTrainer();
+}
+
+/** Revancha, dificultad y Eeveelución (Blue/Yellow): solo si aplican. */
 function buildTrainerOptionSelectors(slug,trainer){
   resetRematchSelector();
   resetDifficultySelector();
+  resetEeveelutionSelector();
   if(!trainer||!slug)return;
   if(trainerHasRematchVariants(trainer,slug))buildRematchSelector(slug,trainer);
   if(trainerHasDifficultyVariants(trainer,slug))buildDifficultySelector(slug,trainer);
+  buildEeveelutionSelector(slug,trainer);
 }
 
 function updateLoadTrainerButton(){
@@ -222,29 +401,139 @@ function updateLoadTrainerButton(){
   const needsStarter=!!slug&&!!GEN_STARTERS[gen];
   const starterOk=!needsStarter||!!starterEl.value;
   const trainerOk=!!trainerVal&&(useApi()||!isNaN(parseInt(trainerVal)));
-  document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk);
+  const eeveeOk=!isOptionalSelectorActive('eeveelution')
+    ||!!document.getElementById('sel-eeveelution')?.value;
+  document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk&&eeveeOk);
 }
 
-function normalizeTrainerFromApi(t){
+async function ensureTrainersJson(){
+  if(_trainersJsonCache)return _trainersJsonCache;
+  const res=await fetch('data/trainers_db.json?rev=frlg-teams-1');
+  if(!res.ok)throw new Error('No trainers_db.json');
+  _trainersJsonCache=await res.json();
+  return _trainersJsonCache;
+}
+
+function findJsonTrainer(json,gameSlug,trainer){
+  const list=json?.trainers?.[gameSlug]||[];
+  return list.find(t=>
+    t.name===trainer.name&&
+    t.type===trainer.type&&
+    (t.order||0)===(trainer.order||0)
+  )||list.find(t=>t.name===trainer.name&&t.type===trainer.type);
+}
+
+function applyJsonTeam(trainer,gameSlug,json){
+  if(!json||!trainer)return trainer;
+  const jt=findJsonTrainer(json,gameSlug,trainer);
+  if(!jt)return trainer;
+  return{
+    ...trainer,
+    location:jt.location||trainer.location,
+    sprite:jt.sprite||trainer.sprite,
+    team:JSON.parse(JSON.stringify(jt.team||[])),
+    teamByStarter:jt.teamByStarter
+      ?JSON.parse(JSON.stringify(jt.teamByStarter))
+      :trainer.teamByStarter,
+    teamByEeveelution:jt.teamByEeveelution
+      ?JSON.parse(JSON.stringify(jt.teamByEeveelution))
+      :trainer.teamByEeveelution,
+  };
+}
+
+function trainerOptionValue(gameSlug,trainer){
+  return useApi()&&trainer.slug?`${gameSlug}/${trainer.slug}`:null;
+}
+
+function gymLeaderRegion(trainer,gameSlug){
+  if(trainer?.region==='johto'||trainer?.region==='kanto')return trainer.region;
+  if(!DUAL_REGION_GYM_GAMES.has(gameSlug)||trainer?.type!=='gym')return null;
+  const o=trainer.order||0;
+  if(o>=KANTO_GYM_ORDER_MIN)return 'kanto';
+  if(o>=1)return 'johto';
+  return null;
+}
+
+const TRAINER_TYPE_SORT={gym:0,kahuna:0,elite4:1,champion:2,captain:3,other:4};
+
+function compareTrainers(a,b,gameSlug){
+  const ta=TRAINER_TYPE_SORT[a.type]??4;
+  const tb=TRAINER_TYPE_SORT[b.type]??4;
+  if(ta!==tb)return ta-tb;
+  const ra=gymLeaderRegion(a,gameSlug);
+  const rb=gymLeaderRegion(b,gameSlug);
+  if(ra&&rb&&ra!==rb)return ra==='johto'?-1:1;
+  return(a.order||0)-(b.order||0);
+}
+
+function trainerSelectGroupKey(trainer,gameSlug){
+  if(trainer.type==='gym'){
+    const region=gymLeaderRegion(trainer,gameSlug);
+    if(region)return `gym-${region}`;
+  }
+  return trainer.type||'other';
+}
+
+function trainerSelectGroupLabel(groupKey){
+  const labels={
+    'gym-johto':'── Líderes de Gimnasio (Johto) ──',
+    'gym-kanto':'── Líderes de Gimnasio (Kanto) ──',
+    gym:'── Líderes de Gimnasio ──',
+    kahuna:'── Kahunas ──',
+    captain:'── Capitanes ──',
+    elite4:'── Alto Mando ──',
+    champion:'── Campeón ──',
+    other:'── Otros ──',
+  };
+  return labels[groupKey]||groupKey;
+}
+
+function findTrainerInSorted(sorted,gameSlug,val){
+  if(!val||!sorted)return null;
+  if(useApi()){
+    const key=val.includes('/')?val:`${gameSlug}/${val}`;
+    return sorted.find(t=>trainerOptionValue(gameSlug,t)===key)||null;
+  }
+  const idx=parseInt(val);
+  return !isNaN(idx)?sorted[idx]:null;
+}
+
+function parseTeamByEeveelution(t,slug){
+  if(t.teamByEeveelution)return t.teamByEeveelution;
+  const s=t.team_by_starter;
+  if(slug==='yellow'&&t.name==='Blue'&&s?.vaporeon){
+    return{vaporeon:s.vaporeon,jolteon:s.jolteon,flareon:s.flareon};
+  }
+  return null;
+}
+
+function normalizeTrainerFromApi(t,gameSlug){
   return{
     id:t.id,
     slug:t.slug,
+    gameSlug:gameSlug||t.game_slug||'',
     name:t.name,
     type:t.type,
     order:t.order,
+    region:t.region||null,
     location:t.location||'',
     badge:t.badge||'',
     specialty:t.specialty||'',
     sprite:t.sprite,
+    teamByStarter:t.teamByStarter||t.team_by_starter||null,
+    teamByEeveelution:parseTeamByEeveelution(t,gameSlug),
     team:(t.team||[]).map(m=>({
       name:m.name,
       name_display:m.name_es||formatName(m.name),
       level:m.level,
       types:m.types_en||m.types||[],
-      moves:(m.moves||[]).map(mv=>({
-        name:mv.name,
-        name_display:mv.name_es||mv.name_display||formatName(mv.name),
-      })),
+      moves:(m.moves||[]).map(mv=>{
+        const slug=normalizeMoveSlug(mv.name);
+        return{
+          name:slug,
+          name_display:mv.name_es||mv.name_display||formatName(slug),
+        };
+      }),
     })),
   };
 }
@@ -252,8 +541,17 @@ function normalizeTrainerFromApi(t){
 async function loadTrainersForGame(slug){
   if(!slug)return[];
   if(useApi()){
-    const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`);
-    const normalized=list.map(normalizeTrainerFromApi);
+    let json=null;
+    try{
+      json=await ensureTrainersJson();
+    }catch(e){
+      console.warn('Equipos desde API (sin trainers_db.json):',e);
+    }
+    const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
+    const normalized=list.map(t=>{
+      const n=normalizeTrainerFromApi(t,slug);
+      return json?applyJsonTeam(n,slug,json):n;
+    });
     if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
     TRAINERS_DB.trainers[slug]=normalized;
     return normalized;
@@ -282,7 +580,8 @@ async function initTrainers(){
         trainers:{},
         meta:{total_trainers:stats.trainers||287},
       };
-      setTrainersDataSource('api', getApiBase() + '/trainers'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      setTrainersDataSource('api', getApiBase() + '/trainers · equipos: trainers_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+      ensureTrainersJson().catch(()=>{});
     }else{
       const res=await fetch('data/trainers_db.json');
       if(!res.ok)throw new Error('No trainers DB');
@@ -293,6 +592,7 @@ async function initTrainers(){
     resetStarterSelector();
     resetRematchSelector();
     resetDifficultySelector();
+    resetEeveelutionSelector();
     document.getElementById('status-bar').innerHTML=
       `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
        <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta?.total_trainers||'?'} entrenadores</span>`;
@@ -328,7 +628,13 @@ function resetStarterSelector(){
   sel.innerHTML='<option value="">— Elige juego —</option>';
   sel.disabled=true;
   sel.value='';
-  sel.onchange=updateLoadTrainerButton;
+  sel.onchange=onStarterChange;
+}
+
+function onStarterChange(){
+  updateLoadTrainerButton();
+  const selTrainer=document.getElementById('sel-trainer');
+  if(selTrainer?.value)loadTrainer();
 }
 
 function buildStarterSelector(slug){
@@ -344,38 +650,36 @@ function buildStarterSelector(slug){
   sel.innerHTML=starters.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
   sel.disabled=false;
   sel.value=starters[0].id;
-  sel.onchange=updateLoadTrainerButton;
+  sel.onchange=onStarterChange;
 }
 
 function populateTrainerSelect(trainers,sorted){
   const selTrainer=document.getElementById('sel-trainer');
   const slug=document.getElementById('sel-game').value;
   selTrainer.innerHTML='<option value="">— Entrenador —</option>';
-  let lastType='';
+  let lastGroup='';
+  let currentOg=null;
   sorted.forEach((t,i)=>{
     const typeLabel={gym:'🏟 Líder',kahuna:'🌺 Kahuna',captain:'🏝 Capitán',elite4:'🏆 Alto Mando',champion:'👑 Campeón',other:'⚔ Otro'}[t.type]||'';
-    if(t.type!==lastType){
-      const og=document.createElement('optgroup');
-      og.label={gym:'── Líderes de Gimnasio ──',kahuna:'── Kahunas ──',captain:'── Capitanes ──',elite4:'── Alto Mando ──',champion:'── Campeón ──',other:'── Otros ──'}[t.type]||t.type;
-      selTrainer.appendChild(og);
-      lastType=t.type;
+    const groupKey=trainerSelectGroupKey(t,slug);
+    if(groupKey!==lastGroup){
+      currentOg=document.createElement('optgroup');
+      currentOg.label=trainerSelectGroupLabel(groupKey);
+      selTrainer.appendChild(currentOg);
+      lastGroup=groupKey;
     }
     const opt=document.createElement('option');
-    opt.value=useApi()&&t.slug?t.slug:String(i);
+    opt.value=trainerOptionValue(slug,t)??String(i);
     opt.textContent=`${typeLabel} ${t.name}${t.location?' — '+t.location:''}`;
-    selTrainer.appendChild(opt);
+    (currentOg||selTrainer).appendChild(opt);
   });
   selTrainer.disabled=false;
   selTrainer.value='';
   selTrainer._sorted=sorted;
+  buildTrainerOptionSelectors(slug,null);
   selTrainer.onchange=()=>{
     const val=selTrainer.value;
-    let tr=null;
-    if(useApi()&&val)tr=sorted.find(x=>x.slug===val);
-    else{
-      const idx=parseInt(val);
-      tr=!isNaN(idx)?sorted[idx]:null;
-    }
+    const tr=findTrainerInSorted(sorted,slug,val);
     buildTrainerOptionSelectors(slug,tr);
     updateLoadTrainerButton();
   };
@@ -392,12 +696,14 @@ async function onGameChange(){
     buildStarterSelector('');
     resetRematchSelector();
     resetDifficultySelector();
+    resetEeveelutionSelector();
     return;
   }
 
   buildStarterSelector(slug);
   resetRematchSelector();
   resetDifficultySelector();
+  resetEeveelutionSelector();
 
   selTrainer.disabled=true;
   selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
@@ -410,18 +716,15 @@ async function onGameChange(){
     return;
   }
 
-  const sorted=[...trainers].sort((a,b)=>{
-    const typeOrder={gym:0,kahuna:0,elite4:1,champion:2,captain:3,other:4};
-    const ta=typeOrder[a.type]??4,tb=typeOrder[b.type]??4;
-    if(ta!==tb)return ta-tb;
-    return(a.order||0)-(b.order||0);
-  });
+  const sorted=[...trainers].sort((a,b)=>compareTrainers(a,b,slug));
 
   populateTrainerSelect(trainers,sorted);
   updateLoadTrainerButton();
 }
 
 function applyStarterFilters(team,trainer,slug,starterId){
+  if(trainer?.teamByStarter&&starterId&&trainer.teamByStarter[starterId])return team;
+
   const gen=getGameGen(slug);
   const finals=STARTER_FINALS_BY_GEN[gen]||[];
   const keepFinal=RIVAL_COUNTER_BY_GEN[gen]?.[starterId];
@@ -455,20 +758,21 @@ function collapseDuplicatedRoster(team){
 }
 
 /** Iniciales rivales, revancha, Challenge Mode (BW2). */
-function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel){
+function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel, eeveelutionId){
   const peer=getRematchPeer(trainer,slug);
   let team;
+  const base=getTrainerBaseTeam(trainer,starterId,slug,eeveelutionId);
 
   if(rematchSel==='rematch'&&peer){
-    team=[...(peer.team||[])];
+    team=getTrainerBaseTeam(peer,starterId,slug,eeveelutionId);
   }else if(rematchSel==='rematch'){
-    const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
-    team=embedded?embedded[embedded.length-1]:[...(trainer.team||[])];
+    const embedded=getEmbeddedRematchBlocks(base);
+    team=embedded?embedded[embedded.length-1]:[...base];
   }else if(peer&&!isRematchEntry(trainer)){
-    team=[...(trainer.team||[])];
+    team=[...base];
   }else{
-    const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
-    team=embedded?embedded[0]:[...(trainer.team||[])];
+    const embedded=getEmbeddedRematchBlocks(base);
+    team=embedded?embedded[0]:[...base];
   }
 
   team=collapseDuplicatedRoster(team);
@@ -479,7 +783,9 @@ function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel){
     const wantChallenge=difficulty==='challenge';
     team=wantChallenge?diffBlocks[diffBlocks.length-1]:diffBlocks[0];
   }else if(team.length>MAX_TEAM){
-    team=trimTeamByLevelCluster(team,trainer.type,false);
+    const preferHigh=['elite4','champion','kahuna'].includes(trainer.type)
+      ||trainer.type==='gym';
+    team=trimTeamByLevelCluster(team,trainer.type,preferHigh);
   }
   if(team.length>MAX_TEAM)team=team.slice(0,MAX_TEAM);
   return team;
@@ -539,35 +845,42 @@ function resolveTrainerPokemon(tp){
 }
 
 // ── Cargar entrenador al lado B ───────────────────────
-function loadTrainer(){
+async function loadTrainer(){
   const slug=document.getElementById('sel-game').value;
   const selTrainer=document.getElementById('sel-trainer');
   const val=selTrainer.value;
   if(!slug||!val)return;
 
   const sorted=selTrainer._sorted;
-  let trainer=null;
-  if(useApi())trainer=sorted?.find(t=>t.slug===val);
-  else{
-    const idx=parseInt(val);
-    if(!isNaN(idx))trainer=sorted[idx];
-  }
+  let trainer=findTrainerInSorted(sorted,slug,val);
   if(!trainer)return;
+
+  if(useApi()){
+    try{
+      const json=await ensureTrainersJson();
+      trainer=applyJsonTeam(trainer,slug,json);
+    }catch(e){console.warn('JSON team overlay',e);}
+  }
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;
   const rematchEl=document.getElementById('sel-rematch');
   const difficultyEl=document.getElementById('sel-difficulty');
-  const rematchSel=(!rematchEl.disabled&&rematchEl.value)||'first';
-  const difficulty=(!difficultyEl.disabled&&difficultyEl.value)||'normal';
-  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel);
+  const rematchSel=isOptionalSelectorActive('rematch')?rematchEl.value:'first';
+  const difficulty=isOptionalSelectorActive('difficulty')?difficultyEl.value:'normal';
+  const eeveelutionId=isOptionalSelectorActive('eeveelution')
+    ?document.getElementById('sel-eeveelution').value:null;
+  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel,eeveelutionId);
   const starterLabel=document.getElementById('sel-starter').selectedOptions[0]?.textContent||'';
-  const rematchLabel=rematchEl.disabled?'':rematchEl.selectedOptions[0]?.textContent||'';
-  const diffLabel=difficultyEl.disabled?'':difficultyEl.selectedOptions[0]?.textContent||'';
+  const rematchLabel=isOptionalSelectorActive('rematch')?rematchEl.selectedOptions[0]?.textContent||'':'';
+  const diffLabel=isOptionalSelectorActive('difficulty')?difficultyEl.selectedOptions[0]?.textContent||'':'';
+  const eeveeLabel=isOptionalSelectorActive('eeveelution')
+    ?document.getElementById('sel-eeveelution').selectedOptions[0]?.textContent||'':'';
 
   document.getElementById('trainer-b-name').textContent = trainer.name || 'Rival';
   const meta=[gameName];
   if(starterLabel)meta.push(`Inicial: ${starterLabel}`);
+  if(eeveeLabel)meta.push(`Eevee: ${eeveeLabel}`);
   if(rematchLabel)meta.push(rematchLabel);
   if(diffLabel)meta.push(diffLabel);
   document.getElementById('trainer-b-game').textContent = meta.join(' · ');
@@ -619,8 +932,9 @@ function resolveTrainerMoves(pData, tp){
 
   const out = [];
   for(const m of raw.slice(0, 4)){
-    const name = typeof m === 'string' ? m : m.name;
-    if(!name) continue;
+    const rawName = typeof m === 'string' ? m : m.name;
+    if(!rawName) continue;
+    const name=normalizeMoveSlug(rawName);
     const fromSlot = pData.allMoves?.find(x => x.name === name);
     const global = DB?.moves?.[name];
     const detail = fromSlot?.detail || global || {

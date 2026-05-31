@@ -31,6 +31,10 @@
   gap:12px;
   flex-wrap:wrap;
 }
+.selector-group[hidden],
+.selector-arrow[hidden]{
+  display:none !important;
+}
 .selector-group{
   display:flex;
   flex-direction:column;
