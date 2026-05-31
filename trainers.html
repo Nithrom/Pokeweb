@@ -30,28 +30,21 @@
 <!-- Selector de entrenador -->
 <div class="trainer-selector-bar" id="trainer-selector-bar">
   <div class="selector-inner">
-    <div class="selector-groups">
-      <div class="selector-group">
-        <label class="selector-label" for="sel-gen">Generación</label>
-        <select id="sel-gen" class="sel-dropdown" aria-label="Seleccionar generación">
-          <option value="">— Gen —</option>
-        </select>
-      </div>
-      <div class="selector-arrow">▶</div>
+    <div class="selector-row selector-row-filters">
       <div class="selector-group">
         <label class="selector-label" for="sel-game">Juego</label>
         <select id="sel-game" class="sel-dropdown" disabled aria-label="Seleccionar juego">
           <option value="">— Juego —</option>
         </select>
       </div>
-      <div class="selector-arrow">▶</div>
-      <div class="selector-group" id="sel-starter-group" style="display:none">
+      <div class="selector-arrow" aria-hidden="true">▶</div>
+      <div class="selector-group" id="sel-starter-group">
         <label class="selector-label" for="sel-starter">Inicial</label>
         <select id="sel-starter" class="sel-dropdown" disabled aria-label="Seleccionar tu Pokémon inicial">
           <option value="">— Inicial —</option>
         </select>
       </div>
-      <div class="selector-arrow" id="sel-starter-arrow" style="display:none">▶</div>
+      <div class="selector-arrow" aria-hidden="true">▶</div>
       <div class="selector-group">
         <label class="selector-label" for="sel-trainer">Entrenador</label>
         <select id="sel-trainer" class="sel-dropdown" disabled aria-label="Seleccionar entrenador">
@@ -59,9 +52,11 @@
         </select>
       </div>
     </div>
-    <button class="btn-load-trainer" id="btn-load-trainer" disabled onclick="loadTrainer()" aria-label="Añadir equipo del entrenador">
-      Añadir equipo
-    </button>
+    <div class="selector-row selector-row-action">
+      <button class="btn-load-trainer" id="btn-load-trainer" disabled onclick="loadTrainer()" aria-label="Añadir equipo del entrenador">
+        Añadir equipo
+      </button>
+    </div>
   </div>
 </div>
 

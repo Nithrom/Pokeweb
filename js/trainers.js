@@ -59,7 +59,7 @@ function updateLoadTrainerButton(){
   const trainerVal=document.getElementById('sel-trainer').value;
   const starterEl=document.getElementById('sel-starter');
   const gen=getGameGen(slug);
-  const needsStarter=!!GEN_STARTERS[gen];
+  const needsStarter=!!slug&&!!GEN_STARTERS[gen];
   const starterOk=!needsStarter||!!starterEl.value;
   const trainerOk=trainerVal!==''&&!isNaN(parseInt(trainerVal));
   document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk);
@@ -79,7 +79,8 @@ async function initTrainers(){
     const res = await fetch('data/trainers_db.json');
     if(!res.ok) throw new Error('No trainers DB');
     TRAINERS_DB = await res.json();
-    buildGenSelector();
+    buildGameSelector();
+    resetStarterSelector();
     document.getElementById('status-bar').innerHTML =
       `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
        <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta.total_trainers} entrenadores</span>`;
@@ -91,7 +92,7 @@ async function initTrainers(){
 }
 
 // ── Selectores ────────────────────────────────────────
-function buildGenSelector(){
+function buildGameSelector(){
   const selGame = document.getElementById('sel-game');
   const gens = [...new Set(TRAINERS_DB.games.map(g=>g.gen))].sort((a,b)=>a-b);
   selGame.innerHTML = '<option value="">— Juego —</option>';
@@ -108,31 +109,26 @@ function buildGenSelector(){
   });
   selGame.disabled = false;
   selGame.onchange = onGameChange;
-  // Ocultar selector de gen
-  const selGenGroup = document.getElementById('sel-gen')?.closest('.selector-group');
-  const arrow = selGenGroup?.nextElementSibling;
-  if(selGenGroup) selGenGroup.style.display='none';
-  if(arrow && arrow.classList.contains('selector-arrow')) arrow.style.display='none';
+}
+
+function resetStarterSelector(){
+  const sel=document.getElementById('sel-starter');
+  sel.innerHTML='<option value="">— Elige juego —</option>';
+  sel.disabled=true;
+  sel.value='';
+  sel.onchange=updateLoadTrainerButton;
 }
 
 function buildStarterSelector(slug){
-  const group=document.getElementById('sel-starter-group');
-  const arrow=document.getElementById('sel-starter-arrow');
   const sel=document.getElementById('sel-starter');
   const gen=getGameGen(slug);
   const starters=GEN_STARTERS[gen];
 
-  if(!starters){
-    group.style.display='none';
-    if(arrow)arrow.style.display='none';
-    sel.innerHTML='<option value="">— Inicial —</option>';
-    sel.disabled=true;
-    sel.value='';
+  if(!slug||!starters){
+    resetStarterSelector();
     return;
   }
 
-  group.style.display='';
-  if(arrow)arrow.style.display='';
   sel.innerHTML=starters.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
   sel.disabled=false;
   sel.value=starters[0].id;
