@@ -65,7 +65,7 @@ function onGameChange(){
   const trainers = TRAINERS_DB.trainers[slug] || [];
   // Ordenar: gym primero (por order), luego elite4 (por order), luego champion
   const sorted = [...trainers].sort((a,b)=>{
-    const typeOrder = {gym:0, trial:0, kahuna:0, elite4:1, champion:2, other:3};
+    const typeOrder = {gym:0, kahuna:0, captain:0, elite4:1, champion:2, other:3};
     const ta = typeOrder[a.type]??3, tb = typeOrder[b.type]??3;
     if(ta !== tb) return ta-tb;
     return (a.order||0)-(b.order||0);
@@ -74,10 +74,10 @@ function onGameChange(){
   selTrainer.innerHTML = '<option value="">— Entrenador —</option>';
   let lastType = '';
   sorted.forEach((t,i)=>{
-    const typeLabel = {gym:'🏟 Líder', trial:'🏝 Capitán', kahuna:'🌺 Kahuna', elite4:'🏆 Alto Mando', champion:'👑 Campeón', other:'⚔ Otro'}[t.type]||'';
+    const typeLabel = {gym:'🏟 Líder', kahuna:'🌺 Kahuna', captain:'🏝 Capitán', elite4:'🏆 Alto Mando', champion:'👑 Campeón', other:'⚔ Otro'}[t.type]||'';
     if(t.type !== lastType){
       const og = document.createElement('optgroup');
-      og.label = {gym:'── Líderes de Gimnasio ──', trial:'── Capitanes de Prueba ──', kahuna:'── Kahunas ──', elite4:'── Alto Mando ──', champion:'── Campeón ──', other:'── Otros ──'}[t.type]||t.type;
+      og.label = {gym:'── Líderes de Gimnasio ──', kahuna:'── Kahunas ──', captain:'── Capitanes ──', elite4:'── Alto Mando ──', champion:'── Campeón ──', other:'── Otros ──'}[t.type]||t.type;
       selTrainer.appendChild(og);
       lastType = t.type;
     }

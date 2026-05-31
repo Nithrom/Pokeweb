@@ -11038,7 +11038,7 @@
     "sun-moon":[
       {
         "name":"Hala",
-        "type":"gym",
+        "type":"kahuna",
         "order":1,
         "location":"Iki Town",
         "badge":"",
@@ -11076,7 +11076,7 @@
       },
       {
         "name":"Olivia",
-        "type":"gym",
+        "type":"kahuna",
         "order":2,
         "location":"Ruins of Life",
         "badge":"",
@@ -11114,7 +11114,7 @@
       },
       {
         "name":"Nanu",
-        "type":"gym",
+        "type":"kahuna",
         "order":3,
         "location":"Malie City",
         "badge":"",
@@ -11154,7 +11154,7 @@
       },
       {
         "name":"Hapu",
-        "type":"gym",
+        "type":"kahuna",
         "order":4,
         "location":"Vast Poni Canyon",
         "badge":"",
@@ -11445,7 +11445,7 @@
       },
       {
         "name":"Kukui",
-        "type":"champion",
+        "type":"elite4",
         "order":5,
         "location":"",
         "badge":"",
@@ -11534,7 +11534,7 @@
       },
       {
         "name":"Ilima",
-        "type":"gym",
+        "type":"captain",
         "order":1,
         "location":"",
         "badge":"",
@@ -11563,7 +11563,7 @@
       },
       {
         "name":"Lana",
-        "type":"gym",
+        "type":"captain",
         "order":2,
         "location":"",
         "badge":"",
@@ -11603,7 +11603,7 @@
       },
       {
         "name":"Kiawe",
-        "type":"gym",
+        "type":"captain",
         "order":3,
         "location":"",
         "badge":"",
@@ -11642,7 +11642,7 @@
       },
       {
         "name":"Mallow",
-        "type":"gym",
+        "type":"captain",
         "order":4,
         "location":"",
         "badge":"",
@@ -11682,7 +11682,7 @@
       },
       {
         "name":"Mina",
-        "type":"gym",
+        "type":"captain",
         "order":7,
         "location":"",
         "badge":"",
@@ -11744,7 +11744,7 @@
     "ultra-sun-ultra-moon":[
       {
         "name":"Hala",
-        "type":"gym",
+        "type":"kahuna",
         "order":1,
         "location":"Iki Town",
         "badge":"",
@@ -11830,7 +11830,7 @@
       },
       {
         "name":"Olivia",
-        "type":"gym",
+        "type":"kahuna",
         "order":2,
         "location":"Ruins of Life",
         "badge":"",
@@ -11870,7 +11870,7 @@
       },
       {
         "name":"Nanu",
-        "type":"gym",
+        "type":"kahuna",
         "order":3,
         "location":"Malie City",
         "badge":"",
@@ -11909,7 +11909,7 @@
       },
       {
         "name":"Hapu",
-        "type":"gym",
+        "type":"kahuna",
         "order":4,
         "location":"Exeggutor Island",
         "badge":"",
@@ -12201,7 +12201,7 @@
       },
       {
         "name":"Hau",
-        "type":"champion",
+        "type":"elite4",
         "order":5,
         "location":"",
         "badge":"",
@@ -12307,7 +12307,7 @@
       },
       {
         "name":"Ilima",
-        "type":"gym",
+        "type":"captain",
         "order":1,
         "location":"",
         "badge":"",
@@ -12345,7 +12345,7 @@
       },
       {
         "name":"Lana",
-        "type":"gym",
+        "type":"captain",
         "order":2,
         "location":"",
         "badge":"",
@@ -12386,7 +12386,7 @@
       },
       {
         "name":"Kiawe",
-        "type":"gym",
+        "type":"captain",
         "order":3,
         "location":"",
         "badge":"",
@@ -12425,7 +12425,7 @@
       },
       {
         "name":"Mallow",
-        "type":"gym",
+        "type":"captain",
         "order":4,
         "location":"",
         "badge":"",
@@ -12465,7 +12465,7 @@
       },
       {
         "name":"Sophocles",
-        "type":"gym",
+        "type":"captain",
         "order":5,
         "location":"",
         "badge":"",
@@ -12525,7 +12525,7 @@
       },
       {
         "name":"Mina",
-        "type":"gym",
+        "type":"captain",
         "order":7,
         "location":"",
         "badge":"",
