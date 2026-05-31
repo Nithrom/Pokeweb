@@ -50,8 +50,54 @@ const EEVEELUTIONS=new Set(['vaporeon','jolteon','flareon','espeon','umbreon','l
 
 const MAX_TEAM=6;
 
+/** Juegos con equipos distintos en Normal/Fácil vs Challenge Mode (Gen 5). */
+const CHALLENGE_MODE_GAMES=new Set(['black-white-2']);
+const DIFFICULTY_LEVEL_GAP=3;
+
 function getGameGen(slug){
   return TRAINERS_DB?.games?.find(g=>g.slug===slug)?.gen||0;
+}
+
+function gameHasChallengeMode(slug){
+  return CHALLENGE_MODE_GAMES.has(slug);
+}
+
+/** Segunda aparición del mismo Pokémon con nivel mucho mayor → bloque Challenge (BW2). */
+function splitDifficultyBlocks(team,levelGap=DIFFICULTY_LEVEL_GAP){
+  if(!team?.length)return[team||[]];
+  const firstLevel={};
+  for(let i=0;i<team.length;i++){
+    const n=team[i].name;
+    const lv=team[i].level||0;
+    if(firstLevel[n]!==undefined&&lv>firstLevel[n]+levelGap){
+      return[team.slice(0,i),team.slice(i)];
+    }
+    if(firstLevel[n]===undefined)firstLevel[n]=lv;
+  }
+  return[team];
+}
+
+function trainerHasDifficultyVariants(trainer){
+  const blocks=splitDifficultyBlocks(trainer?.team||[]);
+  return blocks.length>=2&&blocks[0].length>0&&blocks[1].length>0;
+}
+
+function resetDifficultySelector(){
+  const sel=document.getElementById('sel-difficulty');
+  sel.value='normal';
+  sel.disabled=true;
+  sel.onchange=updateLoadTrainerButton;
+}
+
+function buildDifficultySelector(slug,trainer){
+  const sel=document.getElementById('sel-difficulty');
+  if(!gameHasChallengeMode(slug)||!trainerHasDifficultyVariants(trainer)){
+    resetDifficultySelector();
+    return;
+  }
+  sel.disabled=false;
+  sel.value=sel.value==='challenge'?'challenge':'normal';
+  sel.onchange=updateLoadTrainerButton;
 }
 
 function updateLoadTrainerButton(){
@@ -81,6 +127,7 @@ async function initTrainers(){
     TRAINERS_DB = await res.json();
     buildGameSelector();
     resetStarterSelector();
+    resetDifficultySelector();
     document.getElementById('status-bar').innerHTML =
       `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
        <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta.total_trainers} entrenadores</span>`;
@@ -144,10 +191,12 @@ function onGameChange(){
     selTrainer.innerHTML='<option value="">— Entrenador —</option>';
     selTrainer.disabled=true;
     buildStarterSelector('');
+    resetDifficultySelector();
     return;
   }
 
   buildStarterSelector(slug);
+  resetDifficultySelector();
 
   const trainers = TRAINERS_DB.trainers[slug] || [];
   // Ordenar: gym/kahuna → elite4 → champion → captain (Alola)
@@ -178,12 +227,17 @@ function onGameChange(){
   selTrainer.disabled = false;
   selTrainer.value = '';
   selTrainer._sorted = sorted;
-  selTrainer.onchange = updateLoadTrainerButton;
+  selTrainer.onchange = ()=>{
+    const idx=parseInt(selTrainer.value);
+    const tr=!isNaN(idx)&&selTrainer._sorted?selTrainer._sorted[idx]:null;
+    buildDifficultySelector(slug,tr);
+    updateLoadTrainerButton();
+  };
   updateLoadTrainerButton();
 }
 
 /** Quita variantes de iniciales rivales y fusiones de combates duplicados en el scrape. */
-function resolveTrainerTeam(trainer, slug, starterId){
+function resolveTrainerTeam(trainer, slug, starterId, difficulty){
   let team=[...(trainer.team||[])];
   const gen=getGameGen(slug);
   const finals=STARTER_FINALS_BY_GEN[gen]||[];
@@ -203,12 +257,19 @@ function resolveTrainerTeam(trainer, slug, starterId){
     else team=nonFinal.slice(0,MAX_TEAM);
   }
 
-  if(team.length>MAX_TEAM)team=trimTeamByLevelCluster(team,trainer.type);
+  const diffBlocks=splitDifficultyBlocks(team);
+  if(diffBlocks.length>=2){
+    const wantChallenge=difficulty==='challenge';
+    team=wantChallenge?diffBlocks[diffBlocks.length-1]:diffBlocks[0];
+  }else if(team.length>MAX_TEAM){
+    const preferChallenge=difficulty==='challenge';
+    team=trimTeamByLevelCluster(team,trainer.type,preferChallenge);
+  }
   if(team.length>MAX_TEAM)team=team.slice(0,MAX_TEAM);
   return team;
 }
 
-function trimTeamByLevelCluster(team,trainerType){
+function trimTeamByLevelCluster(team,trainerType,preferHighOverride){
   if(team.length<=MAX_TEAM)return team;
   const clusters=[];
   let cur=[team[0]];
@@ -222,7 +283,9 @@ function trimTeamByLevelCluster(team,trainerType){
   }
   clusters.push(cur);
   if(clusters.length<=1)return team.slice(0,MAX_TEAM);
-  const preferHigh=['elite4','champion','kahuna'].includes(trainerType);
+  const preferHigh=preferHighOverride!=null
+    ?preferHighOverride
+    :['elite4','champion','kahuna'].includes(trainerType);
   const pick=preferHigh?clusters[clusters.length-1]:clusters[0];
   return pick.length<=MAX_TEAM?pick:pick.slice(0,MAX_TEAM);
 }
@@ -248,6 +311,14 @@ function resolveTrainerPokemon(tp){
     p=allPokemon.find(x=>x.name===`${tp.name}-galar`);
     if(p)return p;
   }
+  if(tp.name==='jellicent'||tp.name.startsWith('jellicent')){
+    if(display.includes('female')){
+      p=allPokemon.find(x=>x.name==='jellicent-female');
+      if(p)return p;
+    }
+    p=allPokemon.find(x=>x.name==='jellicent-male');
+    if(p)return p;
+  }
   return null;
 }
 
@@ -264,12 +335,17 @@ function loadTrainer(){
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;
-  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId);
+  const difficultyEl=document.getElementById('sel-difficulty');
+  const difficulty=(!difficultyEl.disabled&&difficultyEl.value)||'normal';
+  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty);
   const starterLabel=document.getElementById('sel-starter').selectedOptions[0]?.textContent||'';
+  const diffLabel=difficultyEl.disabled?'':difficultyEl.selectedOptions[0]?.textContent||'';
 
   document.getElementById('trainer-b-name').textContent = trainer.name || 'Rival';
-  document.getElementById('trainer-b-game').textContent =
-    starterLabel?`${gameName} · Inicial: ${starterLabel}`:gameName;
+  const meta=[gameName];
+  if(starterLabel)meta.push(`Inicial: ${starterLabel}`);
+  if(diffLabel)meta.push(diffLabel);
+  document.getElementById('trainer-b-game').textContent = meta.join(' · ');
   const tnb=document.getElementById('team-name-b'); if(tnb) tnb.value!==undefined ? tnb.value=trainer.name||'Rival' : tnb.textContent=trainer.name||'Rival';
 
   for(let i=0;i<MAX_TEAM;i++){
