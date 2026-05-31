@@ -693,7 +693,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -1289,7 +1289,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -2291,7 +2291,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"lancedragon",
@@ -3249,7 +3249,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"lancedragon",
@@ -3787,7 +3787,7 @@
       {
         "name":"Steven",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"stevensteel",
@@ -4443,7 +4443,7 @@
       {
         "name":"Wallace",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"wallacewater",
@@ -5095,7 +5095,7 @@
       {
         "name":"Blue",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -5792,7 +5792,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -6682,7 +6682,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -8386,7 +8386,7 @@
       {
         "name":"Lance",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"rematchdragon",
@@ -9049,7 +9049,7 @@
       {
         "name":"Alder",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -10946,7 +10946,7 @@
       {
         "name":"Steven",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"rematchsteel",
@@ -14039,7 +14039,7 @@
       {
         "name":"Trace",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -15189,7 +15189,7 @@
       {
         "name":"Cynthia",
         "type":"champion",
-        "order":5,
+        "order":1,
         "location":"",
         "badge":"",
         "specialty":"",
@@ -15811,6 +15811,314 @@
         ]
       },
       {
+        "name":"Rika",
+        "type":"elite4",
+        "order":1,
+        "location":"",
+        "badge":"",
+        "specialty":"rikaground",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/rika.jpg",
+        "team":[
+          {
+            "name":"whiscash",
+            "name_display":"Whiscash",
+            "level":57,
+            "types":[
+              "water",
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"camerupt",
+            "name_display":"Camerupt",
+            "level":57,
+            "types":[
+              "fire",
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"donphan",
+            "name_display":"Donphan",
+            "level":57,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"dugtrio",
+            "name_display":"Dugtrio",
+            "level":57,
+            "types":[
+              "ground"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"clodsire",
+            "name_display":"Clodsire",
+            "level":58,
+            "types":[
+              "poison",
+              "ground"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Poppy",
+        "type":"elite4",
+        "order":2,
+        "location":"",
+        "badge":"",
+        "specialty":"poppysteel",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/poppy.jpg",
+        "team":[
+          {
+            "name":"copperajah",
+            "name_display":"Copperajah",
+            "level":58,
+            "types":[
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"magnezone",
+            "name_display":"Magnezone",
+            "level":58,
+            "types":[
+              "electric",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"bronzong",
+            "name_display":"Bronzong",
+            "level":58,
+            "types":[
+              "steel",
+              "psychic"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"corviknight",
+            "name_display":"Corviknight",
+            "level":58,
+            "types":[
+              "flying",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"tinkaton",
+            "name_display":"Tinkaton",
+            "level":59,
+            "types":[
+              "fairy",
+              "steel"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Larry",
+        "type":"elite4",
+        "order":3,
+        "location":"",
+        "badge":"",
+        "specialty":"larryflying",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/larry.jpg",
+        "team":[
+          {
+            "name":"tropius",
+            "name_display":"Tropius",
+            "level":59,
+            "types":[
+              "grass",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"oricorio",
+            "name_display":"Oricorio (Pom-Pom Style)",
+            "level":59,
+            "types":[
+              "electric",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"altaria",
+            "name_display":"Altaria",
+            "level":59,
+            "types":[
+              "dragon",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"staraptor",
+            "name_display":"Staraptor",
+            "level":59,
+            "types":[
+              "normal",
+              "flying"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flamigo",
+            "name_display":"Flamigo",
+            "level":60,
+            "types":[
+              "flying",
+              "fighting"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Hassel",
+        "type":"elite4",
+        "order":4,
+        "location":"",
+        "badge":"",
+        "specialty":"hasseldragon",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/hassel.jpg",
+        "team":[
+          {
+            "name":"noivern",
+            "name_display":"Noivern",
+            "level":60,
+            "types":[
+              "flying",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"haxorus",
+            "name_display":"Haxorus",
+            "level":60,
+            "types":[
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"dragalge",
+            "name_display":"Dragalge",
+            "level":60,
+            "types":[
+              "poison",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"flapple",
+            "name_display":"Flapple",
+            "level":60,
+            "types":[
+              "grass",
+              "dragon"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"baxcalibur",
+            "name_display":"Baxcalibur",
+            "level":61,
+            "types":[
+              "dragon",
+              "ice"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
+        "name":"Geeta",
+        "type":"champion",
+        "order":1,
+        "location":"",
+        "badge":"",
+        "specialty":"",
+        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/geeta.jpg",
+        "team":[
+          {
+            "name":"espathra",
+            "name_display":"Espathra",
+            "level":61,
+            "types":[
+              "psychic"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"gogoat",
+            "name_display":"Gogoat",
+            "level":61,
+            "types":[
+              "grass"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"veluza",
+            "name_display":"Veluza",
+            "level":61,
+            "types":[
+              "water",
+              "psychic"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"avalugg",
+            "name_display":"Avalugg",
+            "level":61,
+            "types":[
+              "ice"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"kingambit",
+            "name_display":"Kingambit",
+            "level":61,
+            "types":[
+              "dark",
+              "steel"
+            ],
+            "moves":[]
+          },
+          {
+            "name":"glimmora",
+            "name_display":"Glimmora",
+            "level":62,
+            "types":[
+              "rock",
+              "poison"
+            ],
+            "moves":[]
+          }
+        ]
+      },
+      {
         "name":"Giacomo",
         "type":"other",
         "order":0,
@@ -16113,314 +16421,6 @@
             "level":65,
             "types":[
               "fighting"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Rika",
-        "type":"elite4",
-        "order":1,
-        "location":"",
-        "badge":"",
-        "specialty":"rikaground",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/rika.jpg",
-        "team":[
-          {
-            "name":"whiscash",
-            "name_display":"Whiscash",
-            "level":57,
-            "types":[
-              "water",
-              "ground"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"camerupt",
-            "name_display":"Camerupt",
-            "level":57,
-            "types":[
-              "fire",
-              "ground"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"donphan",
-            "name_display":"Donphan",
-            "level":57,
-            "types":[
-              "ground"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"dugtrio",
-            "name_display":"Dugtrio",
-            "level":57,
-            "types":[
-              "ground"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"clodsire",
-            "name_display":"Clodsire",
-            "level":58,
-            "types":[
-              "poison",
-              "ground"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Poppy",
-        "type":"elite4",
-        "order":2,
-        "location":"",
-        "badge":"",
-        "specialty":"poppysteel",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/poppy.jpg",
-        "team":[
-          {
-            "name":"copperajah",
-            "name_display":"Copperajah",
-            "level":58,
-            "types":[
-              "steel"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"magnezone",
-            "name_display":"Magnezone",
-            "level":58,
-            "types":[
-              "electric",
-              "steel"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"bronzong",
-            "name_display":"Bronzong",
-            "level":58,
-            "types":[
-              "steel",
-              "psychic"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"corviknight",
-            "name_display":"Corviknight",
-            "level":58,
-            "types":[
-              "flying",
-              "steel"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"tinkaton",
-            "name_display":"Tinkaton",
-            "level":59,
-            "types":[
-              "fairy",
-              "steel"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Larry",
-        "type":"elite4",
-        "order":3,
-        "location":"",
-        "badge":"",
-        "specialty":"larryflying",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/larry.jpg",
-        "team":[
-          {
-            "name":"tropius",
-            "name_display":"Tropius",
-            "level":59,
-            "types":[
-              "grass",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"oricorio",
-            "name_display":"Oricorio (Pom-Pom Style)",
-            "level":59,
-            "types":[
-              "electric",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"altaria",
-            "name_display":"Altaria",
-            "level":59,
-            "types":[
-              "dragon",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"staraptor",
-            "name_display":"Staraptor",
-            "level":59,
-            "types":[
-              "normal",
-              "flying"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"flamigo",
-            "name_display":"Flamigo",
-            "level":60,
-            "types":[
-              "flying",
-              "fighting"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Hassel",
-        "type":"elite4",
-        "order":4,
-        "location":"",
-        "badge":"",
-        "specialty":"hasseldragon",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/hassel.jpg",
-        "team":[
-          {
-            "name":"noivern",
-            "name_display":"Noivern",
-            "level":60,
-            "types":[
-              "flying",
-              "dragon"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"haxorus",
-            "name_display":"Haxorus",
-            "level":60,
-            "types":[
-              "dragon"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"dragalge",
-            "name_display":"Dragalge",
-            "level":60,
-            "types":[
-              "poison",
-              "dragon"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"flapple",
-            "name_display":"Flapple",
-            "level":60,
-            "types":[
-              "grass",
-              "dragon"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"baxcalibur",
-            "name_display":"Baxcalibur",
-            "level":61,
-            "types":[
-              "dragon",
-              "ice"
-            ],
-            "moves":[]
-          }
-        ]
-      },
-      {
-        "name":"Geeta",
-        "type":"champion",
-        "order":5,
-        "location":"",
-        "badge":"",
-        "specialty":"",
-        "sprite":"https://img.pokemondb.net/sprites/trainers/sv/geeta.jpg",
-        "team":[
-          {
-            "name":"espathra",
-            "name_display":"Espathra",
-            "level":61,
-            "types":[
-              "psychic"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"gogoat",
-            "name_display":"Gogoat",
-            "level":61,
-            "types":[
-              "grass"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"veluza",
-            "name_display":"Veluza",
-            "level":61,
-            "types":[
-              "water",
-              "psychic"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"avalugg",
-            "name_display":"Avalugg",
-            "level":61,
-            "types":[
-              "ice"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"kingambit",
-            "name_display":"Kingambit",
-            "level":61,
-            "types":[
-              "dark",
-              "steel"
-            ],
-            "moves":[]
-          },
-          {
-            "name":"glimmora",
-            "name_display":"Glimmora",
-            "level":62,
-            "types":[
-              "rock",
-              "poison"
             ],
             "moves":[]
           }

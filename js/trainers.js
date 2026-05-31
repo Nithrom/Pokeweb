@@ -63,10 +63,10 @@ function onGameChange(){
   if(!slug){ selTrainer.innerHTML='<option value="">— Entrenador —</option>'; selTrainer.disabled=true; return; }
 
   const trainers = TRAINERS_DB.trainers[slug] || [];
-  // Ordenar: gym primero (por order), luego elite4 (por order), luego champion
+  // Ordenar: gym/kahuna → elite4 → champion → captain (Alola)
   const sorted = [...trainers].sort((a,b)=>{
     const typeOrder = {gym:0, kahuna:0, elite4:1, champion:2, captain:3, other:4};
-    const ta = typeOrder[a.type]??3, tb = typeOrder[b.type]??3;
+    const ta = typeOrder[a.type]??4, tb = typeOrder[b.type]??4;
     if(ta !== tb) return ta-tb;
     return (a.order||0)-(b.order||0);
   });
