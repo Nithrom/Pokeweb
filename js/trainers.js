@@ -51,8 +51,9 @@ const EEVEELUTIONS=new Set(['vaporeon','jolteon','flareon','espeon','umbreon','l
 const MAX_TEAM=6;
 
 const DIFFICULTY_LEVEL_GAP=3;
+/** Challenge Mode con equipos distintos (Gen 5). */
+const CHALLENGE_MODE_GAMES=new Set(['black-white-2']);
 
-/** Textos del desplegable según juego (Challenge Mode solo en BW2). */
 function getDifficultyLabels(slug){
   if(slug==='black-white-2'){
     return{normal:'Normal / Fácil',challenge:'Challenge Mode'};
@@ -64,7 +65,16 @@ function getGameGen(slug){
   return TRAINERS_DB?.games?.find(g=>g.slug===slug)?.gen||0;
 }
 
-/** Segunda aparición del mismo Pokémon con nivel mucho mayor → bloque Challenge (BW2). */
+function blockSpecies(block){
+  return block.map(p=>p.name);
+}
+
+function blockAvgLevel(block){
+  if(!block.length)return 0;
+  return block.reduce((s,p)=>s+(p.level||0),0)/block.length;
+}
+
+/** Punto de corte: misma especie reaparece con varios niveles más (p. ej. BW2). */
 function splitDifficultyBlocks(team,levelGap=DIFFICULTY_LEVEL_GAP){
   if(!team?.length)return[team||[]];
   const firstLevel={};
@@ -79,37 +89,111 @@ function splitDifficultyBlocks(team,levelGap=DIFFICULTY_LEVEL_GAP){
   return[team];
 }
 
-/** Equipos distintos por dificultad (mismo Pokémon repetido con nivel mucho mayor). */
+/** Revancha: mismos Pokémon, mismo tamaño de equipo, niveles claramente mayores. */
+function isRematchBlockPattern(blocks){
+  if(!blocks||blocks.length<2)return false;
+  const[b0,b1]=blocks;
+  if(b0.length<3||b1.length<3||b0.length!==b1.length)return false;
+  const n0=new Set(blockSpecies(b0));
+  const n1=new Set(blockSpecies(b1));
+  if(n0.size!==n1.size)return false;
+  for(const n of n0)if(!n1.has(n))return false;
+  return blockAvgLevel(b1)>=blockAvgLevel(b0)+6;
+}
+
+function isRematchEntry(trainer){
+  return(trainer?.specialty||'').startsWith('rematch');
+}
+
+/** Otro registro en el mismo juego (p. ej. líder vs revancha en la liga). */
+function getRematchPeer(trainer,slug){
+  if(!trainer||!slug||!TRAINERS_DB)return null;
+  const all=TRAINERS_DB.trainers[slug]||[];
+  if(isRematchEntry(trainer)){
+    return all.find(t=>t.name===trainer.name&&t.type===trainer.type&&!isRematchEntry(t))||null;
+  }
+  return all.find(t=>t.name===trainer.name&&t.type===trainer.type&&isRematchEntry(t))||null;
+}
+
+function getEmbeddedRematchBlocks(team){
+  const blocks=splitDifficultyBlocks(team);
+  return isRematchBlockPattern(blocks)?blocks:null;
+}
+
+function trainerHasRematchVariants(trainer,slug){
+  if(!trainer)return false;
+  if(getRematchPeer(trainer,slug))return true;
+  return!!getEmbeddedRematchBlocks(trainer.team||[]);
+}
+
+/** Challenge real: solo BW2; primer bloque sin especies repetidas; no es patrón de revancha. */
 function trainerHasDifficultyVariants(trainer,slug){
+  if(!CHALLENGE_MODE_GAMES.has(slug))return false;
   const team=trainer?.team||[];
   const blocks=splitDifficultyBlocks(team);
   if(blocks.length<2||blocks[0].length<2||blocks[1].length<2)return false;
-  if(team.length>14)return false;
-  if(blocks[0].length>=MAX_TEAM&&blocks[1].length>MAX_TEAM)return false;
-  const gen=getGameGen(slug);
-  const finals=STARTER_FINALS_BY_GEN[gen]||[];
-  if(finals.filter(f=>team.some(p=>p.name===f)).length>=3)return false;
-  return true;
+  if(isRematchBlockPattern(blocks))return false;
+  const b0=blocks[0];
+  if(blockSpecies(b0).length!==b0.length)return false;
+  const n0=new Set(blockSpecies(b0));
+  const n1=new Set(blockSpecies(blocks[1]));
+  if(n0.size===n1.size&&[...n0].every(n=>n1.has(n)))return false;
+  return blocks[1].length>b0.length||[...n0].some(n=>n1.has(n));
+}
+
+function setRematchSelectorVisible(show){
+  const group=document.getElementById('sel-rematch-group');
+  const arrow=document.getElementById('arrow-before-rematch');
+  const sel=document.getElementById('sel-rematch');
+  if(group)group.hidden=!show;
+  if(arrow)arrow.hidden=!show;
+  if(sel)sel.disabled=!show;
 }
 
 function setDifficultySelectorVisible(show){
   const group=document.getElementById('sel-difficulty-group');
-  const arrow=group?.previousElementSibling;
+  const arrow=document.getElementById('arrow-before-difficulty');
+  const sel=document.getElementById('sel-difficulty');
   if(group)group.hidden=!show;
-  if(arrow?.classList?.contains('selector-arrow'))arrow.hidden=!show;
+  if(arrow)arrow.hidden=!show;
+  if(sel)sel.disabled=!show;
+}
+
+function resetRematchSelector(){
+  const sel=document.getElementById('sel-rematch');
+  if(sel){
+    sel.value='first';
+    sel.onchange=updateLoadTrainerButton;
+  }
+  setRematchSelectorVisible(false);
 }
 
 function resetDifficultySelector(){
   const sel=document.getElementById('sel-difficulty');
-  sel.value='normal';
-  sel.disabled=true;
-  sel.onchange=updateLoadTrainerButton;
+  if(sel){
+    sel.value='normal';
+    sel.onchange=updateLoadTrainerButton;
+  }
   setDifficultySelectorVisible(false);
+}
+
+function buildRematchSelector(slug,trainer){
+  const sel=document.getElementById('sel-rematch');
+  const show=!!(trainer&&trainerHasRematchVariants(trainer,slug));
+  if(!show){
+    resetRematchSelector();
+    return;
+  }
+  setRematchSelectorVisible(true);
+  if(isRematchEntry(trainer))sel.value='rematch';
+  else if(sel.value!=='rematch')sel.value='first';
+  sel.onchange=updateLoadTrainerButton;
 }
 
 function buildDifficultySelector(slug,trainer){
   const sel=document.getElementById('sel-difficulty');
-  if(!trainer||!trainerHasDifficultyVariants(trainer,slug)){
+  const show=!!(trainer&&trainerHasDifficultyVariants(trainer,slug));
+  if(!show){
     resetDifficultySelector();
     return;
   }
@@ -117,9 +201,17 @@ function buildDifficultySelector(slug,trainer){
   const labels=getDifficultyLabels(slug);
   sel.options[0].textContent=labels.normal;
   sel.options[1].textContent=labels.challenge;
-  sel.disabled=false;
   sel.value=sel.value==='challenge'?'challenge':'normal';
   sel.onchange=updateLoadTrainerButton;
+}
+
+/** Revancha y dificultad por separado: solo los que apliquen al entrenador. */
+function buildTrainerOptionSelectors(slug,trainer){
+  resetRematchSelector();
+  resetDifficultySelector();
+  if(!trainer||!slug)return;
+  if(trainerHasRematchVariants(trainer,slug))buildRematchSelector(slug,trainer);
+  if(trainerHasDifficultyVariants(trainer,slug))buildDifficultySelector(slug,trainer);
 }
 
 function updateLoadTrainerButton(){
@@ -149,6 +241,7 @@ async function initTrainers(){
     TRAINERS_DB = await res.json();
     buildGameSelector();
     resetStarterSelector();
+    resetRematchSelector();
     resetDifficultySelector();
     document.getElementById('status-bar').innerHTML =
       `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
@@ -213,11 +306,13 @@ function onGameChange(){
     selTrainer.innerHTML='<option value="">— Entrenador —</option>';
     selTrainer.disabled=true;
     buildStarterSelector('');
+    resetRematchSelector();
     resetDifficultySelector();
     return;
   }
 
   buildStarterSelector(slug);
+  resetRematchSelector();
   resetDifficultySelector();
 
   const trainers = TRAINERS_DB.trainers[slug] || [];
@@ -252,21 +347,18 @@ function onGameChange(){
   selTrainer.onchange = ()=>{
     const idx=parseInt(selTrainer.value);
     const tr=!isNaN(idx)&&selTrainer._sorted?selTrainer._sorted[idx]:null;
-    buildDifficultySelector(slug,tr);
+    buildTrainerOptionSelectors(slug,tr);
     updateLoadTrainerButton();
   };
   updateLoadTrainerButton();
 }
 
-/** Quita variantes de iniciales rivales y fusiones de combates duplicados en el scrape. */
-function resolveTrainerTeam(trainer, slug, starterId, difficulty){
-  let team=[...(trainer.team||[])];
+function applyStarterFilters(team,trainer,slug,starterId){
   const gen=getGameGen(slug);
   const finals=STARTER_FINALS_BY_GEN[gen]||[];
   const keepFinal=RIVAL_COUNTER_BY_GEN[gen]?.[starterId];
   const finalsInTeam=finals.filter(f=>team.some(p=>p.name===f));
 
-  // Hau (USUM): primero Eeveelución según tu inicial, luego la final de Alola
   if(trainer.name==='Hau'&&slug.includes('ultra')){
     const keepEevee=HAU_EEVEELUTION[starterId];
     team=team.filter(p=>!EEVEELUTIONS.has(p.name)||p.name===keepEevee);
@@ -278,14 +370,34 @@ function resolveTrainerTeam(trainer, slug, starterId, difficulty){
     if(kept)team=[...nonFinal.slice(0,MAX_TEAM-1),kept];
     else team=nonFinal.slice(0,MAX_TEAM);
   }
+  return team;
+}
+
+/** Iniciales rivales, revancha, Challenge Mode (BW2). */
+function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel){
+  const peer=getRematchPeer(trainer,slug);
+  let team;
+
+  if(rematchSel==='rematch'&&peer){
+    team=[...(peer.team||[])];
+  }else if(rematchSel==='rematch'){
+    const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
+    team=embedded?embedded[embedded.length-1]:[...(trainer.team||[])];
+  }else if(peer&&!isRematchEntry(trainer)){
+    team=[...(trainer.team||[])];
+  }else{
+    const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
+    team=embedded?embedded[0]:[...(trainer.team||[])];
+  }
+
+  team=applyStarterFilters(team,trainer,slug,starterId);
 
   if(trainerHasDifficultyVariants({team},slug)){
     const diffBlocks=splitDifficultyBlocks(team);
     const wantChallenge=difficulty==='challenge';
     team=wantChallenge?diffBlocks[diffBlocks.length-1]:diffBlocks[0];
   }else if(team.length>MAX_TEAM){
-    const preferChallenge=difficulty==='challenge';
-    team=trimTeamByLevelCluster(team,trainer.type,preferChallenge);
+    team=trimTeamByLevelCluster(team,trainer.type,false);
   }
   if(team.length>MAX_TEAM)team=team.slice(0,MAX_TEAM);
   return team;
@@ -357,15 +469,19 @@ function loadTrainer(){
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;
+  const rematchEl=document.getElementById('sel-rematch');
   const difficultyEl=document.getElementById('sel-difficulty');
+  const rematchSel=(!rematchEl.disabled&&rematchEl.value)||'first';
   const difficulty=(!difficultyEl.disabled&&difficultyEl.value)||'normal';
-  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty);
+  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel);
   const starterLabel=document.getElementById('sel-starter').selectedOptions[0]?.textContent||'';
+  const rematchLabel=rematchEl.disabled?'':rematchEl.selectedOptions[0]?.textContent||'';
   const diffLabel=difficultyEl.disabled?'':difficultyEl.selectedOptions[0]?.textContent||'';
 
   document.getElementById('trainer-b-name').textContent = trainer.name || 'Rival';
   const meta=[gameName];
   if(starterLabel)meta.push(`Inicial: ${starterLabel}`);
+  if(rematchLabel)meta.push(rematchLabel);
   if(diffLabel)meta.push(diffLabel);
   document.getElementById('trainer-b-game').textContent = meta.join(' · ');
   const tnb=document.getElementById('team-name-b'); if(tnb) tnb.value!==undefined ? tnb.value=trainer.name||'Rival' : tnb.textContent=trainer.name||'Rival';
@@ -379,6 +495,7 @@ function loadTrainer(){
   renderTrainerSprite(trainer, 'b');
 
   let skipped=0;
+  let noMoves=0;
   resolvedTeam.forEach((tp,i)=>{
     if(i>=MAX_TEAM)return;
     const pData=resolveTrainerPokemon(tp);
@@ -386,6 +503,7 @@ function loadTrainer(){
 
     const level = tp.level || 100;
     const moves = resolveTrainerMoves(pData, tp);
+    if(!moves.length)noMoves++;
 
     teams.b[i] = {
       ...pData,
@@ -400,16 +518,17 @@ function loadTrainer(){
   setTimeout(()=>addLevelBadges(), 60);
 
   const loaded=resolvedTeam.length-skipped;
-  const msg=skipped
+  let msg=skipped
     ? `Equipo de ${trainer.name}: ${loaded}/${resolvedTeam.length} Pokémon (${skipped} sin datos en la DB).`
     : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
-  showToast(msg, skipped?'warn':'ok');
+  if(noMoves)msg+=` ${noMoves} sin movimientos en datos (ejecuta enrich_moves.py).`;
+  showToast(msg, (skipped||noMoves)?'warn':'ok');
 }
 
-/** Movimientos del JSON (Bulbapedia) o inferidos por nivel si faltan. */
+/** Solo movimientos del JSON (Bulbapedia); sin inventar por nivel. */
 function resolveTrainerMoves(pData, tp){
   const raw = tp.moves || [];
-  if(!raw.length) return getMovesForLevel(pData, tp.level || 100);
+  if(!raw.length) return [];
 
   const out = [];
   for(const m of raw.slice(0, 4)){
@@ -433,38 +552,7 @@ function resolveTrainerMoves(pData, tp){
       },
     });
   }
-  if(out.length) return out;
-  return getMovesForLevel(pData, tp.level || 100);
-}
-
-function getMovesForLevel(pData, level){
-  // Obtener moves aprendidos por nivel hasta 'level', tomar los últimos 4
-  const byLevel = (pData.allMoves||[])
-    .filter(m => m.byLevel && m.level > 0 && m.level <= level && m.detail?.power)
-    .sort((a,b) => b.level - a.level);
-
-  // Tomar hasta 4 únicos por tipo/categoría para variedad
-  const selected = [];
-  const usedNames = new Set();
-  for(const m of byLevel){
-    if(usedNames.has(m.name)) continue;
-    usedNames.add(m.name);
-    selected.push(m);
-    if(selected.length>=4) break;
-  }
-  // Si hay menos de 4, rellenar con moves de estado o sin daño
-  if(selected.length < 4){
-    const statusMoves = (pData.allMoves||[])
-      .filter(m => m.byLevel && m.level>0 && m.level<=level && !usedNames.has(m.name))
-      .sort((a,b)=>b.level-a.level);
-    for(const m of statusMoves){
-      if(selected.length>=4) break;
-      if(usedNames.has(m.name)) continue;
-      usedNames.add(m.name);
-      selected.push(m);
-    }
-  }
-  return selected;
+  return out;
 }
 
 function renderTrainerSprite(trainer, team){

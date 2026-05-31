@@ -51,7 +51,15 @@
           <option value="">— Entrenador —</option>
         </select>
       </div>
-      <div class="selector-arrow" aria-hidden="true">▶</div>
+      <div class="selector-arrow" id="arrow-before-rematch" hidden aria-hidden="true">▶</div>
+      <div class="selector-group" id="sel-rematch-group" hidden>
+        <label class="selector-label" for="sel-rematch">Revancha</label>
+        <select id="sel-rematch" class="sel-dropdown" disabled aria-label="Seleccionar batalla o revancha">
+          <option value="first">Primera batalla</option>
+          <option value="rematch">Revancha</option>
+        </select>
+      </div>
+      <div class="selector-arrow" id="arrow-before-difficulty" hidden aria-hidden="true">▶</div>
       <div class="selector-group" id="sel-difficulty-group" hidden>
         <label class="selector-label" for="sel-difficulty">Dificultad</label>
         <select id="sel-difficulty" class="sel-dropdown" disabled aria-label="Seleccionar dificultad del juego">
