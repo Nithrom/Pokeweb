@@ -66,9 +66,24 @@ function bestMult(attacker,defender){
 let DB=null, allPokemon=[];
 let RIVAL_TEAM='b'; // en trainers.html el equipo rival no es editable
 let IS_TRAINER_PAGE=false; // true en trainers.html
-const teams={a:Array(6).fill(null),b:Array(6).fill(null)};
+const DEFAULT_TEAM_SIZE=6;
+const teams={a:Array(DEFAULT_TEAM_SIZE).fill(null),b:Array(DEFAULT_TEAM_SIZE).fill(null)};
 const _slotState={};
 function slotSt(team,idx){const k=`${team}-${idx}`;if(!_slotState[k])_slotState[k]={shiny:false,stats:false};return _slotState[k];}
+
+function getTeamSize(team){
+  if(IS_TRAINER_PAGE&&team===RIVAL_TEAM)return teams[team].length;
+  return DEFAULT_TEAM_SIZE;
+}
+
+/** Redimensiona el equipo rival (trainers.html); mínimo 6 slots. */
+function setRivalTeamSize(size){
+  const n=Math.max(DEFAULT_TEAM_SIZE,size);
+  const prev=teams.b;
+  teams.b=Array(n).fill(null);
+  for(let i=0;i<Math.min(prev.length,n);i++)teams.b[i]=prev[i]??null;
+  for(let i=n;i<prev.length;i++)delete _slotState[`b-${i}`];
+}
 
 // Modal pokémon
 const _mP={team:null,typeFilters:[],flags:{legendary:false,physical:false,special:false},filtered:[],shown:0};
@@ -129,7 +144,9 @@ async function init(){
 function renderAllSlots(team){
   const c=document.getElementById(`slots-${team}`);
   c.innerHTML='';
-  for(let i=0;i<6;i++)c.appendChild(buildSlotEl(team,i));
+  const n=getTeamSize(team);
+  c.classList.toggle('team-slots-expanded',IS_TRAINER_PAGE&&team===RIVAL_TEAM&&n>DEFAULT_TEAM_SIZE);
+  for(let i=0;i<n;i++)c.appendChild(buildSlotEl(team,i));
 }
 
 function refreshSlot(team,idx){

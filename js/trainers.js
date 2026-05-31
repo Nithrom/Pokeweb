@@ -96,6 +96,30 @@ function onGameChange(){
   };
 }
 
+// ── Resolver nombre de pokémon del entrenador → pokemon_db ──
+function resolveTrainerPokemon(tp){
+  if(!tp?.name)return null;
+  let p=allPokemon.find(x=>x.name===tp.name);
+  if(p)return p;
+
+  const display=(tp.name_display||'').toLowerCase();
+  if(tp.name==='lycanroc'){
+    if(display.includes('midnight'))return allPokemon.find(x=>x.name==='lycanroc-midnight');
+    if(display.includes('dusk'))return allPokemon.find(x=>x.name==='lycanroc-dusk');
+    if(display.includes('midday'))return allPokemon.find(x=>x.name==='lycanroc-midday');
+    return allPokemon.find(x=>x.name==='lycanroc-midday');
+  }
+  if(display.includes('alolan')){
+    p=allPokemon.find(x=>x.name===`${tp.name}-alola`);
+    if(p)return p;
+  }
+  if(display.includes('galarian')){
+    p=allPokemon.find(x=>x.name===`${tp.name}-galar`);
+    if(p)return p;
+  }
+  return null;
+}
+
 // ── Cargar entrenador al lado B ───────────────────────
 function loadTrainer(){
   const slug = document.getElementById('sel-game').value;
@@ -114,8 +138,9 @@ function loadTrainer(){
   document.getElementById('trainer-b-game').textContent = gameName;
   const tnb=document.getElementById('team-name-b'); if(tnb) tnb.value!==undefined ? tnb.value=trainer.name||'Rival' : tnb.textContent=trainer.name||'Rival';
 
-  // Limpiar slots B
-  for(let i=0;i<6;i++){
+  const teamSize=Math.max(6, trainer.team.length);
+  setRivalTeamSize(teamSize);
+  for(let i=0;i<teamSize;i++){
     teams.b[i]=null;
     const st=slotSt('b',i);
     st.shiny=false; st.stats=false;
@@ -124,11 +149,11 @@ function loadTrainer(){
   // Renderizar sprite del entrenador arriba del lado B
   renderTrainerSprite(trainer, 'b');
 
-  // Rellenar equipo B con los pokémon del entrenador
+  let skipped=0;
+  // Rellenar equipo B con todos los pokémon del entrenador
   trainer.team.forEach((tp, i)=>{
-    if(i>=6) return;
-    const pData = allPokemon.find(p=>p.name===tp.name);
-    if(!pData) return;
+    const pData=resolveTrainerPokemon(tp);
+    if(!pData){ skipped++; return; }
 
     // Moves por nivel: filtrar los que aprende hasta el nivel del pokémon en el entrenador
     const level = tp.level || 100;
@@ -144,10 +169,13 @@ function loadTrainer(){
   });
 
   renderAllSlots('b');
-  // Añadir badge de nivel tras render
   setTimeout(()=>addLevelBadges(), 60);
 
-  showToast(`Equipo de ${trainer.name} cargado.`, 'ok');
+  const loaded=trainer.team.length-skipped;
+  const msg=skipped
+    ? `Equipo de ${trainer.name}: ${loaded}/${trainer.team.length} Pokémon (${skipped} sin datos en la DB).`
+    : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
+  showToast(msg, skipped?'warn':'ok');
 }
 
 function getMovesForLevel(pData, level){
@@ -199,7 +227,7 @@ function renderTrainerSprite(trainer, team){
 }
 
 function addLevelBadges(){
-  for(let i=0;i<6;i++){
+  for(let i=0;i<teams.b.length;i++){
     const p = teams.b[i];
     if(!p) continue;
     const slotEl = document.getElementById(`poke-row-b-${i}`);
@@ -218,7 +246,8 @@ function addLevelBadges(){
 
 function clearTrainer(){
   showConfirm('¿Limpiar el equipo rival?', ()=>{
-    for(let i=0;i<6;i++){
+    setRivalTeamSize(6);
+    for(let i=0;i<teams.b.length;i++){
       teams.b[i]=null;
       const st=slotSt('b',i);
       st.shiny=false; st.stats=false;

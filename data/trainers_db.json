@@ -11102,7 +11102,7 @@
             "moves":[]
           },
           {
-            "name":"lycanroc",
+            "name":"lycanroc-midnight",
             "name_display":"Lycanroc (Midnight Form)",
             "level":27,
             "types":[
@@ -11311,7 +11311,7 @@
             "moves":[]
           },
           {
-            "name":"lycanroc",
+            "name":"lycanroc-midnight",
             "name_display":"Lycanroc (Midnight Form)",
             "level":55,
             "types":[
@@ -11453,7 +11453,7 @@
         "sprite":"https://img.pokemondb.net/sprites/trainers/sun-moon/kukui.jpg",
         "team":[
           {
-            "name":"lycanroc",
+            "name":"lycanroc-midday",
             "name_display":"Lycanroc (Midday Form)",
             "level":57,
             "types":[
@@ -11858,7 +11858,7 @@
             "moves":[]
           },
           {
-            "name":"lycanroc",
+            "name":"lycanroc-midnight",
             "name_display":"Lycanroc (Midnight Form)",
             "level":28,
             "types":[
@@ -12067,7 +12067,7 @@
             "moves":[]
           },
           {
-            "name":"lycanroc",
+            "name":"lycanroc-midnight",
             "name_display":"Lycanroc (Midnight Form)",
             "level":57,
             "types":[
