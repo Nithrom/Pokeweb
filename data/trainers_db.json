@@ -1,9 +1,4 @@
 {
-  "meta": {
-    "source": "pokemondb.net, bulbapedia.bulbagarden.net",
-    "total_games": 20,
-    "total_trainers": 287
-  },
   "games": [
     {
       "slug": "red-blue",
@@ -10285,12 +10280,12 @@
             ]
           },
           {
-            "name": "aggron",
-            "name_display": "Aggron",
+            "name": "blaziken",
+            "name_display": "Blaziken",
             "level": 56,
             "types": [
-              "steel",
-              "rock"
+              "fire",
+              "fighting"
             ],
             "moves": [
               {
@@ -13488,11 +13483,12 @@
             ]
           },
           {
-            "name": "arcanine",
-            "name_display": "Arcanine",
+            "name": "charizard",
+            "name_display": "Charizard",
             "level": 59,
             "types": [
-              "fire"
+              "fire",
+              "flying"
             ],
             "moves": [
               {
@@ -13536,12 +13532,16 @@
             ],
             "moves": [
               {
-                "name": "rock-throw",
-                "name_display": "Rock Throw"
+                "name": "tackle",
+                "name_display": "Tackle"
               },
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "defense-curl",
+                "name_display": "Defense Curl"
+              },
+              {
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
               }
             ]
           },
@@ -13555,16 +13555,20 @@
             ],
             "moves": [
               {
+                "name": "tackle",
+                "name_display": "Tackle"
+              },
+              {
+                "name": "harden",
+                "name_display": "Harden"
+              },
+              {
                 "name": "rock-throw",
                 "name_display": "Rock Throw"
               },
               {
-                "name": "screech",
-                "name_display": "Screech"
-              },
-              {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "bind",
+                "name_display": "Bind"
               }
             ]
           },
@@ -13581,12 +13585,16 @@
                 "name_display": "Headbutt"
               },
               {
+                "name": "leer",
+                "name_display": "Leer"
+              },
+              {
                 "name": "pursuit",
                 "name_display": "Pursuit"
               },
               {
-                "name": "leer",
-                "name_display": "Leer"
+                "name": "rock-tomb",
+                "name_display": "Rock Tomb"
               }
             ]
           }
@@ -13610,20 +13618,16 @@
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
-              },
-              {
-                "name": "leech-seed",
-                "name_display": "Leech Seed"
-              },
-              {
-                "name": "safeguard",
-                "name_display": "Safeguard"
+                "name": "tackle",
+                "name_display": "Tackle"
               },
               {
                 "name": "growth",
                 "name_display": "Growth"
+              },
+              {
+                "name": "leech-seed",
+                "name_display": "Leech Seed"
               }
             ]
           },
@@ -13636,10 +13640,6 @@
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
-              },
-              {
                 "name": "razor-leaf",
                 "name_display": "Razor Leaf"
               },
@@ -13648,8 +13648,12 @@
                 "name_display": "Withdraw"
               },
               {
-                "name": "reflect",
-                "name_display": "Reflect"
+                "name": "bite",
+                "name_display": "Bite"
+              },
+              {
+                "name": "curse",
+                "name_display": "Curse"
               }
             ]
           },
@@ -13663,10 +13667,6 @@
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
-              },
-              {
                 "name": "magical-leaf",
                 "name_display": "Magical Leaf"
               },
@@ -13677,6 +13677,10 @@
               {
                 "name": "stun-spore",
                 "name_display": "Stun Spore"
+              },
+              {
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               }
             ]
           }
@@ -13701,8 +13705,8 @@
             ],
             "moves": [
               {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
+                "name": "force-palm",
+                "name_display": "Force Palm"
               },
               {
                 "name": "confusion",
@@ -13713,8 +13717,8 @@
                 "name_display": "Detect"
               },
               {
-                "name": "meditate",
-                "name_display": "Meditate"
+                "name": "hidden-power",
+                "name_display": "Hidden Power"
               }
             ]
           },
@@ -13727,20 +13731,20 @@
             ],
             "moves": [
               {
-                "name": "brick-break",
-                "name_display": "Brick Break"
-              },
-              {
-                "name": "leer",
-                "name_display": "Leer"
+                "name": "karate-chop",
+                "name_display": "Karate Chop"
               },
               {
                 "name": "foresight",
                 "name_display": "Foresight"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "seismic-toss",
+                "name_display": "Seismic Toss"
+              },
+              {
+                "name": "focus-energy",
+                "name_display": "Focus Energy"
               }
             ]
           },
@@ -13754,20 +13758,20 @@
             ],
             "moves": [
               {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
+              },
+              {
+                "name": "force-palm",
+                "name_display": "Force Palm"
               },
               {
                 "name": "metal-claw",
                 "name_display": "Metal Claw"
               },
               {
-                "name": "bone-rush",
-                "name_display": "Bone Rush"
-              },
-              {
-                "name": "force-palm",
-                "name_display": "Force Palm"
+                "name": "counter",
+                "name_display": "Counter"
               }
             ]
           }
@@ -13792,10 +13796,6 @@
             ],
             "moves": [
               {
-                "name": "brine",
-                "name_display": "Brine"
-              },
-              {
                 "name": "bite",
                 "name_display": "Bite"
               },
@@ -13804,8 +13804,12 @@
                 "name_display": "Dragon Rage"
               },
               {
-                "name": "swagger",
-                "name_display": "Swagger"
+                "name": "twister",
+                "name_display": "Twister"
+              },
+              {
+                "name": "leer",
+                "name_display": "Leer"
               }
             ]
           },
@@ -13819,20 +13823,20 @@
             ],
             "moves": [
               {
+                "name": "water-gun",
+                "name_display": "Water Gun"
+              },
+              {
+                "name": "mud-shot",
+                "name_display": "Mud Shot"
+              },
+              {
                 "name": "slam",
                 "name_display": "Slam"
               },
               {
-                "name": "mud-bomb",
-                "name_display": "Mud Bomb"
-              },
-              {
-                "name": "mud-sport",
-                "name_display": "Mud Sport"
-              },
-              {
-                "name": "tail-whip",
-                "name_display": "Tail Whip"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               }
             ]
           },
@@ -13845,20 +13849,20 @@
             ],
             "moves": [
               {
-                "name": "brine",
-                "name_display": "Brine"
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
-                "name": "pursuit",
-                "name_display": "Pursuit"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
                 "name": "swift",
                 "name_display": "Swift"
+              },
+              {
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
               }
             ]
           }
@@ -13874,82 +13878,81 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/fantina.png",
         "team": [
           {
-            "name": "drifblim",
-            "name_display": "Drifblim",
-            "level": 32,
+            "name": "duskull",
+            "name_display": "Duskull",
+            "level": 24,
             "types": [
-              "ghost",
-              "flying"
+              "ghost"
             ],
             "moves": [
               {
-                "name": "ominous-wind",
-                "name_display": "Ominous Wind"
+                "name": "shadow-sneak",
+                "name_display": "Shadow Sneak"
               },
               {
-                "name": "gust",
-                "name_display": "Gust"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
-                "name": "astonish",
-                "name_display": "Astonish"
+                "name": "night-shade",
+                "name_display": "Night Shade"
               },
               {
-                "name": "minimize",
-                "name_display": "Minimize"
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
               }
             ]
           },
           {
-            "name": "gengar",
-            "name_display": "Gengar",
-            "level": 34,
+            "name": "haunter",
+            "name_display": "Haunter",
+            "level": 24,
             "types": [
               "ghost",
               "poison"
             ],
             "moves": [
               {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "poison-jab",
-                "name_display": "Poison Jab"
+                "name": "dream-eater",
+                "name_display": "Dream Eater"
               },
               {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
-                "name": "spite",
-                "name_display": "Spite"
+                "name": "mean-look",
+                "name_display": "Mean Look"
               }
             ]
           },
           {
             "name": "mismagius",
             "name_display": "Mismagius",
-            "level": 36,
+            "level": 26,
             "types": [
               "ghost"
             ],
             "moves": [
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
                 "name": "psybeam",
                 "name_display": "Psybeam"
               },
               {
-                "name": "magical-leaf",
-                "name_display": "Magical Leaf"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
+              },
+              {
+                "name": "magical-leaf",
+                "name_display": "Magical Leaf"
               }
             ]
           }
@@ -13974,20 +13977,20 @@
             ],
             "moves": [
               {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
-              },
-              {
-                "name": "extrasensory",
-                "name_display": "Extrasensory"
-              },
-              {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
               },
               {
                 "name": "hypnosis",
                 "name_display": "Hypnosis"
+              },
+              {
+                "name": "gyro-ball",
+                "name_display": "Gyro Ball"
+              },
+              {
+                "name": "safeguard",
+                "name_display": "Safeguard"
               }
             ]
           },
@@ -14001,20 +14004,20 @@
             ],
             "moves": [
               {
-                "name": "gyro-ball",
-                "name_display": "Gyro Ball"
+                "name": "iron-tail",
+                "name_display": "Iron Tail"
               },
               {
-                "name": "dragonbreath",
-                "name_display": "DragonBreath"
+                "name": "screech",
+                "name_display": "Screech"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "crunch",
+                "name_display": "Crunch"
               }
             ]
           },
@@ -14028,20 +14031,20 @@
             ],
             "moves": [
               {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
-              },
-              {
-                "name": "ancient-power",
-                "name_display": "AncientPower"
-              },
-              {
                 "name": "iron-defense",
                 "name_display": "Iron Defense"
               },
               {
-                "name": "rest",
-                "name_display": "Rest"
+                "name": "take-down",
+                "name_display": "Take Down"
+              },
+              {
+                "name": "protect",
+                "name_display": "Protect"
+              },
+              {
+                "name": "ancient-power",
+                "name_display": "AncientPower"
               }
             ]
           }
@@ -14057,33 +14060,6 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/candice.png",
         "team": [
           {
-            "name": "snover",
-            "name_display": "Snover",
-            "level": 38,
-            "types": [
-              "grass",
-              "ice"
-            ],
-            "moves": [
-              {
-                "name": "razor-leaf",
-                "name_display": "Razor Leaf"
-              },
-              {
-                "name": "avalanche",
-                "name_display": "Avalanche"
-              },
-              {
-                "name": "ingrain",
-                "name_display": "Ingrain"
-              },
-              {
-                "name": "leer",
-                "name_display": "Leer"
-              }
-            ]
-          },
-          {
             "name": "sneasel",
             "name_display": "Sneasel",
             "level": 38,
@@ -14093,47 +14069,47 @@
             ],
             "moves": [
               {
-                "name": "faint-attack",
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
+              },
+              {
+                "name": "feint-attack",
                 "name_display": "Faint Attack"
               },
               {
-                "name": "slash",
-                "name_display": "Slash"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               },
               {
-                "name": "taunt",
-                "name_display": "Taunt"
-              },
-              {
-                "name": "avalanche",
-                "name_display": "Avalanche"
+                "name": "metal-claw",
+                "name_display": "Metal Claw"
               }
             ]
           },
           {
-            "name": "medicham",
-            "name_display": "Medicham",
-            "level": 40,
+            "name": "piloswine",
+            "name_display": "Piloswine",
+            "level": 38,
             "types": [
-              "fighting",
-              "psychic"
+              "ice",
+              "ground"
             ],
             "moves": [
               {
-                "name": "force-palm",
-                "name_display": "Force Palm"
+                "name": "ice-shard",
+                "name_display": "Ice Shard"
               },
               {
-                "name": "bulk-up",
-                "name_display": "Bulk Up"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "detect",
-                "name_display": "Detect"
+                "name": "ancient-power",
+                "name_display": "AncientPower"
               },
               {
-                "name": "ice-punch",
-                "name_display": "Ice Punch"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               }
             ]
           },
@@ -14147,20 +14123,20 @@
             ],
             "moves": [
               {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
                 "name": "wood-hammer",
                 "name_display": "Wood Hammer"
               },
               {
-                "name": "swagger",
-                "name_display": "Swagger"
+                "name": "blizzard",
+                "name_display": "Blizzard"
               },
               {
-                "name": "grasswhistle",
-                "name_display": "GrassWhistle"
-              },
-              {
-                "name": "avalanche",
-                "name_display": "Avalanche"
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               }
             ]
           }
@@ -14176,6 +14152,32 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/volkner.png",
         "team": [
           {
+            "name": "ambipom",
+            "name_display": "Ambipom",
+            "level": 46,
+            "types": [
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "swift",
+                "name_display": "Swift"
+              },
+              {
+                "name": "agility",
+                "name_display": "Agility"
+              },
+              {
+                "name": "shock-wave",
+                "name_display": "Shock Wave"
+              },
+              {
+                "name": "double-hit",
+                "name_display": "Double Hit"
+              }
+            ]
+          },
+          {
             "name": "raichu",
             "name_display": "Raichu",
             "level": 46,
@@ -14184,12 +14186,8 @@
             ],
             "moves": [
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
-              },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
                 "name": "light-screen",
@@ -14198,32 +14196,10 @@
               {
                 "name": "thunder-wave",
                 "name_display": "Thunder Wave"
-              }
-            ]
-          },
-          {
-            "name": "ambipom",
-            "name_display": "Ambipom",
-            "level": 47,
-            "types": [
-              "normal"
-            ],
-            "moves": [
-              {
-                "name": "shock-wave",
-                "name_display": "Shock Wave"
               },
               {
-                "name": "nasty-plot",
-                "name_display": "Nasty Plot"
-              },
-              {
-                "name": "agility",
-                "name_display": "Agility"
-              },
-              {
-                "name": "baton-pass",
-                "name_display": "Baton Pass"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               }
             ]
           },
@@ -14236,20 +14212,20 @@
             ],
             "moves": [
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
               },
               {
-                "name": "octazooka",
-                "name_display": "Octazooka"
-              },
-              {
-                "name": "aurora-beam",
-                "name_display": "Aurora Beam"
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
               },
               {
                 "name": "bullet-seed",
                 "name_display": "Bullet Seed"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           },
@@ -14262,20 +14238,20 @@
             ],
             "moves": [
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
-              },
-              {
-                "name": "thunder-wave",
-                "name_display": "Thunder Wave"
-              },
-              {
                 "name": "thunder-fang",
                 "name_display": "Thunder Fang"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
+              },
+              {
+                "name": "ice-fang",
+                "name_display": "Ice Fang"
+              },
+              {
+                "name": "fire-fang",
+                "name_display": "Fire Fang"
               }
             ]
           }
@@ -14291,29 +14267,29 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/aaron.png",
         "team": [
           {
-            "name": "dustox",
-            "name_display": "Dustox",
+            "name": "yanmega",
+            "name_display": "Yanmega",
             "level": 53,
             "types": [
               "bug",
-              "poison"
+              "flying"
             ],
             "moves": [
               {
-                "name": "toxic",
-                "name_display": "Toxic"
-              },
-              {
                 "name": "bug-buzz",
                 "name_display": "Bug Buzz"
+              },
+              {
+                "name": "air-slash",
+                "name_display": "Air Slash"
               },
               {
                 "name": "double-team",
                 "name_display": "Double Team"
               },
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
+                "name": "night-slash",
+                "name_display": "Night Slash"
               }
             ]
           },
@@ -14327,20 +14303,20 @@
             ],
             "moves": [
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
+                "name": "air-cutter",
+                "name_display": "Air Cutter"
               },
               {
-                "name": "bug-buzz",
-                "name_display": "Bug Buzz"
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               },
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "whirlwind",
+                "name_display": "Whirlwind"
               }
             ]
           },
@@ -14366,8 +14342,8 @@
                 "name_display": "Heal Order"
               },
               {
-                "name": "power-gem",
-                "name_display": "Power Gem"
+                "name": "toxic",
+                "name_display": "Toxic"
               }
             ]
           },
@@ -14393,8 +14369,8 @@
                 "name_display": "Night Slash"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               }
             ]
           },
@@ -14408,20 +14384,20 @@
             ],
             "moves": [
               {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "cross-poison",
-                "name_display": "Cross Poison"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
                 "name": "ice-fang",
                 "name_display": "Ice Fang"
               },
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "fire-fang",
+                "name_display": "Fire Fang"
+              },
+              {
+                "name": "poison-fang",
+                "name_display": "Poison Fang"
               }
             ]
           }
@@ -14446,20 +14422,46 @@
             ],
             "moves": [
               {
-                "name": "dig",
-                "name_display": "Dig"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
-                "name": "protect",
-                "name_display": "Protect"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "recover",
+                "name_display": "Recover"
+              }
+            ]
+          },
+          {
+            "name": "whiscash",
+            "name_display": "Whiscash",
+            "level": 55,
+            "types": [
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "aqua-tail",
+                "name_display": "Aqua Tail"
+              },
+              {
+                "name": "rest",
+                "name_display": "Rest"
+              },
+              {
+                "name": "snore",
+                "name_display": "Snore"
               }
             ]
           },
@@ -14472,16 +14474,42 @@
             ],
             "moves": [
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
+              },
+              {
+                "name": "hammer-arm",
+                "name_display": "Hammer Arm"
               },
               {
                 "name": "sucker-punch",
                 "name_display": "Sucker Punch"
               },
               {
-                "name": "hammer-arm",
-                "name_display": "Hammer Arm"
+                "name": "low-kick",
+                "name_display": "Low Kick"
+              }
+            ]
+          },
+          {
+            "name": "hippowdon",
+            "name_display": "Hippowdon",
+            "level": 59,
+            "types": [
+              "ground"
+            ],
+            "moves": [
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "slack-off",
+                "name_display": "Slack Off"
               },
               {
                 "name": "sandstorm",
@@ -14499,58 +14527,13 @@
             ],
             "moves": [
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "explosion",
+                "name_display": "Explosion"
               },
               {
-                "name": "gyro-ball",
-                "name_display": "Gyro Ball"
+                "name": "rock-polish",
+                "name_display": "Rock Polish"
               },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
-              },
-              {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
-              }
-            ]
-          },
-          {
-            "name": "whiscash",
-            "name_display": "Whiscash",
-            "level": 55,
-            "types": [
-              "water",
-              "ground"
-            ],
-            "moves": [
-              {
-                "name": "fissure",
-                "name_display": "Fissure"
-              },
-              {
-                "name": "aqua-tail",
-                "name_display": "Aqua Tail"
-              },
-              {
-                "name": "zen-headbutt",
-                "name_display": "Zen Headbutt"
-              },
-              {
-                "name": "rock-slide",
-                "name_display": "Rock Slide"
-              }
-            ]
-          },
-          {
-            "name": "hippowdon",
-            "name_display": "Hippowdon",
-            "level": 59,
-            "types": [
-              "ground"
-            ],
-            "moves": [
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
@@ -14558,14 +14541,6 @@
               {
                 "name": "stone-edge",
                 "name_display": "Stone Edge"
-              },
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              },
-              {
-                "name": "curse",
-                "name_display": "Curse"
               }
             ]
           }
@@ -14581,11 +14556,64 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/flint.png",
         "team": [
           {
+            "name": "houndoom",
+            "name_display": "Houndoom",
+            "level": 58,
+            "types": [
+              "dark",
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
+              }
+            ]
+          },
+          {
+            "name": "flareon",
+            "name_display": "Flareon",
+            "level": 57,
+            "types": [
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "fire-blast",
+                "name_display": "Fire Blast"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "bite",
+                "name_display": "Bite"
+              },
+              {
+                "name": "sand-attack",
+                "name_display": "Sand Attack"
+              }
+            ]
+          },
+          {
             "name": "rapidash",
             "name_display": "Rapidash",
             "level": 58,
             "types": [
-              "fire"
+              "normal"
             ],
             "moves": [
               {
@@ -14593,96 +14621,16 @@
                 "name_display": "Flare Blitz"
               },
               {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
+              },
+              {
+                "name": "megahorn",
+                "name_display": "Megahorn"
               },
               {
                 "name": "bounce",
                 "name_display": "Bounce"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              }
-            ]
-          },
-          {
-            "name": "steelix",
-            "name_display": "Steelix",
-            "level": 57,
-            "types": [
-              "steel",
-              "ground"
-            ],
-            "moves": [
-              {
-                "name": "fire-fang",
-                "name_display": "Fire Fang"
-              },
-              {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
-              },
-              {
-                "name": "screech",
-                "name_display": "Screech"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              }
-            ]
-          },
-          {
-            "name": "drifblim",
-            "name_display": "Drifblim",
-            "level": 58,
-            "types": [
-              "ghost",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "will-o-wisp",
-                "name_display": "Will-O-Wisp"
-              },
-              {
-                "name": "ominous-wind",
-                "name_display": "Ominous Wind"
-              },
-              {
-                "name": "double-team",
-                "name_display": "Double Team"
-              },
-              {
-                "name": "baton-pass",
-                "name_display": "Baton Pass"
-              }
-            ]
-          },
-          {
-            "name": "lopunny",
-            "name_display": "Lopunny",
-            "level": 57,
-            "types": [
-              "normal"
-            ],
-            "moves": [
-              {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
-              },
-              {
-                "name": "charm",
-                "name_display": "Charm"
-              },
-              {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
               }
             ]
           },
@@ -14700,16 +14648,43 @@
                 "name_display": "Flare Blitz"
               },
               {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
+                "name": "close-combat",
+                "name_display": "Close Combat"
+              },
+              {
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               },
               {
                 "name": "mach-punch",
                 "name_display": "Mach Punch"
+              }
+            ]
+          },
+          {
+            "name": "drifblim",
+            "name_display": "Drifblim",
+            "level": 58,
+            "types": [
+              "ghost",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "ominous-wind",
+                "name_display": "Ominous Wind"
               }
             ]
           }
@@ -14726,10 +14701,10 @@
         "team": [
           {
             "name": "mr-mime",
-            "name_display": "Mr. Mime",
+            "name_display": "Mr Mime",
             "level": 59,
             "types": [
-              "psychic"
+              "normal"
             ],
             "moves": [
               {
@@ -14737,16 +14712,16 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               },
               {
                 "name": "reflect",
                 "name_display": "Reflect"
               },
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
+                "name": "baton-pass",
+                "name_display": "Baton Pass"
               }
             ]
           },
@@ -14764,43 +14739,16 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
-                "name": "double-hit",
-                "name_display": "Double Hit"
-              },
-              {
                 "name": "crunch",
                 "name_display": "Crunch"
-              }
-            ]
-          },
-          {
-            "name": "medicham",
-            "name_display": "Medicham",
-            "level": 60,
-            "types": [
-              "fighting",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
               },
               {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
+                "name": "agility",
+                "name_display": "Agility"
               },
               {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
-              },
-              {
-                "name": "ice-punch",
-                "name_display": "Ice Punch"
+                "name": "baton-pass",
+                "name_display": "Baton Pass"
               }
             ]
           },
@@ -14809,7 +14757,7 @@
             "name_display": "Alakazam",
             "level": 60,
             "types": [
-              "psychic"
+              "normal"
             ],
             "moves": [
               {
@@ -14817,16 +14765,16 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
-              },
-              {
-                "name": "focus-blast",
-                "name_display": "Focus Blast"
-              },
-              {
                 "name": "recover",
                 "name_display": "Recover"
+              },
+              {
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
+              },
+              {
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
               }
             ]
           },
@@ -14835,14 +14783,9 @@
             "name_display": "Bronzong",
             "level": 63,
             "types": [
-              "steel",
-              "psychic"
+              "normal"
             ],
             "moves": [
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
               {
                 "name": "gyro-ball",
                 "name_display": "Gyro Ball"
@@ -14852,8 +14795,12 @@
                 "name_display": "Earthquake"
               },
               {
-                "name": "calm-mind",
-                "name_display": "Calm Mind"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
               }
             ]
           }
@@ -14878,10 +14825,6 @@
             ],
             "moves": [
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
                 "name": "dark-pulse",
                 "name_display": "Dark Pulse"
               },
@@ -14890,8 +14833,12 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "silver-wind",
+                "name_display": "Silver Wind"
+              },
+              {
+                "name": "embargo",
+                "name_display": "Embargo"
               }
             ]
           },
@@ -14905,20 +14852,20 @@
             ],
             "moves": [
               {
-                "name": "dazzling-gleam",
-                "name_display": "Dazzling Gleam"
-              },
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
               },
               {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
               },
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "extrasensory",
+                "name_display": "Extrasensory"
               }
             ]
           },
@@ -14932,20 +14879,20 @@
             ],
             "moves": [
               {
-                "name": "scald",
-                "name_display": "Scald"
+                "name": "muddy-water",
+                "name_display": "Muddy Water"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
               }
             ]
           },
@@ -14967,12 +14914,12 @@
                 "name_display": "Dragon Pulse"
               },
               {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
+                "name": "psychic",
+                "name_display": "Psychic"
               },
               {
-                "name": "nasty-plot",
-                "name_display": "Nasty Plot"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               }
             ]
           },
@@ -14985,20 +14932,20 @@
             ],
             "moves": [
               {
-                "name": "recover",
-                "name_display": "Recover"
-              },
-              {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
                 "name": "ice-beam",
                 "name_display": "Ice Beam"
               },
               {
-                "name": "scald",
-                "name_display": "Scald"
+                "name": "mirror-coat",
+                "name_display": "Mirror Coat"
+              },
+              {
+                "name": "aqua-ring",
+                "name_display": "Aqua Ring"
               }
             ]
           },
@@ -15012,20 +14959,20 @@
             ],
             "moves": [
               {
-                "name": "dragon-claw",
-                "name_display": "Dragon Claw"
+                "name": "dragon-rush",
+                "name_display": "Dragon Rush"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "swords-dance",
-                "name_display": "Swords Dance"
+                "name": "brick-break",
+                "name_display": "Brick Break"
               },
               {
-                "name": "poison-jab",
-                "name_display": "Poison Jab"
+                "name": "giga-impact",
+                "name_display": "Giga Impact"
               }
             ]
           }
@@ -15052,12 +14999,16 @@
             ],
             "moves": [
               {
-                "name": "rock-throw",
-                "name_display": "Rock Throw"
+                "name": "tackle",
+                "name_display": "Tackle"
               },
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "defense-curl",
+                "name_display": "Defense Curl"
+              },
+              {
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
               }
             ]
           },
@@ -15071,16 +15022,20 @@
             ],
             "moves": [
               {
+                "name": "tackle",
+                "name_display": "Tackle"
+              },
+              {
+                "name": "harden",
+                "name_display": "Harden"
+              },
+              {
                 "name": "rock-throw",
                 "name_display": "Rock Throw"
               },
               {
-                "name": "screech",
-                "name_display": "Screech"
-              },
-              {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "bind",
+                "name_display": "Bind"
               }
             ]
           },
@@ -15097,12 +15052,16 @@
                 "name_display": "Headbutt"
               },
               {
+                "name": "leer",
+                "name_display": "Leer"
+              },
+              {
                 "name": "pursuit",
                 "name_display": "Pursuit"
               },
               {
-                "name": "leer",
-                "name_display": "Leer"
+                "name": "rock-tomb",
+                "name_display": "Rock Tomb"
               }
             ]
           }
@@ -15118,54 +15077,50 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/gardenia.png",
         "team": [
           {
-            "name": "turtwig",
-            "name_display": "Turtwig",
-            "level": 20,
+            "name": "cherubi",
+            "name_display": "Cherubi",
+            "level": 19,
             "types": [
               "grass"
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
+                "name": "tackle",
+                "name_display": "Tackle"
               },
+              {
+                "name": "growth",
+                "name_display": "Growth"
+              },
+              {
+                "name": "leech-seed",
+                "name_display": "Leech Seed"
+              }
+            ]
+          },
+          {
+            "name": "turtwig",
+            "name_display": "Turtwig",
+            "level": 19,
+            "types": [
+              "grass"
+            ],
+            "moves": [
               {
                 "name": "razor-leaf",
                 "name_display": "Razor Leaf"
               },
               {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
+                "name": "withdraw",
+                "name_display": "Withdraw"
               },
               {
-                "name": "reflect",
-                "name_display": "Reflect"
-              }
-            ]
-          },
-          {
-            "name": "cherrim",
-            "name_display": "Cherrim",
-            "level": 20,
-            "types": [
-              "grass"
-            ],
-            "moves": [
-              {
-                "name": "toxic",
-                "name_display": "Toxic"
+                "name": "bite",
+                "name_display": "Bite"
               },
               {
-                "name": "leech-seed",
-                "name_display": "Leech Seed"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              },
-              {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
+                "name": "curse",
+                "name_display": "Curse"
               }
             ]
           },
@@ -15179,20 +15134,20 @@
             ],
             "moves": [
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "magical-leaf",
+                "name_display": "Magical Leaf"
               },
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "poison-sting",
+                "name_display": "Poison Sting"
               },
               {
-                "name": "hyper-beam",
-                "name_display": "Hyper Beam"
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               },
               {
-                "name": "leaf-storm",
-                "name_display": "Leaf Storm"
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               }
             ]
           }
@@ -15216,20 +15171,20 @@
             ],
             "moves": [
               {
-                "name": "will-o-wisp",
-                "name_display": "Will-O-Wisp"
-              },
-              {
-                "name": "future-sight",
-                "name_display": "Future Sight"
-              },
-              {
                 "name": "shadow-sneak",
                 "name_display": "Shadow Sneak"
               },
               {
-                "name": "pursuit",
-                "name_display": "Pursuit"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
+              },
+              {
+                "name": "night-shade",
+                "name_display": "Night Shade"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
               }
             ]
           },
@@ -15243,20 +15198,20 @@
             ],
             "moves": [
               {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
-              },
-              {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
                 "name": "hypnosis",
                 "name_display": "Hypnosis"
+              },
+              {
+                "name": "dream-eater",
+                "name_display": "Dream Eater"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "mean-look",
+                "name_display": "Mean Look"
               }
             ]
           },
@@ -15269,16 +15224,16 @@
             ],
             "moves": [
               {
+                "name": "psybeam",
+                "name_display": "Psybeam"
+              },
+              {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
               },
               {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
                 "name": "magical-leaf",
@@ -15300,34 +15255,34 @@
           {
             "name": "meditite",
             "name_display": "Meditite",
-            "level": 28,
+            "level": 27,
             "types": [
               "fighting",
               "psychic"
             ],
             "moves": [
               {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
+                "name": "force-palm",
+                "name_display": "Force Palm"
               },
               {
                 "name": "confusion",
                 "name_display": "Confusion"
               },
               {
-                "name": "fake-out",
-                "name_display": "Fake Out"
+                "name": "detect",
+                "name_display": "Detect"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "hidden-power",
+                "name_display": "Hidden Power"
               }
             ]
           },
           {
             "name": "machoke",
             "name_display": "Machoke",
-            "level": 29,
+            "level": 27,
             "types": [
               "fighting"
             ],
@@ -15337,43 +15292,43 @@
                 "name_display": "Karate Chop"
               },
               {
-                "name": "strength",
-                "name_display": "Strength"
+                "name": "foresight",
+                "name_display": "Foresight"
+              },
+              {
+                "name": "seismic-toss",
+                "name_display": "Seismic Toss"
               },
               {
                 "name": "focus-energy",
                 "name_display": "Focus Energy"
-              },
-              {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
               }
             ]
           },
           {
             "name": "lucario",
             "name_display": "Lucario",
-            "level": 32,
+            "level": 30,
             "types": [
               "fighting",
               "steel"
             ],
             "moves": [
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
               },
               {
-                "name": "extremespeed",
-                "name_display": "ExtremeSpeed"
+                "name": "force-palm",
+                "name_display": "Force Palm"
               },
               {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
+                "name": "metal-claw",
+                "name_display": "Metal Claw"
               },
               {
-                "name": "bone-rush",
-                "name_display": "Bone Rush"
+                "name": "counter",
+                "name_display": "Counter"
               }
             ]
           }
@@ -15391,7 +15346,7 @@
           {
             "name": "gyarados",
             "name_display": "Gyarados",
-            "level": 33,
+            "level": 27,
             "types": [
               "water",
               "flying"
@@ -15402,69 +15357,69 @@
                 "name_display": "Bite"
               },
               {
-                "name": "avalanche",
-                "name_display": "Avalanche"
+                "name": "dragon-rage",
+                "name_display": "Dragon Rage"
               },
               {
-                "name": "aqua-tail",
-                "name_display": "Aqua Tail"
+                "name": "twister",
+                "name_display": "Twister"
               },
               {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
+                "name": "leer",
+                "name_display": "Leer"
               }
             ]
           },
           {
             "name": "quagsire",
             "name_display": "Quagsire",
-            "level": 34,
+            "level": 27,
             "types": [
               "water",
               "ground"
             ],
             "moves": [
               {
-                "name": "surf",
-                "name_display": "Surf"
+                "name": "water-gun",
+                "name_display": "Water Gun"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "mud-shot",
+                "name_display": "Mud Shot"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "slam",
+                "name_display": "Slam"
               },
               {
-                "name": "yawn",
-                "name_display": "Yawn"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               }
             ]
           },
           {
             "name": "floatzel",
             "name_display": "Floatzel",
-            "level": 37,
+            "level": 30,
             "types": [
               "water"
             ],
             "moves": [
               {
-                "name": "brine",
-                "name_display": "Brine"
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
+                "name": "swift",
+                "name_display": "Swift"
               },
               {
-                "name": "aqua-jet",
-                "name_display": "Aqua Jet"
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
               }
             ]
           }
@@ -15480,83 +15435,83 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/byron.png",
         "team": [
           {
-            "name": "magneton",
-            "name_display": "Magneton",
-            "level": 37,
+            "name": "bronzor",
+            "name_display": "Bronzor",
+            "level": 36,
             "types": [
-              "electric",
-              "steel"
+              "steel",
+              "psychic"
             ],
             "moves": [
               {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "tri-attack",
-                "name_display": "Tri Attack"
+                "name": "gyro-ball",
+                "name_display": "Gyro Ball"
               },
               {
-                "name": "metal-sound",
-                "name_display": "Metal Sound"
+                "name": "safeguard",
+                "name_display": "Safeguard"
               }
             ]
           },
           {
             "name": "steelix",
             "name_display": "Steelix",
-            "level": 38,
+            "level": 36,
             "types": [
               "steel",
               "ground"
             ],
             "moves": [
               {
-                "name": "gyro-ball",
-                "name_display": "Gyro Ball"
+                "name": "iron-tail",
+                "name_display": "Iron Tail"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
+                "name": "screech",
+                "name_display": "Screech"
               },
               {
-                "name": "dragonbreath",
-                "name_display": "DragonBreath"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "crunch",
+                "name_display": "Crunch"
               }
             ]
           },
           {
             "name": "bastiodon",
             "name_display": "Bastiodon",
-            "level": 41,
+            "level": 39,
             "types": [
               "rock",
               "steel"
             ],
             "moves": [
               {
-                "name": "metal-burst",
-                "name_display": "Metal Burst"
-              },
-              {
-                "name": "ancient-power",
-                "name_display": "AncientPower"
-              },
-              {
                 "name": "iron-defense",
                 "name_display": "Iron Defense"
               },
               {
-                "name": "rest",
-                "name_display": "Rest"
+                "name": "take-down",
+                "name_display": "Take Down"
+              },
+              {
+                "name": "protect",
+                "name_display": "Protect"
+              },
+              {
+                "name": "ancient-power",
+                "name_display": "AncientPower"
               }
             ]
           }
@@ -15574,54 +15529,54 @@
           {
             "name": "sneasel",
             "name_display": "Sneasel",
-            "level": 40,
+            "level": 38,
             "types": [
               "dark",
               "ice"
             ],
             "moves": [
               {
-                "name": "faint-attack",
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
+              },
+              {
+                "name": "feint-attack",
                 "name_display": "Faint Attack"
               },
               {
-                "name": "ice-shard",
-                "name_display": "Ice Shard"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               },
               {
-                "name": "slash",
-                "name_display": "Slash"
-              },
-              {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "metal-claw",
+                "name_display": "Metal Claw"
               }
             ]
           },
           {
             "name": "piloswine",
             "name_display": "Piloswine",
-            "level": 40,
+            "level": 38,
             "types": [
               "ice",
               "ground"
             ],
             "moves": [
               {
-                "name": "hail",
-                "name_display": "Hail"
+                "name": "ice-shard",
+                "name_display": "Ice Shard"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "ancient-power",
+                "name_display": "AncientPower"
               },
               {
-                "name": "avalanche",
-                "name_display": "Avalanche"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               }
             ]
           },
@@ -15635,47 +15590,20 @@
             ],
             "moves": [
               {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
                 "name": "wood-hammer",
                 "name_display": "Wood Hammer"
               },
               {
-                "name": "ingrain",
-                "name_display": "Ingrain"
-              },
-              {
-                "name": "grasswhistle",
-                "name_display": "GrassWhistle"
-              },
-              {
-                "name": "avalanche",
-                "name_display": "Avalanche"
-              }
-            ]
-          },
-          {
-            "name": "froslass",
-            "name_display": "Froslass",
-            "level": 44,
-            "types": [
-              "ice",
-              "ghost"
-            ],
-            "moves": [
-              {
-                "name": "hail",
-                "name_display": "Hail"
-              },
-              {
-                "name": "ominous-wind",
-                "name_display": "Ominous Wind"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
                 "name": "blizzard",
                 "name_display": "Blizzard"
+              },
+              {
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               }
             ]
           }
@@ -15691,28 +15619,28 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/volkner.png",
         "team": [
           {
-            "name": "jolteon",
-            "name_display": "Jolteon",
+            "name": "ambipom",
+            "name_display": "Ambipom",
             "level": 46,
             "types": [
-              "electric"
+              "normal"
             ],
             "moves": [
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
+                "name": "swift",
+                "name_display": "Swift"
               },
               {
-                "name": "double-kick",
-                "name_display": "Double Kick"
+                "name": "agility",
+                "name_display": "Agility"
               },
               {
-                "name": "pin-missile",
-                "name_display": "Pin Missile"
+                "name": "shock-wave",
+                "name_display": "Shock Wave"
               },
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
+                "name": "double-hit",
+                "name_display": "Double Hit"
               }
             ]
           },
@@ -15725,12 +15653,8 @@
             ],
             "moves": [
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
-              },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
                 "name": "light-screen",
@@ -15739,13 +15663,43 @@
               {
                 "name": "thunder-wave",
                 "name_display": "Thunder Wave"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              }
+            ]
+          },
+          {
+            "name": "octillery",
+            "name_display": "Octillery",
+            "level": 47,
+            "types": [
+              "water"
+            ],
+            "moves": [
+              {
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "bullet-seed",
+                "name_display": "Bullet Seed"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           },
           {
             "name": "luxray",
             "name_display": "Luxray",
-            "level": 48,
+            "level": 49,
             "types": [
               "electric"
             ],
@@ -15755,42 +15709,16 @@
                 "name_display": "Thunder Fang"
               },
               {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
                 "name": "ice-fang",
                 "name_display": "Ice Fang"
               },
               {
                 "name": "fire-fang",
                 "name_display": "Fire Fang"
-              },
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              }
-            ]
-          },
-          {
-            "name": "electivire",
-            "name_display": "Electivire",
-            "level": 50,
-            "types": [
-              "electric"
-            ],
-            "moves": [
-              {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
-              },
-              {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
-              },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
-              },
-              {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
               }
             ]
           }
@@ -15808,7 +15736,7 @@
           {
             "name": "yanmega",
             "name_display": "Yanmega",
-            "level": 49,
+            "level": 53,
             "types": [
               "bug",
               "flying"
@@ -15823,73 +15751,46 @@
                 "name_display": "Air Slash"
               },
               {
-                "name": "u-turn",
-                "name_display": "U-turn"
-              },
-              {
                 "name": "double-team",
                 "name_display": "Double Team"
-              }
-            ]
-          },
-          {
-            "name": "scizor",
-            "name_display": "Scizor",
-            "level": 49,
-            "types": [
-              "bug",
-              "steel"
-            ],
-            "moves": [
-              {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "iron-head",
-                "name_display": "Iron Head"
               },
               {
                 "name": "night-slash",
                 "name_display": "Night Slash"
-              },
-              {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
               }
             ]
           },
           {
-            "name": "heracross",
-            "name_display": "Heracross",
-            "level": 51,
+            "name": "beautifly",
+            "name_display": "Beautifly",
+            "level": 53,
             "types": [
               "bug",
-              "fighting"
+              "flying"
             ],
             "moves": [
               {
-                "name": "megahorn",
-                "name_display": "Megahorn"
+                "name": "air-cutter",
+                "name_display": "Air Cutter"
               },
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
               },
               {
-                "name": "night-slash",
-                "name_display": "Night Slash"
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "whirlwind",
+                "name_display": "Whirlwind"
               }
             ]
           },
           {
             "name": "vespiquen",
             "name_display": "Vespiquen",
-            "level": 50,
+            "level": 54,
             "types": [
               "bug",
               "flying"
@@ -15908,35 +15809,62 @@
                 "name_display": "Heal Order"
               },
               {
-                "name": "power-gem",
-                "name_display": "Power Gem"
+                "name": "toxic",
+                "name_display": "Toxic"
+              }
+            ]
+          },
+          {
+            "name": "heracross",
+            "name_display": "Heracross",
+            "level": 54,
+            "types": [
+              "bug",
+              "fighting"
+            ],
+            "moves": [
+              {
+                "name": "megahorn",
+                "name_display": "Megahorn"
+              },
+              {
+                "name": "close-combat",
+                "name_display": "Close Combat"
+              },
+              {
+                "name": "night-slash",
+                "name_display": "Night Slash"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
               }
             ]
           },
           {
             "name": "drapion",
             "name_display": "Drapion",
-            "level": 53,
+            "level": 57,
             "types": [
               "poison",
               "dark"
             ],
             "moves": [
               {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "cross-poison",
-                "name_display": "Cross Poison"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
                 "name": "ice-fang",
                 "name_display": "Ice Fang"
               },
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "fire-fang",
+                "name_display": "Fire Fang"
+              },
+              {
+                "name": "poison-fang",
+                "name_display": "Poison Fang"
               }
             ]
           }
@@ -15952,25 +15880,103 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/bertha.png",
         "team": [
           {
-            "name": "whiscash",
-            "name_display": "Whiscash",
-            "level": 50,
+            "name": "quagsire",
+            "name_display": "Quagsire",
+            "level": 55,
             "types": [
               "water",
               "ground"
             ],
             "moves": [
               {
-                "name": "earth-power",
-                "name_display": "Earth Power"
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "amnesia",
+                "name_display": "Amnesia"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              }
+            ]
+          },
+          {
+            "name": "whiscash",
+            "name_display": "Whiscash",
+            "level": 55,
+            "types": [
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
                 "name": "aqua-tail",
                 "name_display": "Aqua Tail"
               },
               {
-                "name": "zen-headbutt",
-                "name_display": "Zen Headbutt"
+                "name": "rest",
+                "name_display": "Rest"
+              },
+              {
+                "name": "snore",
+                "name_display": "Snore"
+              }
+            ]
+          },
+          {
+            "name": "sudowoodo",
+            "name_display": "Sudowoodo",
+            "level": 56,
+            "types": [
+              "rock"
+            ],
+            "moves": [
+              {
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
+              },
+              {
+                "name": "hammer-arm",
+                "name_display": "Hammer Arm"
+              },
+              {
+                "name": "sucker-punch",
+                "name_display": "Sucker Punch"
+              },
+              {
+                "name": "low-kick",
+                "name_display": "Low Kick"
+              }
+            ]
+          },
+          {
+            "name": "hippowdon",
+            "name_display": "Hippowdon",
+            "level": 59,
+            "types": [
+              "ground"
+            ],
+            "moves": [
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "slack-off",
+                "name_display": "Slack Off"
               },
               {
                 "name": "sandstorm",
@@ -15979,40 +15985,22 @@
             ]
           },
           {
-            "name": "gliscor",
-            "name_display": "Gliscor",
-            "level": 53,
+            "name": "golem",
+            "name_display": "Golem",
+            "level": 56,
             "types": [
-              "ground",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
-                "name": "fire-fang",
-                "name_display": "Fire Fang"
-              },
-              {
-                "name": "thunder-fang",
-                "name_display": "Thunder Fang"
-              }
-            ]
-          },
-          {
-            "name": "hippowdon",
-            "name_display": "Hippowdon",
-            "level": 52,
-            "types": [
+              "rock",
               "ground"
             ],
             "moves": [
+              {
+                "name": "explosion",
+                "name_display": "Explosion"
+              },
+              {
+                "name": "rock-polish",
+                "name_display": "Rock Polish"
+              },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
@@ -16020,68 +16008,6 @@
               {
                 "name": "stone-edge",
                 "name_display": "Stone Edge"
-              },
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              },
-              {
-                "name": "yawn",
-                "name_display": "Yawn"
-              }
-            ]
-          },
-          {
-            "name": "golem",
-            "name_display": "Golem",
-            "level": 52,
-            "types": [
-              "rock",
-              "ground"
-            ],
-            "moves": [
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
-              },
-              {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
-              },
-              {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
-              }
-            ]
-          },
-          {
-            "name": "rhyperior",
-            "name_display": "Rhyperior",
-            "level": 55,
-            "types": [
-              "ground",
-              "rock"
-            ],
-            "moves": [
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "rock-wrecker",
-                "name_display": "Rock Wrecker"
-              },
-              {
-                "name": "megahorn",
-                "name_display": "Megahorn"
-              },
-              {
-                "name": "avalanche",
-                "name_display": "Avalanche"
               }
             ]
           }
@@ -16099,7 +16025,7 @@
           {
             "name": "houndoom",
             "name_display": "Houndoom",
-            "level": 52,
+            "level": 58,
             "types": [
               "dark",
               "fire"
@@ -16110,38 +16036,12 @@
                 "name_display": "Flamethrower"
               },
               {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
-              },
-              {
-                "name": "dark-pulse",
-                "name_display": "Dark Pulse"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              }
-            ]
-          },
-          {
-            "name": "flareon",
-            "name_display": "Flareon",
-            "level": 55,
-            "types": [
-              "fire"
-            ],
-            "moves": [
-              {
-                "name": "overheat",
-                "name_display": "Overheat"
-              },
-              {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
-              },
-              {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
               },
               {
                 "name": "will-o-wisp",
@@ -16150,11 +16050,37 @@
             ]
           },
           {
-            "name": "rapidash",
-            "name_display": "Rapidash",
-            "level": 53,
+            "name": "flareon",
+            "name_display": "Flareon",
+            "level": 57,
             "types": [
               "fire"
+            ],
+            "moves": [
+              {
+                "name": "fire-blast",
+                "name_display": "Fire Blast"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "bite",
+                "name_display": "Bite"
+              },
+              {
+                "name": "sand-attack",
+                "name_display": "Sand Attack"
+              }
+            ]
+          },
+          {
+            "name": "rapidash",
+            "name_display": "Rapidash",
+            "level": 58,
+            "types": [
+              "normal"
             ],
             "moves": [
               {
@@ -16162,23 +16088,23 @@
                 "name_display": "Flare Blitz"
               },
               {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
+              },
+              {
+                "name": "megahorn",
+                "name_display": "Megahorn"
               },
               {
                 "name": "bounce",
                 "name_display": "Bounce"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
               }
             ]
           },
           {
             "name": "infernape",
             "name_display": "Infernape",
-            "level": 55,
+            "level": 61,
             "types": [
               "fire",
               "fighting"
@@ -16189,42 +16115,43 @@
                 "name_display": "Flare Blitz"
               },
               {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
+                "name": "close-combat",
+                "name_display": "Close Combat"
+              },
+              {
+                "name": "grass-knot",
+                "name_display": "Grass Knot"
               },
               {
                 "name": "mach-punch",
                 "name_display": "Mach Punch"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
               }
             ]
           },
           {
-            "name": "magmortar",
-            "name_display": "Magmortar",
-            "level": 57,
+            "name": "drifblim",
+            "name_display": "Drifblim",
+            "level": 58,
             "types": [
-              "fire"
+              "ghost",
+              "flying"
             ],
             "moves": [
               {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
                 "name": "thunderbolt",
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
+                "name": "psychic",
+                "name_display": "Psychic"
               },
               {
-                "name": "hyper-beam",
-                "name_display": "Hyper Beam"
+                "name": "ominous-wind",
+                "name_display": "Ominous Wind"
               }
             ]
           }
@@ -16241,10 +16168,10 @@
         "team": [
           {
             "name": "mr-mime",
-            "name_display": "Mr. Mime",
-            "level": 53,
+            "name_display": "Mr Mime",
+            "level": 59,
             "types": [
-              "psychic"
+              "normal"
             ],
             "moves": [
               {
@@ -16252,24 +16179,25 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               },
               {
                 "name": "reflect",
                 "name_display": "Reflect"
               },
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
+                "name": "baton-pass",
+                "name_display": "Baton Pass"
               }
             ]
           },
           {
-            "name": "espeon",
-            "name_display": "Espeon",
-            "level": 55,
+            "name": "girafarig",
+            "name_display": "Girafarig",
+            "level": 59,
             "types": [
+              "normal",
               "psychic"
             ],
             "moves": [
@@ -16278,32 +16206,53 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
+                "name": "agility",
+                "name_display": "Agility"
               },
               {
-                "name": "signal-beam",
-                "name_display": "Signal Beam"
+                "name": "baton-pass",
+                "name_display": "Baton Pass"
+              }
+            ]
+          },
+          {
+            "name": "alakazam",
+            "name_display": "Alakazam",
+            "level": 60,
+            "types": [
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              },
+              {
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
+              },
+              {
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
               }
             ]
           },
           {
             "name": "bronzong",
             "name_display": "Bronzong",
-            "level": 54,
+            "level": 63,
             "types": [
-              "steel",
-              "psychic"
+              "normal"
             ],
             "moves": [
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
               {
                 "name": "gyro-ball",
                 "name_display": "Gyro Ball"
@@ -16313,61 +16262,12 @@
                 "name_display": "Earthquake"
               },
               {
-                "name": "calm-mind",
-                "name_display": "Calm Mind"
-              }
-            ]
-          },
-          {
-            "name": "alakazam",
-            "name_display": "Alakazam",
-            "level": 56,
-            "types": [
-              "psychic"
-            ],
-            "moves": [
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
+              },
               {
                 "name": "psychic",
                 "name_display": "Psychic"
-              },
-              {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
-              },
-              {
-                "name": "focus-blast",
-                "name_display": "Focus Blast"
-              },
-              {
-                "name": "recover",
-                "name_display": "Recover"
-              }
-            ]
-          },
-          {
-            "name": "gallade",
-            "name_display": "Gallade",
-            "level": 59,
-            "types": [
-              "psychic",
-              "fighting"
-            ],
-            "moves": [
-              {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
-              },
-              {
-                "name": "psycho-cut",
-                "name_display": "Psycho Cut"
-              },
-              {
-                "name": "leaf-blade",
-                "name_display": "Leaf Blade"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
               }
             ]
           }
@@ -16380,7 +16280,7 @@
         "location": "",
         "badge": "",
         "specialty": "",
-        "sprite": "https://img.pokemondb.net/sprites/trainers/diamond-pearl/cynthia.png",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/platinum/cynthia.png",
         "team": [
           {
             "name": "spiritomb",
@@ -16392,10 +16292,6 @@
             ],
             "moves": [
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
                 "name": "dark-pulse",
                 "name_display": "Dark Pulse"
               },
@@ -16404,8 +16300,12 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "silver-wind",
+                "name_display": "Silver Wind"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               }
             ]
           },
@@ -16419,32 +16319,48 @@
             ],
             "moves": [
               {
-                "name": "dazzling-gleam",
-                "name_display": "Dazzling Gleam"
-              },
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
               },
               {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
               },
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
+                "name": "toxic",
+                "name_display": "Toxic"
+              },
+              {
+                "name": "extrasensory",
+                "name_display": "Extrasensory"
               }
             ]
           },
           {
-            "name": "togekiss",
-            "name_display": "Togekiss",
-            "level": 60,
+            "name": "milotic",
+            "name_display": "Milotic",
+            "level": 58,
             "types": [
-              "fairy",
-              "flying"
+              "water"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "mirror-coat",
+                "name_display": "Mirror Coat"
+              },
+              {
+                "name": "dragon-pulse",
+                "name_display": "Dragon Pulse"
+              }
+            ]
           },
           {
             "name": "lucario",
@@ -16460,42 +16376,43 @@
                 "name_display": "Aura Sphere"
               },
               {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
+                "name": "extreme-speed",
+                "name_display": "Extreme Speed"
               },
               {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
-                "name": "nasty-plot",
-                "name_display": "Nasty Plot"
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               }
             ]
           },
           {
-            "name": "milotic",
-            "name_display": "Milotic",
-            "level": 58,
+            "name": "togekiss",
+            "name_display": "Togekiss",
+            "level": 60,
             "types": [
-              "water"
+              "normal",
+              "flying"
             ],
             "moves": [
               {
-                "name": "recover",
-                "name_display": "Recover"
+                "name": "air-slash",
+                "name_display": "Air Slash"
               },
               {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
               },
               {
-                "name": "ice-beam",
-                "name_display": "Ice Beam"
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
               },
               {
-                "name": "scald",
-                "name_display": "Scald"
+                "name": "shock-wave",
+                "name_display": "Shock Wave"
               }
             ]
           },
@@ -16509,81 +16426,22 @@
             ],
             "moves": [
               {
-                "name": "dragon-claw",
-                "name_display": "Dragon Claw"
+                "name": "dragon-rush",
+                "name_display": "Dragon Rush"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "swords-dance",
-                "name_display": "Swords Dance"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               },
               {
-                "name": "poison-jab",
-                "name_display": "Poison Jab"
+                "name": "giga-impact",
+                "name_display": "Giga Impact"
               }
             ]
-          },
-          {
-            "name": "spiritomb",
-            "name_display": "Spiritomb",
-            "level": 74,
-            "types": [
-              "ghost",
-              "dark"
-            ],
-            "moves": []
-          },
-          {
-            "name": "roserade",
-            "name_display": "Roserade",
-            "level": 74,
-            "types": [
-              "grass",
-              "poison"
-            ],
-            "moves": []
-          },
-          {
-            "name": "togekiss",
-            "name_display": "Togekiss",
-            "level": 76,
-            "types": [
-              "fairy",
-              "flying"
-            ],
-            "moves": []
-          },
-          {
-            "name": "lucario",
-            "name_display": "Lucario",
-            "level": 76,
-            "types": [
-              "fighting",
-              "steel"
-            ],
-            "moves": []
-          },
-          {
-            "name": "milotic",
-            "name_display": "Milotic",
-            "level": 74,
-            "types": [
-              "water"
-            ],
-            "moves": []
-          },
-          {
-            "name": "garchomp",
-            "name_display": "Garchomp",
-            "level": 78,
-            "types": [
-              "dragon",
-              "ground"
-            ],
-            "moves": []
           }
         ]
       }
@@ -16612,8 +16470,8 @@
                 "name_display": "Tackle"
               },
               {
-                "name": "sand-attack",
-                "name_display": "Sand-Attack"
+                "name": "mud-slap",
+                "name_display": "Mud-Slap"
               }
             ]
           },
@@ -16627,16 +16485,16 @@
             ],
             "moves": [
               {
-                "name": "tackle",
-                "name_display": "Tackle"
-              },
-              {
-                "name": "roost",
-                "name_display": "Roost"
-              },
-              {
                 "name": "gust",
                 "name_display": "Gust"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "mud-slap",
+                "name_display": "Mud-Slap"
               }
             ]
           }
@@ -16652,33 +16510,6 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/bugsy.png",
         "team": [
           {
-            "name": "scyther",
-            "name_display": "Scyther",
-            "level": 17,
-            "types": [
-              "bug",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "u-turn",
-                "name_display": "U-turn"
-              },
-              {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
-                "name": "leer",
-                "name_display": "Leer"
-              },
-              {
-                "name": "focus-energy",
-                "name_display": "Focus Energy"
-              }
-            ]
-          },
-          {
             "name": "metapod",
             "name_display": "Metapod",
             "level": 15,
@@ -16689,6 +16520,14 @@
               {
                 "name": "tackle",
                 "name_display": "Tackle"
+              },
+              {
+                "name": "string-shot",
+                "name_display": "String Shot"
+              },
+              {
+                "name": "harden",
+                "name_display": "Harden"
               }
             ]
           },
@@ -16704,6 +16543,37 @@
               {
                 "name": "poison-sting",
                 "name_display": "Poison Sting"
+              },
+              {
+                "name": "string-shot",
+                "name_display": "String Shot"
+              },
+              {
+                "name": "harden",
+                "name_display": "Harden"
+              }
+            ]
+          },
+          {
+            "name": "scyther",
+            "name_display": "Scyther",
+            "level": 17,
+            "types": [
+              "bug",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "focus-energy",
+                "name_display": "Focus Energy"
+              },
+              {
+                "name": "fury-cutter",
+                "name_display": "Fury Cutter"
               }
             ]
           }
@@ -16727,20 +16597,20 @@
             ],
             "moves": [
               {
-                "name": "mimic",
-                "name_display": "Mimic"
+                "name": "double-slap",
+                "name_display": "Double Slap"
               },
               {
                 "name": "encore",
                 "name_display": "Encore"
               },
               {
-                "name": "double-slap",
-                "name_display": "DoubleSlap"
-              },
-              {
                 "name": "metronome",
                 "name_display": "Metronome"
+              },
+              {
+                "name": "mimic",
+                "name_display": "Mimic"
               }
             ]
           },
@@ -16753,20 +16623,20 @@
             ],
             "moves": [
               {
-                "name": "body-slam",
-                "name_display": "Body Slam"
+                "name": "rollout",
+                "name_display": "Rollout"
+              },
+              {
+                "name": "stomp",
+                "name_display": "Stomp"
               },
               {
                 "name": "attract",
                 "name_display": "Attract"
               },
               {
-                "name": "rest",
-                "name_display": "Rest"
-              },
-              {
-                "name": "sleep-talk",
-                "name_display": "Sleep Talk"
+                "name": "milk-drink",
+                "name_display": "Milk Drink"
               }
             ]
           }
@@ -16791,12 +16661,12 @@
             ],
             "moves": [
               {
-                "name": "lick",
-                "name_display": "Lick"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "spite",
-                "name_display": "Spite"
+                "name": "lick",
+                "name_display": "Lick"
               },
               {
                 "name": "mean-look",
@@ -16822,43 +16692,16 @@
                 "name_display": "Hypnosis"
               },
               {
-                "name": "dream-eater",
-                "name_display": "Dream Eater"
+                "name": "mean-look",
+                "name_display": "Mean Look"
               },
               {
                 "name": "curse",
                 "name_display": "Curse"
               },
               {
-                "name": "nightmare",
-                "name_display": "Nightmare"
-              }
-            ]
-          },
-          {
-            "name": "gengar",
-            "name_display": "Gengar",
-            "level": 25,
-            "types": [
-              "ghost",
-              "poison"
-            ],
-            "moves": [
-              {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
-              },
-              {
-                "name": "hypnosis",
-                "name_display": "Hypnosis"
-              },
-              {
-                "name": "focus-blast",
-                "name_display": "Focus Blast"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
               }
             ]
           },
@@ -16872,20 +16715,47 @@
             ],
             "moves": [
               {
-                "name": "curse",
-                "name_display": "Curse"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
                 "name": "mean-look",
                 "name_display": "Mean Look"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "curse",
+                "name_display": "Curse"
+              }
+            ]
+          },
+          {
+            "name": "gengar",
+            "name_display": "Gengar",
+            "level": 25,
+            "types": [
+              "ghost",
+              "poison"
+            ],
+            "moves": [
+              {
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "night-shade",
-                "name_display": "Night Shade"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "mean-look",
+                "name_display": "Mean Look"
+              },
+              {
+                "name": "dream-eater",
+                "name_display": "Dream Eater"
               }
             ]
           }
@@ -16909,20 +16779,20 @@
             ],
             "moves": [
               {
-                "name": "swagger",
-                "name_display": "Swagger"
+                "name": "karate-chop",
+                "name_display": "Karate Chop"
               },
               {
-                "name": "payback",
-                "name_display": "Payback"
+                "name": "rage",
+                "name_display": "Rage"
               },
               {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
+                "name": "fury-swipes",
+                "name_display": "Fury Swipes"
               },
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
+                "name": "leer",
+                "name_display": "Leer"
               }
             ]
           },
@@ -16936,20 +16806,20 @@
             ],
             "moves": [
               {
-                "name": "substitute",
-                "name_display": "Substitute"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "waterfall",
-                "name_display": "Waterfall"
+                "name": "mind-reader",
+                "name_display": "Mind Reader"
               },
               {
-                "name": "focus-punch",
-                "name_display": "Focus Punch"
+                "name": "dynamic-punch",
+                "name_display": "Dynamic Punch"
               }
             ]
           }
@@ -16978,7 +16848,7 @@
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "sonicboom",
+                "name": "sonic-boom",
                 "name_display": "SonicBoom"
               },
               {
@@ -17005,7 +16875,7 @@
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "sonicboom",
+                "name": "sonic-boom",
                 "name_display": "SonicBoom"
               },
               {
@@ -17032,16 +16902,16 @@
                 "name_display": "Iron Tail"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "screech",
+                "name_display": "Screech"
               },
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
               },
               {
-                "name": "roar",
-                "name_display": "Roar"
+                "name": "sunny-day",
+                "name_display": "Sunny Day"
               }
             ]
           }
@@ -17065,20 +16935,20 @@
             ],
             "moves": [
               {
-                "name": "icy-wind",
-                "name_display": "Icy Wind"
+                "name": "headbutt",
+                "name_display": "Headbutt"
+              },
+              {
+                "name": "aurora-beam",
+                "name_display": "Aurora Beam"
               },
               {
                 "name": "rest",
                 "name_display": "Rest"
               },
               {
-                "name": "snore",
-                "name_display": "Snore"
-              },
-              {
-                "name": "hail",
-                "name_display": "Hail"
+                "name": "icy-wind",
+                "name_display": "Icy Wind"
               }
             ]
           },
@@ -17092,20 +16962,20 @@
             ],
             "moves": [
               {
-                "name": "dive",
-                "name_display": "Dive"
+                "name": "headbutt",
+                "name_display": "Headbutt"
+              },
+              {
+                "name": "aurora-beam",
+                "name_display": "Aurora Beam"
               },
               {
                 "name": "rest",
                 "name_display": "Rest"
               },
               {
-                "name": "sleep-talk",
-                "name_display": "Sleep Talk"
-              },
-              {
-                "name": "sheer-cold",
-                "name_display": "Sheer Cold"
+                "name": "ice-shard",
+                "name_display": "Ice Shard"
               }
             ]
           },
@@ -17119,20 +16989,20 @@
             ],
             "moves": [
               {
+                "name": "fury-attack",
+                "name_display": "Fury Attack"
+              },
+              {
+                "name": "mist",
+                "name_display": "Mist"
+              },
+              {
                 "name": "blizzard",
                 "name_display": "Blizzard"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
-                "name": "mud-bomb",
-                "name_display": "Mud Bomb"
-              },
-              {
-                "name": "hail",
-                "name_display": "Hail"
+                "name": "icy-wind",
+                "name_display": "Icy Wind"
               }
             ]
           }
@@ -17148,29 +17018,28 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/clair.png",
         "team": [
           {
-            "name": "gyarados",
-            "name_display": "Gyarados",
+            "name": "dragonair",
+            "name_display": "Dragonair",
             "level": 38,
             "types": [
-              "water",
-              "flying"
+              "dragon"
             ],
             "moves": [
               {
-                "name": "dragon-dance",
-                "name_display": "Dragon Dance"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
-                "name": "waterfall",
-                "name_display": "Waterfall"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "slam",
+                "name_display": "Slam"
               },
               {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
+                "name": "dragon-breath",
+                "name_display": "DragonBreath"
               }
             ]
           },
@@ -17182,10 +17051,6 @@
               "dragon"
             ],
             "moves": [
-              {
-                "name": "dragon-rush",
-                "name_display": "Dragon Rush"
-              },
               {
                 "name": "thunder-wave",
                 "name_display": "Thunder Wave"
@@ -17195,8 +17060,12 @@
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
+                "name": "slam",
+                "name_display": "Slam"
+              },
+              {
+                "name": "dragon-breath",
+                "name_display": "DragonBreath"
               }
             ]
           },
@@ -17213,16 +17082,16 @@
                 "name_display": "Thunder Wave"
               },
               {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
                 "name": "slam",
                 "name_display": "Slam"
               },
               {
-                "name": "fire-blast",
-                "name_display": "Fire Blast"
-              },
-              {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
+                "name": "dragon-breath",
+                "name_display": "DragonBreath"
               }
             ]
           },
@@ -17236,20 +17105,20 @@
             ],
             "moves": [
               {
-                "name": "dragonbreath",
+                "name": "smoke-screen",
+                "name_display": "SmokeScreen"
+              },
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "hyper-beam",
+                "name_display": "Hyper Beam"
+              },
+              {
+                "name": "dragon-breath",
                 "name_display": "DragonBreath"
-              },
-              {
-                "name": "hydro-pump",
-                "name_display": "Hydro Pump"
-              },
-              {
-                "name": "ice-beam",
-                "name_display": "Ice Beam"
-              },
-              {
-                "name": "yawn",
-                "name_display": "Yawn"
               }
             ]
           }
@@ -17274,20 +17143,20 @@
             ],
             "moves": [
               {
-                "name": "defense-curl",
-                "name_display": "Defense Curl"
-              },
-              {
-                "name": "rollout",
-                "name_display": "Rollout"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "rock-slide",
-                "name_display": "Rock Slide"
+                "name": "explosion",
+                "name_display": "Explosion"
+              },
+              {
+                "name": "defense-curl",
+                "name_display": "Defense Curl"
               }
             ]
           },
@@ -17305,16 +17174,16 @@
                 "name_display": "Earthquake"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "horn-attack",
+                "name_display": "Horn Attack"
               },
               {
                 "name": "scary-face",
                 "name_display": "Scary Face"
               },
               {
-                "name": "horn-drill",
-                "name_display": "Horn Drill"
+                "name": "take-down",
+                "name_display": "Take Down"
               }
             ]
           },
@@ -17328,47 +17197,20 @@
             ],
             "moves": [
               {
-                "name": "protect",
-                "name_display": "Protect"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
               },
-              {
-                "name": "brine",
-                "name_display": "Brine"
-              },
-              {
-                "name": "ancient-power",
-                "name_display": "AncientPower"
-              }
-            ]
-          },
-          {
-            "name": "kabutops",
-            "name_display": "Kabutops",
-            "level": 52,
-            "types": [
-              "rock",
-              "water"
-            ],
-            "moves": [
               {
                 "name": "rock-slide",
                 "name_display": "Rock Slide"
               },
               {
-                "name": "aqua-jet",
-                "name_display": "Aqua Jet"
-              },
-              {
-                "name": "endure",
-                "name_display": "Endure"
-              },
-              {
-                "name": "giga-drain",
-                "name_display": "Giga Drain"
+                "name": "withdraw",
+                "name_display": "Withdraw"
               }
             ]
           },
@@ -17382,20 +17224,47 @@
             ],
             "moves": [
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "sandstorm",
+                "name_display": "Sandstorm"
+              },
+              {
+                "name": "screech",
+                "name_display": "Screech"
+              }
+            ]
+          },
+          {
+            "name": "kabutops",
+            "name_display": "Kabutops",
+            "level": 52,
+            "types": [
+              "rock",
+              "water"
+            ],
+            "moves": [
+              {
+                "name": "waterfall",
+                "name_display": "Waterfall"
               },
               {
                 "name": "rock-slide",
                 "name_display": "Rock Slide"
               },
               {
-                "name": "rock-polish",
-                "name_display": "Rock Polish"
+                "name": "slash",
+                "name_display": "Slash"
               },
               {
-                "name": "sandstorm",
-                "name_display": "Sandstorm"
+                "name": "leer",
+                "name_display": "Leer"
               }
             ]
           }
@@ -17411,9 +17280,36 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/misty.png",
         "team": [
           {
-            "name": "golduck",
-            "name_display": "Golduck",
-            "level": 49,
+            "name": "quagsire",
+            "name_display": "Quagsire",
+            "level": 52,
+            "types": [
+              "water",
+              "ground"
+            ],
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "amnesia",
+                "name_display": "Amnesia"
+              },
+              {
+                "name": "mud-shot",
+                "name_display": "Mud Shot"
+              }
+            ]
+          },
+          {
+            "name": "luvdisc",
+            "name_display": "Luvdisc",
+            "level": 54,
             "types": [
               "water"
             ],
@@ -17423,97 +17319,43 @@
                 "name_display": "Water Pulse"
               },
               {
-                "name": "disable",
-                "name_display": "Disable"
+                "name": "attract",
+                "name_display": "Attract"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "sweet-kiss",
+                "name_display": "Sweet Kiss"
               },
               {
-                "name": "psych-up",
-                "name_display": "Psych Up"
-              }
-            ]
-          },
-          {
-            "name": "quagsire",
-            "name_display": "Quagsire",
-            "level": 49,
-            "types": [
-              "water",
-              "ground"
-            ],
-            "moves": [
-              {
-                "name": "rain-dance",
-                "name_display": "Rain Dance"
-              },
-              {
-                "name": "amnesia",
-                "name_display": "Amnesia"
-              },
-              {
-                "name": "water-pulse",
-                "name_display": "Water Pulse"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "aqua-ring",
+                "name_display": "Aqua Ring"
               }
             ]
           },
           {
             "name": "lapras",
             "name_display": "Lapras",
-            "level": 52,
+            "level": 56,
             "types": [
               "water",
               "ice"
             ],
             "moves": [
               {
-                "name": "rain-dance",
-                "name_display": "Rain Dance"
-              },
-              {
-                "name": "perish-song",
-                "name_display": "Perish Song"
-              },
-              {
-                "name": "blizzard",
-                "name_display": "Blizzard"
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
               },
               {
                 "name": "surf",
                 "name_display": "Surf"
-              }
-            ]
-          },
-          {
-            "name": "starmie",
-            "name_display": "Starmie",
-            "level": 54,
-            "types": [
-              "water",
-              "psychic"
-            ],
-            "moves": [
+              },
               {
                 "name": "thunderbolt",
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "ice-beam",
-                "name_display": "Ice Beam"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
-              },
-              {
-                "name": "surf",
-                "name_display": "Surf"
               }
             ]
           }
@@ -17541,16 +17383,16 @@
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
-              },
-              {
                 "name": "quick-attack",
                 "name_display": "Quick Attack"
               },
               {
                 "name": "thunder-wave",
                 "name_display": "Thunder Wave"
+              },
+              {
+                "name": "double-team",
+                "name_display": "Double Team"
               }
             ]
           },
@@ -17563,20 +17405,20 @@
             ],
             "moves": [
               {
-                "name": "thunder-wave",
-                "name_display": "Thunder Wave"
-              },
-              {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "explosion",
+                "name_display": "Explosion"
               },
               {
                 "name": "thunderbolt",
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "explosion",
-                "name_display": "Explosion"
+                "name": "light-screen",
+                "name_display": "Light Screen"
+              },
+              {
+                "name": "sonic-boom",
+                "name_display": "SonicBoom"
               }
             ]
           },
@@ -17589,20 +17431,20 @@
             ],
             "moves": [
               {
-                "name": "screech",
-                "name_display": "Screech"
+                "name": "explosion",
+                "name_display": "Explosion"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
-                "name": "selfdestruct",
-                "name_display": "Selfdestruct"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               },
               {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
+                "name": "sonic-boom",
+                "name_display": "SonicBoom"
               }
             ]
           },
@@ -17616,20 +17458,20 @@
             ],
             "moves": [
               {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
                 "name": "supersonic",
                 "name_display": "Supersonic"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "sonic-boom",
+                "name_display": "SonicBoom"
               },
               {
-                "name": "shock-wave",
-                "name_display": "Shock Wave"
-              },
-              {
-                "name": "mirror-shot",
-                "name_display": "Mirror Shot"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               }
             ]
           },
@@ -17642,20 +17484,20 @@
             ],
             "moves": [
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
-                "name": "shock-wave",
-                "name_display": "Shock Wave"
+                "name": "thunder-punch",
+                "name_display": "ThunderPunch"
               },
               {
                 "name": "light-screen",
                 "name_display": "Light Screen"
               },
               {
-                "name": "low-kick",
-                "name_display": "Low Kick"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               }
             ]
           }
@@ -17671,6 +17513,32 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/erika.png",
         "team": [
           {
+            "name": "tangela",
+            "name_display": "Tangela",
+            "level": 51,
+            "types": [
+              "grass"
+            ],
+            "moves": [
+              {
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
+              },
+              {
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
+              },
+              {
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "bind",
+                "name_display": "Bind"
+              }
+            ]
+          },
+          {
             "name": "jumpluff",
             "name_display": "Jumpluff",
             "level": 51,
@@ -17680,178 +17548,42 @@
             ],
             "moves": [
               {
-                "name": "u-turn",
-                "name_display": "U-turn"
-              },
-              {
-                "name": "memento",
-                "name_display": "Memento"
-              },
-              {
                 "name": "sleep-powder",
                 "name_display": "Sleep Powder"
               },
               {
-                "name": "giga-drain",
-                "name_display": "Giga Drain"
+                "name": "cotton-spore",
+                "name_display": "Cotton Spore"
+              },
+              {
+                "name": "acrobatics",
+                "name_display": "Acrobatics"
+              },
+              {
+                "name": "leech-seed",
+                "name_display": "Leech Seed"
               }
             ]
           },
           {
-            "name": "tangela",
-            "name_display": "Tangela",
+            "name": "bellossom",
+            "name_display": "Bellossom",
             "level": 52,
             "types": [
               "grass"
             ],
             "moves": [
               {
-                "name": "ancient-power",
-                "name_display": "AncientPower"
-              },
-              {
-                "name": "wring-out",
-                "name_display": "Wring Out"
-              },
-              {
-                "name": "giga-drain",
-                "name_display": "Giga Drain"
-              },
-              {
-                "name": "sleep-powder",
-                "name_display": "Sleep Powder"
-              }
-            ]
-          },
-          {
-            "name": "victreebel",
-            "name_display": "Victreebel",
-            "level": 56,
-            "types": [
-              "grass",
-              "poison"
-            ],
-            "moves": [
-              {
-                "name": "natural-gift",
-                "name_display": "Natural Gift"
-              },
-              {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
-              },
-              {
-                "name": "leaf-storm",
-                "name_display": "Leaf Storm"
-              },
-              {
-                "name": "leaf-blade",
-                "name_display": "Leaf Blade"
-              }
-            ]
-          },
-          {
-            "name": "bellossom",
-            "name_display": "Bellossom",
-            "level": 56,
-            "types": [
-              "grass"
-            ],
-            "moves": [
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              },
-              {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
-              },
-              {
-                "name": "giga-drain",
-                "name_display": "Giga Drain"
-              },
-              {
-                "name": "attract",
-                "name_display": "Attract"
-              }
-            ]
-          },
-          {
-            "name": "jumpluff",
-            "name_display": "Jumpluff",
-            "level": 53,
-            "types": [
-              "grass",
-              "flying"
-            ],
-            "moves": []
-          },
-          {
-            "name": "victreebel",
-            "name_display": "Victreebel",
-            "level": 56,
-            "types": [
-              "grass",
-              "poison"
-            ],
-            "moves": []
-          },
-          {
-            "name": "bellossom",
-            "name_display": "Bellossom",
-            "level": 56,
-            "types": [
-              "grass"
-            ],
-            "moves": []
-          },
-          {
-            "name": "shiftry",
-            "name_display": "Shiftry",
-            "level": 54,
-            "types": [
-              "grass",
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "leaf-storm",
-                "name_display": "Leaf Storm"
-              },
-              {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "petal-dance",
+                "name_display": "Petal Dance"
               },
               {
                 "name": "sunny-day",
                 "name_display": "Sunny Day"
               },
               {
-                "name": "explosion",
-                "name_display": "Explosion"
-              }
-            ]
-          },
-          {
-            "name": "roserade",
-            "name_display": "Roserade",
-            "level": 55,
-            "types": [
-              "grass",
-              "poison"
-            ],
-            "moves": [
-              {
-                "name": "weather-ball",
-                "name_display": "Weather Ball"
-              },
-              {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
-              },
-              {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "moonlight",
+                "name_display": "Moonlight"
               },
               {
                 "name": "stun-spore",
@@ -17860,28 +17592,29 @@
             ]
           },
           {
-            "name": "tangrowth",
-            "name_display": "Tangrowth",
-            "level": 60,
+            "name": "vileplume",
+            "name_display": "Vileplume",
+            "level": 56,
             "types": [
-              "grass"
+              "grass",
+              "poison"
             ],
             "moves": [
               {
-                "name": "swords-dance",
-                "name_display": "Swords Dance"
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
               },
               {
-                "name": "power-whip",
-                "name_display": "Power Whip"
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
               },
               {
-                "name": "rock-slide",
-                "name_display": "Rock Slide"
+                "name": "petal-dance",
+                "name_display": "Petal Dance"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "acid",
+                "name_display": "Acid"
               }
             ]
           }
@@ -17897,6 +17630,33 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/janine.png",
         "team": [
           {
+            "name": "ariados",
+            "name_display": "Ariados",
+            "level": 44,
+            "types": [
+              "bug",
+              "poison"
+            ],
+            "moves": [
+              {
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
+              },
+              {
+                "name": "agility",
+                "name_display": "Agility"
+              },
+              {
+                "name": "shadow-sneak",
+                "name_display": "Shadow Sneak"
+              },
+              {
+                "name": "spider-web",
+                "name_display": "Spider Web"
+              }
+            ]
+          },
+          {
             "name": "crobat",
             "name_display": "Crobat",
             "level": 47,
@@ -17906,100 +17666,46 @@
             ],
             "moves": [
               {
-                "name": "heat-wave",
-                "name_display": "Heat Wave"
-              },
-              {
                 "name": "cross-poison",
                 "name_display": "Cross Poison"
+              },
+              {
+                "name": "air-slash",
+                "name_display": "Air Slash"
               },
               {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
               },
               {
-                "name": "u-turn",
-                "name_display": "U-turn"
+                "name": "haze",
+                "name_display": "Haze"
               }
             ]
           },
           {
             "name": "weezing",
             "name_display": "Weezing",
-            "level": 44,
+            "level": 47,
             "types": [
               "poison"
             ],
             "moves": [
-              {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
-              },
               {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
               },
               {
-                "name": "toxic",
-                "name_display": "Toxic"
-              },
-              {
                 "name": "explosion",
                 "name_display": "Explosion"
-              }
-            ]
-          },
-          {
-            "name": "ariados",
-            "name_display": "Ariados",
-            "level": 47,
-            "types": [
-              "bug",
-              "poison"
-            ],
-            "moves": [
-              {
-                "name": "bounce",
-                "name_display": "Bounce"
               },
               {
                 "name": "toxic",
                 "name_display": "Toxic"
               },
               {
-                "name": "swagger",
-                "name_display": "Swagger"
-              },
-              {
-                "name": "night-shade",
-                "name_display": "Night Shade"
-              }
-            ]
-          },
-          {
-            "name": "ariados",
-            "name_display": "Ariados",
-            "level": 47,
-            "types": [
-              "bug",
-              "poison"
-            ],
-            "moves": [
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
-              {
-                "name": "poison-jab",
-                "name_display": "Poison Jab"
-              },
-              {
-                "name": "scary-face",
-                "name_display": "Scary Face"
-              },
-              {
-                "name": "pin-missile",
-                "name_display": "Pin Missile"
+                "name": "smoke-screen",
+                "name_display": "Smokescreen"
               }
             ]
           },
@@ -18025,8 +17731,35 @@
                 "name_display": "Sleep Powder"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              }
+            ]
+          },
+          {
+            "name": "ariados",
+            "name_display": "Ariados",
+            "level": 47,
+            "types": [
+              "bug",
+              "poison"
+            ],
+            "moves": [
+              {
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
+              },
+              {
+                "name": "shadow-sneak",
+                "name_display": "Shadow Sneak"
+              },
+              {
+                "name": "sucker-punch",
+                "name_display": "Sucker Punch"
+              },
+              {
+                "name": "agility",
+                "name_display": "Agility"
               }
             ]
           }
@@ -18050,20 +17783,20 @@
             ],
             "moves": [
               {
-                "name": "calm-mind",
-                "name_display": "Calm Mind"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
+              },
+              {
+                "name": "morning-sun",
+                "name_display": "Morning Sun"
               },
               {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
               },
               {
-                "name": "baton-pass",
-                "name_display": "Baton Pass"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               }
             ]
           },
@@ -18076,20 +17809,20 @@
             ],
             "moves": [
               {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
                 "name": "reflect",
                 "name_display": "Reflect"
               },
               {
-                "name": "skill-swap",
-                "name_display": "Skill Swap"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               },
               {
-                "name": "thunder",
-                "name_display": "Thunder"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "baton-pass",
+                "name_display": "Baton Pass"
               }
             ]
           },
@@ -18102,20 +17835,20 @@
             ],
             "moves": [
               {
-                "name": "gravity",
-                "name_display": "Gravity"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
               },
               {
-                "name": "focus-blast",
-                "name_display": "Focus Blast"
+                "name": "recover",
+                "name_display": "Recover"
               },
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
+              },
+              {
+                "name": "focus-blast",
+                "name_display": "Focus Blast"
               }
             ]
           }
@@ -18140,53 +17873,27 @@
             ],
             "moves": [
               {
-                "name": "curse",
-                "name_display": "Curse"
+                "name": "lava-plume",
+                "name_display": "Lava Plume"
               },
               {
-                "name": "gyro-ball",
-                "name_display": "Gyro Ball"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
-                "name": "overheat",
-                "name_display": "Overheat"
+                "name": "amnesia",
+                "name_display": "Amnesia"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              }
-            ]
-          },
-          {
-            "name": "magmar",
-            "name_display": "Magmar",
-            "level": 54,
-            "types": [
-              "fire"
-            ],
-            "moves": [
-              {
-                "name": "thunder-punch",
-                "name_display": "ThunderPunch"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
-                "name": "overheat",
-                "name_display": "Overheat"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
+                "name": "body-slam",
+                "name_display": "Body Slam"
               }
             ]
           },
           {
             "name": "rapidash",
             "name_display": "Rapidash",
-            "level": 59,
+            "level": 53,
             "types": [
               "fire"
             ],
@@ -18200,12 +17907,65 @@
                 "name_display": "Megahorn"
               },
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
+                "name": "bounce",
+                "name_display": "Bounce"
               },
               {
-                "name": "overheat",
-                "name_display": "Overheat"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
+              }
+            ]
+          },
+          {
+            "name": "magmar",
+            "name_display": "Magmar",
+            "level": 54,
+            "types": [
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "thunder-punch",
+                "name_display": "ThunderPunch"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
+              }
+            ]
+          },
+          {
+            "name": "houndoom",
+            "name_display": "Houndoom",
+            "level": 59,
+            "types": [
+              "dark",
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
+                "name": "sunny-day",
+                "name_display": "Sunny Day"
               }
             ]
           }
@@ -18221,29 +17981,109 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/blue.png",
         "team": [
           {
+            "name": "pidgeot",
+            "name_display": "Pidgeot",
+            "level": 60,
+            "types": [
+              "normal",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "air-slash",
+                "name_display": "Air Slash"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "whirlwind",
+                "name_display": "Whirlwind"
+              },
+              {
+                "name": "roost",
+                "name_display": "Roost"
+              }
+            ]
+          },
+          {
+            "name": "alakazam",
+            "name_display": "Alakazam",
+            "level": 58,
+            "types": [
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              },
+              {
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
+              },
+              {
+                "name": "focus-blast",
+                "name_display": "Focus Blast"
+              }
+            ]
+          },
+          {
+            "name": "rhyperior",
+            "name_display": "Rhyperior",
+            "level": 58,
+            "types": [
+              "ground",
+              "rock"
+            ],
+            "moves": [
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "rock-wrecker",
+                "name_display": "Rock Wrecker"
+              },
+              {
+                "name": "megahorn",
+                "name_display": "Megahorn"
+              },
+              {
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
+              }
+            ]
+          },
+          {
             "name": "exeggutor",
             "name_display": "Exeggutor",
-            "level": 55,
+            "level": 58,
             "types": [
               "grass",
               "psychic"
             ],
             "moves": [
               {
-                "name": "leaf-storm",
-                "name_display": "Leaf Storm"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
               },
               {
-                "name": "explosion",
-                "name_display": "Explosion"
+                "name": "solar-beam",
+                "name_display": "SolarBeam"
               },
               {
-                "name": "trick-room",
-                "name_display": "Trick Room"
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               }
             ]
           },
@@ -18256,127 +18096,47 @@
             ],
             "moves": [
               {
-                "name": "flare-blitz",
-                "name_display": "Flare Blitz"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               },
               {
-                "name": "extremespeed",
+                "name": "extreme-speed",
                 "name_display": "ExtremeSpeed"
-              },
-              {
-                "name": "thunder-fang",
-                "name_display": "Thunder Fang"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
-              }
-            ]
-          },
-          {
-            "name": "rhydon",
-            "name_display": "Rhydon",
-            "level": 58,
-            "types": [
-              "ground",
-              "rock"
-            ],
-            "moves": [
-              {
-                "name": "megahorn",
-                "name_display": "Megahorn"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
-                "name": "thunder-fang",
-                "name_display": "Thunder Fang"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "roar",
+                "name_display": "Roar"
               }
             ]
           },
           {
             "name": "gyarados",
             "name_display": "Gyarados",
-            "level": 52,
+            "level": 58,
             "types": [
               "water",
               "flying"
             ],
             "moves": [
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
                 "name": "waterfall",
                 "name_display": "Waterfall"
               },
               {
+                "name": "ice-fang",
+                "name_display": "Ice Fang"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
                 "name": "dragon-dance",
                 "name_display": "Dragon Dance"
-              },
-              {
-                "name": "return",
-                "name_display": "Return"
-              }
-            ]
-          },
-          {
-            "name": "machamp",
-            "name_display": "Machamp",
-            "level": 56,
-            "types": [
-              "fighting"
-            ],
-            "moves": [
-              {
-                "name": "dynamicpunch",
-                "name_display": "DynamicPunch"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
-                "name": "fling",
-                "name_display": "Fling"
-              },
-              {
-                "name": "attract",
-                "name_display": "Attract"
-              }
-            ]
-          },
-          {
-            "name": "pidgeot",
-            "name_display": "Pidgeot",
-            "level": 60,
-            "types": [
-              "normal",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "return",
-                "name_display": "Return"
-              },
-              {
-                "name": "double-team",
-                "name_display": "Double Team"
-              },
-              {
-                "name": "air-slash",
-                "name_display": "Air Slash"
-              },
-              {
-                "name": "steel-wing",
-                "name_display": "Steel Wing"
               }
             ]
           }
@@ -18392,147 +18152,18 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/will.png",
         "team": [
           {
-            "name": "bronzong",
-            "name_display": "Bronzong",
-            "level": 58,
-            "types": [
-              "steel",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "gravity",
-                "name_display": "Gravity"
-              },
-              {
-                "name": "reflect",
-                "name_display": "Reflect"
-              },
-              {
-                "name": "payback",
-                "name_display": "Payback"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              }
-            ]
-          },
-          {
-            "name": "jynx",
-            "name_display": "Jynx",
-            "level": 60,
-            "types": [
-              "ice",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "fake-tears",
-                "name_display": "Fake Tears"
-              },
-              {
-                "name": "lovely-kiss",
-                "name_display": "Lovely Kiss"
-              },
-              {
-                "name": "dream-eater",
-                "name_display": "Dream Eater"
-              },
-              {
-                "name": "blizzard",
-                "name_display": "Blizzard"
-              }
-            ]
-          },
-          {
-            "name": "grumpig",
-            "name_display": "Grumpig",
-            "level": 59,
-            "types": [
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
-                "name": "signal-beam",
-                "name_display": "Signal Beam"
-              },
-              {
-                "name": "power-gem",
-                "name_display": "Power Gem"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              }
-            ]
-          },
-          {
-            "name": "slowbro",
-            "name_display": "Slowbro",
-            "level": 60,
-            "types": [
-              "water",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "curse",
-                "name_display": "Curse"
-              },
-              {
-                "name": "amnesia",
-                "name_display": "Amnesia"
-              },
-              {
-                "name": "body-slam",
-                "name_display": "Body Slam"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              }
-            ]
-          },
-          {
-            "name": "gardevoir",
-            "name_display": "Gardevoir",
-            "level": 61,
-            "types": [
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "calm-mind",
-                "name_display": "Calm Mind"
-              },
-              {
-                "name": "charge-beam",
-                "name_display": "Charge Beam"
-              },
-              {
-                "name": "focus-blast",
-                "name_display": "Focus Blast"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              }
-            ]
-          },
-          {
             "name": "xatu",
             "name_display": "Xatu",
-            "level": 62,
+            "level": 40,
             "types": [
               "psychic",
               "flying"
             ],
             "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
               {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
@@ -18542,12 +18173,116 @@
                 "name_display": "Quick Attack"
               },
               {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
+              }
+            ]
+          },
+          {
+            "name": "jynx",
+            "name_display": "Jynx",
+            "level": 41,
+            "types": [
+              "ice",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "lovely-kiss",
+                "name_display": "Lovely Kiss"
+              },
+              {
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
               },
               {
                 "name": "psychic",
                 "name_display": "Psychic"
+              },
+              {
+                "name": "double-slap",
+                "name_display": "Double Slap"
+              }
+            ]
+          },
+          {
+            "name": "slowbro",
+            "name_display": "Slowbro",
+            "level": 41,
+            "types": [
+              "water",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "amnesia",
+                "name_display": "Amnesia"
+              },
+              {
+                "name": "slack-off",
+                "name_display": "Slack Off"
+              }
+            ]
+          },
+          {
+            "name": "exeggutor",
+            "name_display": "Exeggutor",
+            "level": 41,
+            "types": [
+              "grass",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
+              },
+              {
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
+              }
+            ]
+          },
+          {
+            "name": "xatu",
+            "name_display": "Xatu",
+            "level": 42,
+            "types": [
+              "psychic",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "air-slash",
+                "name_display": "Air Slash"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "ominous-wind",
+                "name_display": "Ominous Wind"
               }
             ]
           }
@@ -18563,90 +18298,63 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/koga.png",
         "team": [
           {
-            "name": "skuntank",
-            "name_display": "Skuntank",
-            "level": 61,
-            "types": [
-              "poison",
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "toxic",
-                "name_display": "Toxic"
-              },
-              {
-                "name": "dig",
-                "name_display": "Dig"
-              },
-              {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
-              },
-              {
-                "name": "explosion",
-                "name_display": "Explosion"
-              }
-            ]
-          },
-          {
-            "name": "venomoth",
-            "name_display": "Venomoth",
-            "level": 63,
+            "name": "ariados",
+            "name_display": "Ariados",
+            "level": 40,
             "types": [
               "bug",
               "poison"
             ],
             "moves": [
               {
-                "name": "baton-pass",
-                "name_display": "Baton Pass"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
               },
               {
-                "name": "double-team",
-                "name_display": "Double Team"
+                "name": "agility",
+                "name_display": "Agility"
               },
               {
-                "name": "silver-wind",
-                "name_display": "Silver Wind"
+                "name": "shadow-sneak",
+                "name_display": "Shadow Sneak"
+              },
+              {
+                "name": "swords-dance",
+                "name_display": "Swords Dance"
+              }
+            ]
+          },
+          {
+            "name": "venomoth",
+            "name_display": "Venomoth",
+            "level": 41,
+            "types": [
+              "bug",
+              "poison"
+            ],
+            "moves": [
+              {
+                "name": "bug-buzz",
+                "name_display": "Bug Buzz"
               },
               {
                 "name": "psychic",
                 "name_display": "Psychic"
+              },
+              {
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
               }
             ]
           },
           {
-            "name": "toxicroak",
-            "name_display": "Toxicroak",
-            "level": 60,
-            "types": [
-              "poison",
-              "fighting"
-            ],
-            "moves": [
-              {
-                "name": "swagger",
-                "name_display": "Swagger"
-              },
-              {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "cross-chop",
-                "name_display": "Cross Chop"
-              },
-              {
-                "name": "gunk-shot",
-                "name_display": "Gunk Shot"
-              }
-            ]
-          },
-          {
-            "name": "swalot",
-            "name_display": "Swalot",
-            "level": 62,
+            "name": "muk",
+            "name_display": "Muk",
+            "level": 42,
             "types": [
               "poison"
             ],
@@ -18656,69 +18364,70 @@
                 "name_display": "Sludge Bomb"
               },
               {
-                "name": "amnesia",
-                "name_display": "Amnesia"
+                "name": "minimize",
+                "name_display": "Minimize"
               },
               {
-                "name": "pain-split",
-                "name_display": "Pain Split"
+                "name": "toxic",
+                "name_display": "Toxic"
               },
               {
-                "name": "yawn",
-                "name_display": "Yawn"
+                "name": "acid-armor",
+                "name_display": "Acid Armor"
+              }
+            ]
+          },
+          {
+            "name": "forretress",
+            "name_display": "Forretress",
+            "level": 43,
+            "types": [
+              "bug",
+              "steel"
+            ],
+            "moves": [
+              {
+                "name": "explosion",
+                "name_display": "Explosion"
+              },
+              {
+                "name": "gyro-ball",
+                "name_display": "Gyro Ball"
+              },
+              {
+                "name": "spikes",
+                "name_display": "Spikes"
+              },
+              {
+                "name": "toxic-spikes",
+                "name_display": "Toxic Spikes"
               }
             ]
           },
           {
             "name": "crobat",
             "name_display": "Crobat",
-            "level": 64,
+            "level": 44,
             "types": [
               "poison",
               "flying"
             ],
             "moves": [
               {
-                "name": "fly",
-                "name_display": "Fly"
-              },
-              {
                 "name": "cross-poison",
                 "name_display": "Cross Poison"
               },
               {
-                "name": "mean-look",
-                "name_display": "Mean Look"
+                "name": "air-slash",
+                "name_display": "Air Slash"
               },
               {
-                "name": "toxic",
-                "name_display": "Toxic"
-              }
-            ]
-          },
-          {
-            "name": "muk",
-            "name_display": "Muk",
-            "level": 62,
-            "types": [
-              "poison"
-            ],
-            "moves": [
-              {
-                "name": "minimize",
-                "name_display": "Minimize"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
-                "name": "screech",
-                "name_display": "Screech"
-              },
-              {
-                "name": "swagger",
-                "name_display": "Swagger"
-              },
-              {
-                "name": "toxic",
-                "name_display": "Toxic"
+                "name": "haze",
+                "name_display": "Haze"
               }
             ]
           }
@@ -18736,157 +18445,131 @@
           {
             "name": "hitmontop",
             "name_display": "Hitmontop",
-            "level": 62,
+            "level": 42,
             "types": [
               "fighting"
             ],
             "moves": [
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "rapid-spin",
+                "name_display": "Rapid Spin"
               },
               {
                 "name": "counter",
                 "name_display": "Counter"
               },
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
+                "name": "agility",
+                "name_display": "Agility"
+              },
+              {
+                "name": "triple-kick",
+                "name_display": "Triple Kick"
               }
             ]
           },
           {
             "name": "hitmonlee",
             "name_display": "Hitmonlee",
-            "level": 61,
+            "level": 42,
             "types": [
               "fighting"
             ],
             "moves": [
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
+                "name": "high-jump-kick",
+                "name_display": "High Jump Kick"
+              },
+              {
+                "name": "brick-break",
+                "name_display": "Brick Break"
+              },
+              {
+                "name": "focus-energy",
+                "name_display": "Focus Energy"
               },
               {
                 "name": "blaze-kick",
                 "name_display": "Blaze Kick"
-              },
-              {
-                "name": "reversal",
-                "name_display": "Reversal"
-              },
-              {
-                "name": "swagger",
-                "name_display": "Swagger"
               }
             ]
           },
           {
             "name": "hitmonchan",
             "name_display": "Hitmonchan",
-            "level": 61,
+            "level": 42,
             "types": [
               "fighting"
             ],
             "moves": [
               {
-                "name": "close-combat",
-                "name_display": "Close Combat"
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
               },
               {
-                "name": "drain-punch",
-                "name_display": "Drain Punch"
+                "name": "thunder-punch",
+                "name_display": "ThunderPunch"
               },
               {
-                "name": "bullet-punch",
-                "name_display": "Bullet Punch"
-              },
-              {
-                "name": "substitute",
-                "name_display": "Substitute"
-              }
-            ]
-          },
-          {
-            "name": "hariyama",
-            "name_display": "Hariyama",
-            "level": 62,
-            "types": [
-              "fighting"
-            ],
-            "moves": [
-              {
-                "name": "bulk-up",
-                "name_display": "Bulk Up"
-              },
-              {
-                "name": "low-kick",
-                "name_display": "Low Kick"
-              },
-              {
-                "name": "payback",
-                "name_display": "Payback"
-              },
-              {
-                "name": "bullet-punch",
-                "name_display": "Bullet Punch"
-              }
-            ]
-          },
-          {
-            "name": "lucario",
-            "name_display": "Lucario",
-            "level": 64,
-            "types": [
-              "fighting",
-              "steel"
-            ],
-            "moves": [
-              {
-                "name": "close-combat",
-                "name_display": "Close Combat"
-              },
-              {
-                "name": "iron-tail",
-                "name_display": "Iron Tail"
+                "name": "fire-punch",
+                "name_display": "Fire Punch"
               },
               {
                 "name": "counter",
                 "name_display": "Counter"
+              }
+            ]
+          },
+          {
+            "name": "onix",
+            "name_display": "Onix",
+            "level": 43,
+            "types": [
+              "rock",
+              "ground"
+            ],
+            "moves": [
+              {
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
-                "name": "extremespeed",
-                "name_display": "ExtremeSpeed"
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "sandstorm",
+                "name_display": "Sandstorm"
+              },
+              {
+                "name": "screech",
+                "name_display": "Screech"
               }
             ]
           },
           {
             "name": "machamp",
             "name_display": "Machamp",
-            "level": 64,
+            "level": 46,
             "types": [
               "fighting"
             ],
             "moves": [
               {
-                "name": "dynamicpunch",
-                "name_display": "DynamicPunch"
+                "name": "cross-chop",
+                "name_display": "Cross Chop"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
-                "name": "bullet-punch",
-                "name_display": "Bullet Punch"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "foresight",
-                "name_display": "Foresight"
+                "name": "bulk-up",
+                "name_display": "Bulk Up"
               }
             ]
           }
@@ -18902,162 +18585,136 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/heartgold-soulsilver/karen.png",
         "team": [
           {
-            "name": "weavile",
-            "name_display": "Weavile",
-            "level": 62,
-            "types": [
-              "dark",
-              "ice"
-            ],
-            "moves": [
-              {
-                "name": "ice-punch",
-                "name_display": "Ice Punch"
-              },
-              {
-                "name": "night-slash",
-                "name_display": "Night Slash"
-              },
-              {
-                "name": "low-kick",
-                "name_display": "Low Kick"
-              },
-              {
-                "name": "ice-shard",
-                "name_display": "Ice Shard"
-              }
-            ]
-          },
-          {
-            "name": "absol",
-            "name_display": "Absol",
-            "level": 62,
+            "name": "umbreon",
+            "name_display": "Umbreon",
+            "level": 42,
             "types": [
               "dark"
             ],
             "moves": [
               {
-                "name": "detect",
-                "name_display": "Detect"
-              },
-              {
-                "name": "perish-song",
-                "name_display": "Perish Song"
-              },
-              {
-                "name": "night-slash",
-                "name_display": "Night Slash"
-              },
-              {
-                "name": "psycho-cut",
-                "name_display": "Psycho Cut"
-              }
-            ]
-          },
-          {
-            "name": "spiritomb",
-            "name_display": "Spiritomb",
-            "level": 62,
-            "types": [
-              "ghost",
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "curse",
-                "name_display": "Curse"
+                "name": "faint-attack",
+                "name_display": "Faint Attack"
               },
               {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
               },
               {
-                "name": "pain-split",
-                "name_display": "Pain Split"
+                "name": "moonlight",
+                "name_display": "Moonlight"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "double-team",
+                "name_display": "Double Team"
               }
             ]
           },
           {
-            "name": "houndoom",
-            "name_display": "Houndoom",
-            "level": 63,
+            "name": "vileplume",
+            "name_display": "Vileplume",
+            "level": 42,
             "types": [
-              "dark",
-              "fire"
+              "grass",
+              "poison"
             ],
             "moves": [
               {
-                "name": "nasty-plot",
-                "name_display": "Nasty Plot"
-              },
-              {
-                "name": "dark-pulse",
-                "name_display": "Dark Pulse"
-              },
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
-              },
-              {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
+              },
+              {
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "moonlight",
+                "name_display": "Moonlight"
+              },
+              {
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
               }
             ]
           },
           {
-            "name": "honchkrow",
-            "name_display": "Honchkrow",
-            "level": 64,
+            "name": "murkrow",
+            "name_display": "Murkrow",
+            "level": 44,
             "types": [
               "dark",
               "flying"
             ],
             "moves": [
               {
-                "name": "thunder-wave",
-                "name_display": "Thunder Wave"
-              },
-              {
-                "name": "whirlwind",
-                "name_display": "Whirlwind"
-              },
-              {
                 "name": "drill-peck",
                 "name_display": "Drill Peck"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
-              }
-            ]
-          },
-          {
-            "name": "umbreon",
-            "name_display": "Umbreon",
-            "level": 64,
-            "types": [
-              "dark"
-            ],
-            "moves": [
+                "name": "night-shade",
+                "name_display": "Night Shade"
+              },
               {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
               },
               {
-                "name": "curse",
-                "name_display": "Curse"
+                "name": "feather-dance",
+                "name_display": "FeatherDance"
+              }
+            ]
+          },
+          {
+            "name": "gengar",
+            "name_display": "Gengar",
+            "level": 45,
+            "types": [
+              "ghost",
+              "poison"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
-                "name": "payback",
-                "name_display": "Payback"
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "dream-eater",
+                "name_display": "Dream Eater"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              }
+            ]
+          },
+          {
+            "name": "houndoom",
+            "name_display": "Houndoom",
+            "level": 47,
+            "types": [
+              "dark",
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
+                "name": "sunny-day",
+                "name_display": "Sunny Day"
               }
             ]
           }
@@ -19082,20 +18739,20 @@
             ],
             "moves": [
               {
-                "name": "thunder-wave",
-                "name_display": "Thunder Wave"
-              },
-              {
                 "name": "dragon-dance",
                 "name_display": "Dragon Dance"
               },
               {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
                 "name": "waterfall",
                 "name_display": "Waterfall"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "hyper-beam",
+                "name_display": "Hyper Beam"
               }
             ]
           },
@@ -19109,20 +18766,20 @@
             ],
             "moves": [
               {
-                "name": "protect",
-                "name_display": "Protect"
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
               },
               {
                 "name": "thunder",
                 "name_display": "Thunder"
               },
               {
-                "name": "dragonbreath",
-                "name_display": "DragonBreath"
+                "name": "blizzard",
+                "name_display": "Blizzard"
               },
               {
-                "name": "hyper-beam",
-                "name_display": "Hyper Beam"
+                "name": "fire-blast",
+                "name_display": "Fire Blast"
               }
             ]
           },
@@ -19136,20 +18793,20 @@
             ],
             "moves": [
               {
-                "name": "draco-meteor",
-                "name_display": "Draco Meteor"
+                "name": "dragon-rush",
+                "name_display": "Dragon Rush"
               },
               {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
+                "name": "aqua-tail",
+                "name_display": "Aqua Tail"
               },
               {
-                "name": "safeguard",
-                "name_display": "Safeguard"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
-                "name": "hyper-beam",
-                "name_display": "Hyper Beam"
+                "name": "hurricane",
+                "name_display": "Hurricane"
               }
             ]
           },
@@ -19167,39 +18824,12 @@
                 "name_display": "Rock Slide"
               },
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
-              },
-              {
-                "name": "thunder-fang",
-                "name_display": "Thunder Fang"
-              }
-            ]
-          },
-          {
-            "name": "charizard",
-            "name_display": "Charizard",
-            "level": 48,
-            "types": [
-              "fire",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "dragon-claw",
-                "name_display": "Dragon Claw"
-              },
-              {
-                "name": "air-slash",
-                "name_display": "Air Slash"
-              },
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
               },
               {
                 "name": "hyper-beam",
@@ -19221,16 +18851,43 @@
                 "name_display": "Outrage"
               },
               {
-                "name": "safeguard",
-                "name_display": "Safeguard"
-              },
-              {
                 "name": "fire-blast",
                 "name_display": "Fire Blast"
               },
               {
-                "name": "hyper-beam",
-                "name_display": "Hyper Beam"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              }
+            ]
+          },
+          {
+            "name": "dragonite",
+            "name_display": "Dragonite",
+            "level": 50,
+            "types": [
+              "dragon",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "outrage",
+                "name_display": "Outrage"
+              },
+              {
+                "name": "dragon-dance",
+                "name_display": "Dragon Dance"
+              },
+              {
+                "name": "fire-punch",
+                "name_display": "Fire Punch"
+              },
+              {
+                "name": "thunder-punch",
+                "name_display": "ThunderPunch"
               }
             ]
           }

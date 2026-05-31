@@ -112,10 +112,12 @@ function applyPokemonDb(db){
     };
   }).sort((a,b)=>a.id-b.id);
   _evolvesFromSet=null;
-  document.getElementById('status-bar').innerHTML=
-    `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon</span>`;
-  // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
-  if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']);
+  if(IS_TRAINER_PAGE&&typeof refreshTrainersStatusBar==='function'){
+    refreshTrainersStatusBar();
+  }else{
+    document.getElementById('status-bar').innerHTML=
+      `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"><span>${allPokemon.length} Pokémon</span>`;
+  }
 }
 
 async function loadPokemonDb(){
@@ -125,7 +127,6 @@ async function loadPokemonDb(){
     try{
       const db=await loadPokemonDbFromApi();
       applyPokemonDb(db);
-      setPokemonDataSource('api', getApiBase() + '/db/pokemon'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       return true;
     }catch(e){console.warn('API pokemon falló, usando JSON',e);}
   }
@@ -133,11 +134,9 @@ async function loadPokemonDb(){
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
       applyPokemonDb(await res.json());
-      setPokemonDataSource('json', triedApi ? 'API falló · data/pokemon_db.json' : 'data/pokemon_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       return true;
     }
   }catch(e){}
-  setPokemonDataSource('none','Sin pokemon_db.json ni API'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
   document.getElementById('status-bar').textContent='Sin DB (activa Flask + import_db.py).';
   return false;
 }

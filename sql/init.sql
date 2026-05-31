@@ -126,8 +126,7 @@ CREATE TABLE IF NOT EXISTS trainer_pokemon_moves (
 -- ── Equipos de usuario (para la página de batalla) ─
 CREATE TABLE IF NOT EXISTS user_teams (
   id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name       VARCHAR(60) NOT NULL DEFAULT 'Mi equipo',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  name       VARCHAR(60) NOT NULL DEFAULT 'Mi equipo'
 );
 
 CREATE TABLE IF NOT EXISTS user_team_pokemon (

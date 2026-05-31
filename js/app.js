@@ -70,9 +70,7 @@ async function loadPokedex(){
     try{
       const db=await loadPokemonDbFromApi();
       applyPokedexDb(db);
-      setPokemonDataSource('api', getApiBase() + '/db/pokemon'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
-      if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       document.getElementById('search-def').disabled=false;
       document.getElementById('search-atk').disabled=false;
       return;
@@ -82,9 +80,7 @@ async function loadPokedex(){
     const res=await fetch('data/pokemon_db.json');
     if(res.ok){
       applyPokedexDb(await res.json());
-      setPokemonDataSource('json','data/pokemon_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
-      if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
       document.getElementById('search-def').disabled=false;
       document.getElementById('search-atk').disabled=false;
       return;
@@ -94,13 +90,10 @@ async function loadPokedex(){
     const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
     const data=await res.json();
     allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));
-    setPokemonDataSource('pokeapi','Sin DB local'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
-    if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     document.getElementById('search-def').disabled=false;
     document.getElementById('search-atk').disabled=false;
   }catch(e){
-    setPokemonDataSource('none',''); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';
   }
 }

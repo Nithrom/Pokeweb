@@ -3,9 +3,40 @@
 //  Depende de teams.js (ya cargado antes)
 // ══════════════════════════════════════════════════════
 
+IS_TRAINER_PAGE=true;
+
 let TRAINERS_DB = null;
 /** Caché de equipos canónicos (evita mezclar Rojo/Azul con Amarillo vía API/SQL desactualizado). */
 let _trainersJsonCache = null;
+
+function countTrainersInDb(db){
+  if(!db)return 0;
+  if(db.trainers){
+    const n=Object.values(db.trainers).reduce((s,list)=>s+(list?.length||0),0);
+    if(n>0)return n;
+  }
+  if(db.games?.length){
+    const fromGames=db.games.reduce((s,g)=>s+(Number(g.trainer_count)||0),0);
+    if(fromGames>0)return fromGames;
+  }
+  const apiTotal=Number(db._trainerTotal);
+  if(Number.isFinite(apiTotal)&&apiTotal>0)return apiTotal;
+  return 0;
+}
+
+function formatTrainersStatusBar(pokemonCount,trainerCount){
+  return `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">`+
+    `<span>${pokemonCount} Pokémon · ${trainerCount} entrenadores</span>`;
+}
+
+function refreshTrainersStatusBar(){
+  const bar=document.getElementById('status-bar');
+  if(!bar||!TRAINERS_DB)return;
+  bar.innerHTML=formatTrainersStatusBar(
+    allPokemon?.length||0,
+    countTrainersInDb(TRAINERS_DB),
+  );
+}
 
 /** Gen 2 / HGSS: gimnasios Johto (orden 1–8) y revancha Kanto (9–16). */
 const DUAL_REGION_GYM_GAMES=new Set(['gold-silver','crystal','heartgold-soulsilver']);
@@ -41,7 +72,8 @@ const STARTER_FINALS_BY_GEN={
 const RIVAL_COUNTER_BY_GEN={
   1:{bulbasaur:'charizard',charmander:'blastoise',squirtle:'venusaur'},
   2:{chikorita:'typhlosion',cyndaquil:'feraligatr',totodile:'meganium'},
-  3:{treecko:'swampert',torchic:'sceptile',mudkip:'blaziken'},
+  /** RSE: Treecko→Blaziken, Torchic→Swampert, Mudkip→Sceptile */
+  3:{treecko:'blaziken',torchic:'swampert',mudkip:'sceptile'},
   4:{turtwig:'infernape',chimchar:'empoleon',piplup:'torterra'},
   5:{snivy:'emboar',tepig:'samurott',oshawott:'serperior'},
   6:{chespin:'delphox',fennekin:'greninja',froakie:'chesnaught'},
@@ -49,6 +81,29 @@ const RIVAL_COUNTER_BY_GEN={
   8:{grookey:'cinderace',scorbunny:'inteleon',sobble:'rillaboom'},
   9:{sprigatito:'skeledirge',fuecoco:'quaquaval',quaxly:'meowscarada'},
 };
+
+/** Gen de iniciales si difiere del campo gen del juego en BD. */
+const STARTER_GEN_BY_GAME={
+  'firered-leafgreen':1,
+};
+
+/** Campeones cuyo slot de inicial depende de tu elección (triángulo rival). */
+const RIVAL_STARTER_CHAMPIONS={
+  'red-blue':new Set(['Blue']),
+  'yellow':new Set(['Blue']),
+  'ruby-sapphire':new Set(['Steven']),
+  'firered-leafgreen':new Set(['Blue']),
+  'diamond-pearl':new Set(['Cynthia']),
+  'platinum':new Set(['Cynthia']),
+};
+
+const STARTER_LINE_BY_GEN={
+  1:['bulbasaur','ivysaur','venusaur','charmander','charmeleon','charizard','squirtle','wartortle','blastoise'],
+  3:['treecko','grovyle','sceptile','torchic','combusken','blaziken','mudkip','marshtomp','swampert'],
+  4:['turtwig','grotle','torterra','chimchar','monferno','infernape','piplup','prinplup','empoleon'],
+};
+
+const GEN3_CHAMPION_STARTER_SLOT=new Set(['aggron','cradily','armaldo']);
 
 /** Hau (USUM): Eevee evoluciona a la ventaja sobre tu inicial. */
 const HAU_EEVEELUTION={rowlet:'flareon',litten:'vaporeon',popplio:'leafeon'};
@@ -75,6 +130,13 @@ const MOVE_SLUG_ALIASES={
   smokescreen:'smoke-screen',
   sandattack:'sand-attack',
   faintattack:'feint-attack',
+  featherdance:'feather-dance',
+  spiderweb:'spider-web',
+  rockwrecker:'rock-wrecker',
+  mudshot:'mud-shot',
+  whirlwind:'whirlwind',
+  roost:'roost',
+  icefang:'ice-fang',
   ancientpower:'ancient-power',
   stringshot:'string-shot',
   solarbeam:'solar-beam',
@@ -149,6 +211,47 @@ const MOVE_SLUG_ALIASES={
   poisonfang:'poison-fang',
   leechlife:'leech-life',
   solarbeam:'solar-beam',
+  shadowsneak:'shadow-sneak',
+  magicalleaf:'magical-leaf',
+  grassknot:'grass-knot',
+  aurasphere:'aura-sphere',
+  forcepalm:'force-palm',
+  metalclaw:'metal-claw',
+  dragonrage:'dragon-rage',
+  mudshot:'mud-shot',
+  aquajet:'aqua-jet',
+  shadowclaw:'shadow-claw',
+  gyroball:'gyro-ball',
+  irondefense:'iron-defense',
+  iceshard:'ice-shard',
+  woodhammer:'wood-hammer',
+  doublehit:'double-hit',
+  thunderfang:'thunder-fang',
+  icefang:'ice-fang',
+  firefang:'fire-fang',
+  bulletseed:'bullet-seed',
+  bugbuzz:'bug-buzz',
+  airslash:'air-slash',
+  nightslash:'night-slash',
+  attackorder:'attack-order',
+  defendorder:'defend-order',
+  healorder:'heal-order',
+  closecombat:'close-combat',
+  poisonfang:'poison-fang',
+  aquatail:'aqua-tail',
+  hammerarm:'hammer-arm',
+  suckerpunch:'sucker-punch',
+  rockpolish:'rock-polish',
+  stoneedge:'stone-edge',
+  flareblitz:'flare-blitz',
+  poisonjab:'poison-jab',
+  ominouswind:'ominous-wind',
+  darkpulse:'dark-pulse',
+  silverwind:'silver-wind',
+  toxicspikes:'toxic-spikes',
+  dragonpulse:'dragon-pulse',
+  mirrorcoat:'mirror-coat',
+  aircutter:'air-cutter',
 };
 
 const YELLOW_BLUE_EEVEELUTIONS=[
@@ -192,7 +295,55 @@ function getDifficultyLabels(slug){
 }
 
 function getGameGen(slug){
-  return TRAINERS_DB?.games?.find(g=>g.slug===slug)?.gen||0;
+  const g=TRAINERS_DB?.games?.find(x=>x.slug===slug);
+  const n=Number(g?.gen);
+  return Number.isFinite(n)&&n>0?n:0;
+}
+
+function getStarterGen(slug){
+  if(STARTER_GEN_BY_GAME[slug]!=null)return STARTER_GEN_BY_GAME[slug];
+  return getGameGen(slug);
+}
+
+function gameHasStarters(slug){
+  if(!slug)return false;
+  const gen=getStarterGen(slug);
+  return!!(GEN_STARTERS[gen]?.length);
+}
+
+function trainerUsesRivalStarterSwap(trainer,slug){
+  if(!trainer||!slug)return false;
+  if(trainer.type!=='champion')return false;
+  if(trainer.teamByStarter&&Object.keys(trainer.teamByStarter).length)return true;
+  const names=RIVAL_STARTER_CHAMPIONS[slug];
+  return!!names&&names.has(trainer.name);
+}
+
+function swapRivalStarterSlot(team,keepFinal,gen,trainer,slug){
+  const rivalGen=getStarterGen(slug)||gen;
+  const finals=STARTER_FINALS_BY_GEN[rivalGen]||[];
+  const lines=STARTER_LINE_BY_GEN[rivalGen]||[];
+  const swapNames=new Set([...finals,...lines]);
+  if(rivalGen===3){
+    GEN3_CHAMPION_STARTER_SLOT.forEach(n=>swapNames.add(n));
+  }
+  if(slug==='firered-leafgreen'&&trainer.name==='Blue'){
+    ['arcanine','charizard','charmeleon','charmander'].forEach(n=>swapNames.add(n));
+  }
+  const idx=team.findIndex(p=>swapNames.has(p.name));
+  if(idx<0)return team;
+  const template=team[idx];
+  const dbMon=typeof allPokemon!=='undefined'?allPokemon.find(x=>x.name===keepFinal):null;
+  const out=team.map((p,i)=>{
+    if(i!==idx)return p;
+    return{
+      ...template,
+      name:keepFinal,
+      name_display:dbMon?.name_es||formatName(keepFinal),
+      types:dbMon?.types?.length?[...dbMon.types]:(template.types||[]),
+    };
+  });
+  return out;
 }
 
 function blockSpecies(block){
@@ -398,7 +549,7 @@ function updateLoadTrainerButton(){
   const trainerVal=document.getElementById('sel-trainer').value;
   const starterEl=document.getElementById('sel-starter');
   const gen=getGameGen(slug);
-  const needsStarter=!!slug&&!!GEN_STARTERS[gen];
+  const needsStarter=gameHasStarters(slug);
   const starterOk=!needsStarter||!!starterEl.value;
   const trainerOk=!!trainerVal&&(useApi()||!isNaN(parseInt(trainerVal)));
   const eeveeOk=!isOptionalSelectorActive('eeveelution')
@@ -408,7 +559,7 @@ function updateLoadTrainerButton(){
 
 async function ensureTrainersJson(){
   if(_trainersJsonCache)return _trainersJsonCache;
-  const res=await fetch('data/trainers_db.json?rev=frlg-teams-1');
+  const res=await fetch('data/trainers_db.json');
   if(!res.ok)throw new Error('No trainers_db.json');
   _trainersJsonCache=await res.json();
   return _trainersJsonCache;
@@ -561,11 +712,14 @@ async function loadTrainersForGame(slug){
 
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
-  IS_TRAINER_PAGE=true;
-  let tries=0;
-  while((!DB||!allPokemon.length)&&tries<50){
-    await new Promise(r=>setTimeout(r,200));
-    tries++;
+  if(typeof loadPokemonDb==='function'){
+    await loadPokemonDb();
+  }else{
+    let tries=0;
+    while((!DB||!allPokemon.length)&&tries<50){
+      await new Promise(r=>setTimeout(r,200));
+      tries++;
+    }
   }
 
   try{
@@ -575,30 +729,42 @@ async function initTrainers(){
         fetchApi('/games'),
         fetchApi('/stats').catch(()=>({})),
       ]);
+      let gamesMeta=[];
+      try{
+        const jRes=await fetch('data/trainers_db.json');
+        if(jRes.ok)gamesMeta=(await jRes.json()).games||[];
+      }catch(_e){/* games locales opcionales */}
       TRAINERS_DB={
-        games:games.map(g=>({slug:g.slug,name:g.name,gen:g.gen,region:g.region})),
+        games:games.map(g=>{
+          const meta=gamesMeta.find(x=>x.slug===g.slug);
+          const gen=Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0;
+          return{
+            slug:g.slug,
+            name:g.name,
+            gen,
+            region:g.region||meta?.region||'',
+            trainer_count:Number(meta?.trainer_count)||Number(g.trainer_count)||0,
+          };
+        }),
         trainers:{},
-        meta:{total_trainers:stats.trainers||287},
       };
-      setTrainersDataSource('api', getApiBase() + '/trainers · equipos: trainers_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
-      ensureTrainersJson().catch(()=>{});
+      const apiTrainerTotal=Number(stats?.trainers);
+      if(Number.isFinite(apiTrainerTotal)&&apiTrainerTotal>0){
+        TRAINERS_DB._trainerTotal=apiTrainerTotal;
+      }
+      ensureTrainersJson().then(()=>refreshTrainersStatusBar()).catch(()=>{});
     }else{
       const res=await fetch('data/trainers_db.json');
       if(!res.ok)throw new Error('No trainers DB');
       TRAINERS_DB=await res.json();
-      setTrainersDataSource('json','data/trainers_db.json'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     }
     buildGameSelector();
     resetStarterSelector();
     resetRematchSelector();
     resetDifficultySelector();
     resetEeveelutionSelector();
-    document.getElementById('status-bar').innerHTML=
-      `<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px">
-       <span>${allPokemon.length} Pokémon · ${TRAINERS_DB.meta?.total_trainers||'?'} entrenadores</span>`;
-    if(typeof updateDataSourceUI==='function')updateDataSourceUI(['pokemon','trainers']); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
+    refreshTrainersStatusBar();
   }catch(e){
-    setTrainersDataSource('none','Error al cargar entrenadores'); // POKEWEB-TEMP-DATA-SOURCE-INDICATOR
     document.getElementById('status-bar').textContent='Sin DB de entrenadores (Flask + import_db.py).';
   }
 }
@@ -623,9 +789,10 @@ function buildGameSelector(){
   selGame.onchange = onGameChange;
 }
 
-function resetStarterSelector(){
+function resetStarterSelector(msg='— Elige juego —'){
   const sel=document.getElementById('sel-starter');
-  sel.innerHTML='<option value="">— Elige juego —</option>';
+  if(!sel)return;
+  sel.innerHTML=`<option value="">${msg}</option>`;
   sel.disabled=true;
   sel.value='';
   sel.onchange=onStarterChange;
@@ -639,11 +806,18 @@ function onStarterChange(){
 
 function buildStarterSelector(slug){
   const sel=document.getElementById('sel-starter');
-  const gen=getGameGen(slug);
-  const starters=GEN_STARTERS[gen];
+  if(!sel)return;
 
-  if(!slug||!starters){
+  if(!slug){
     resetStarterSelector();
+    return;
+  }
+
+  const gen=getStarterGen(slug);
+  const starters=GEN_STARTERS[gen];
+  if(!starters?.length){
+    console.warn('Sin iniciales para',slug,'gen',gen);
+    resetStarterSelector('— Sin iniciales —');
     return;
   }
 
@@ -670,7 +844,8 @@ function populateTrainerSelect(trainers,sorted){
     }
     const opt=document.createElement('option');
     opt.value=trainerOptionValue(slug,t)??String(i);
-    opt.textContent=`${typeLabel} ${t.name}${t.location?' — '+t.location:''}`;
+    const roleHint=t.type==='champion'?' (Campeón)':t.type==='gym'&&t.order?` (Gimnasio ${t.order})`:'';
+    opt.textContent=`${typeLabel} ${t.name}${roleHint}${t.location?' — '+t.location:''}`;
     (currentOg||selTrainer).appendChild(opt);
   });
   selTrainer.disabled=false;
@@ -723,25 +898,32 @@ async function onGameChange(){
 }
 
 function applyStarterFilters(team,trainer,slug,starterId){
-  if(trainer?.teamByStarter&&starterId&&trainer.teamByStarter[starterId])return team;
+  if(trainer?.teamByStarter&&starterId&&trainer.teamByStarter[starterId]){
+    return JSON.parse(JSON.stringify(trainer.teamByStarter[starterId]));
+  }
 
   const gen=getGameGen(slug);
   const finals=STARTER_FINALS_BY_GEN[gen]||[];
-  const keepFinal=RIVAL_COUNTER_BY_GEN[gen]?.[starterId];
-  const finalsInTeam=finals.filter(f=>team.some(p=>p.name===f));
+  const rivalGen=getStarterGen(slug)||gen;
+  const keepFinal=RIVAL_COUNTER_BY_GEN[rivalGen]?.[starterId];
+  team=JSON.parse(JSON.stringify(team));
 
   if(trainer.name==='Hau'&&slug.includes('ultra')){
     const keepEevee=HAU_EEVEELUTION[starterId];
     team=team.filter(p=>!EEVEELUTIONS.has(p.name)||p.name===keepEevee);
   }
 
-  if(finalsInTeam.length>=2&&keepFinal){
+  if(!keepFinal||!trainerUsesRivalStarterSwap(trainer,slug))return team;
+
+  const finalsInTeam=finals.filter(f=>team.some(p=>p.name===f));
+  if(finalsInTeam.length>=2){
     const nonFinal=team.filter(p=>!finals.includes(p.name));
     const kept=team.find(p=>p.name===keepFinal);
-    if(kept)team=[...nonFinal.slice(0,MAX_TEAM-1),kept];
-    else team=nonFinal.slice(0,MAX_TEAM);
+    if(kept)return [...nonFinal.slice(0,MAX_TEAM-1),kept];
+    return nonFinal.slice(0,MAX_TEAM);
   }
-  return team;
+  if(finalsInTeam.length===1&&finalsInTeam[0]===keepFinal)return team;
+  return swapRivalStarterSlot(team,keepFinal,rivalGen,trainer,slug);
 }
 
 /** Dos bloques idénticos en JSON (error enrich); no confundir con revancha real. */
