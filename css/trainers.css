@@ -196,10 +196,5 @@
   .selector-arrow{display:none;}
 }
 
-/* Equipos rivales con más de 6 Pokémon */
-.team-slots-expanded .poke-row-top{min-height:200px;}
-.team-slots-expanded .slot-img{width:120px;height:120px;}
-.team-slots-expanded .poke-row{margin-bottom:2px;}
-
 /* Override moves-panel-label a 12px igual que teams */
 .moves-panel-label{font-size:12px;}

@@ -5,6 +5,66 @@
 
 let TRAINERS_DB = null;
 
+// Iniciales por generación (tu elección → equipo rival según el juego)
+const GEN_STARTERS={
+  1:[{id:'bulbasaur',label:'Bulbasaur'},{id:'charmander',label:'Charmander'},{id:'squirtle',label:'Squirtle'}],
+  2:[{id:'chikorita',label:'Chikorita'},{id:'cyndaquil',label:'Cyndaquil'},{id:'totodile',label:'Totodile'}],
+  3:[{id:'treecko',label:'Treecko'},{id:'torchic',label:'Torchic'},{id:'mudkip',label:'Mudkip'}],
+  4:[{id:'turtwig',label:'Turtwig'},{id:'chimchar',label:'Chimchar'},{id:'piplup',label:'Piplup'}],
+  5:[{id:'snivy',label:'Snivy'},{id:'tepig',label:'Tepig'},{id:'oshawott',label:'Oshawott'}],
+  6:[{id:'chespin',label:'Chespin'},{id:'fennekin',label:'Fennekin'},{id:'froakie',label:'Froakie'}],
+  7:[{id:'rowlet',label:'Rowlet'},{id:'litten',label:'Litten'},{id:'popplio',label:'Popplio'}],
+  8:[{id:'grookey',label:'Grookey'},{id:'scorbunny',label:'Scorbunny'},{id:'sobble',label:'Sobble'}],
+  9:[{id:'sprigatito',label:'Sprigatito'},{id:'fuecoco',label:'Fuecoco'},{id:'quaxly',label:'Quaxly'}],
+};
+
+// Evoluciones finales de los iniciales (para detectar variantes en el JSON)
+const STARTER_FINALS_BY_GEN={
+  1:['venusaur','charizard','blastoise'],
+  2:['meganium','typhlosion','feraligatr'],
+  3:['sceptile','blaziken','swampert'],
+  4:['torterra','infernape','empoleon'],
+  5:['serperior','emboar','samurott'],
+  6:['chesnaught','delphox','greninja'],
+  7:['decidueye','incineroar','primarina'],
+  8:['rillaboom','cinderace','inteleon'],
+  9:['meowscarada','skeledirge','quaquaval'],
+};
+
+/** Pokémon final que lleva el rival si tú eliges ese inicial (ventaja de tipo). */
+const RIVAL_COUNTER_BY_GEN={
+  1:{bulbasaur:'charizard',charmander:'blastoise',squirtle:'venusaur'},
+  2:{chikorita:'typhlosion',cyndaquil:'feraligatr',totodile:'meganium'},
+  3:{treecko:'swampert',torchic:'sceptile',mudkip:'blaziken'},
+  4:{turtwig:'infernape',chimchar:'empoleon',piplup:'torterra'},
+  5:{snivy:'emboar',tepig:'samurott',oshawott:'serperior'},
+  6:{chespin:'delphox',fennekin:'greninja',froakie:'chesnaught'},
+  7:{rowlet:'incineroar',litten:'primarina',popplio:'decidueye'},
+  8:{grookey:'cinderace',scorbunny:'inteleon',sobble:'rillaboom'},
+  9:{sprigatito:'skeledirge',fuecoco:'quaquaval',quaxly:'meowscarada'},
+};
+
+/** Hau (USUM): Eevee evoluciona a la ventaja sobre tu inicial. */
+const HAU_EEVEELUTION={rowlet:'flareon',litten:'vaporeon',popplio:'leafeon'};
+const EEVEELUTIONS=new Set(['vaporeon','jolteon','flareon','espeon','umbreon','leafeon','glaceon','sylveon']);
+
+const MAX_TEAM=6;
+
+function getGameGen(slug){
+  return TRAINERS_DB?.games?.find(g=>g.slug===slug)?.gen||0;
+}
+
+function updateLoadTrainerButton(){
+  const slug=document.getElementById('sel-game').value;
+  const trainerVal=document.getElementById('sel-trainer').value;
+  const starterEl=document.getElementById('sel-starter');
+  const gen=getGameGen(slug);
+  const needsStarter=!!GEN_STARTERS[gen];
+  const starterOk=!needsStarter||!!starterEl.value;
+  const trainerOk=trainerVal!==''&&!isNaN(parseInt(trainerVal));
+  document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk);
+}
+
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
   IS_TRAINER_PAGE = true; // bloquear edición equipo rival
@@ -55,12 +115,43 @@ function buildGenSelector(){
   if(arrow && arrow.classList.contains('selector-arrow')) arrow.style.display='none';
 }
 
+function buildStarterSelector(slug){
+  const group=document.getElementById('sel-starter-group');
+  const arrow=document.getElementById('sel-starter-arrow');
+  const sel=document.getElementById('sel-starter');
+  const gen=getGameGen(slug);
+  const starters=GEN_STARTERS[gen];
+
+  if(!starters){
+    group.style.display='none';
+    if(arrow)arrow.style.display='none';
+    sel.innerHTML='<option value="">— Inicial —</option>';
+    sel.disabled=true;
+    sel.value='';
+    return;
+  }
+
+  group.style.display='';
+  if(arrow)arrow.style.display='';
+  sel.innerHTML=starters.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+  sel.disabled=false;
+  sel.value=starters[0].id;
+  sel.onchange=updateLoadTrainerButton;
+}
+
 function onGameChange(){
   const slug = document.getElementById('sel-game').value;
   const selTrainer = document.getElementById('sel-trainer');
-  document.getElementById('btn-load-trainer').disabled = true;
+  updateLoadTrainerButton();
 
-  if(!slug){ selTrainer.innerHTML='<option value="">— Entrenador —</option>'; selTrainer.disabled=true; return; }
+  if(!slug){
+    selTrainer.innerHTML='<option value="">— Entrenador —</option>';
+    selTrainer.disabled=true;
+    buildStarterSelector('');
+    return;
+  }
+
+  buildStarterSelector(slug);
 
   const trainers = TRAINERS_DB.trainers[slug] || [];
   // Ordenar: gym/kahuna → elite4 → champion → captain (Alola)
@@ -91,9 +182,53 @@ function onGameChange(){
   selTrainer.disabled = false;
   selTrainer.value = '';
   selTrainer._sorted = sorted;
-  selTrainer.onchange = ()=>{
-    document.getElementById('btn-load-trainer').disabled = !selTrainer.value && selTrainer.value!=='0';
-  };
+  selTrainer.onchange = updateLoadTrainerButton;
+  updateLoadTrainerButton();
+}
+
+/** Quita variantes de iniciales rivales y fusiones de combates duplicados en el scrape. */
+function resolveTrainerTeam(trainer, slug, starterId){
+  let team=[...(trainer.team||[])];
+  const gen=getGameGen(slug);
+  const finals=STARTER_FINALS_BY_GEN[gen]||[];
+  const keepFinal=RIVAL_COUNTER_BY_GEN[gen]?.[starterId];
+  const finalsInTeam=finals.filter(f=>team.some(p=>p.name===f));
+
+  // Hau (USUM): primero Eeveelución según tu inicial, luego la final de Alola
+  if(trainer.name==='Hau'&&slug.includes('ultra')){
+    const keepEevee=HAU_EEVEELUTION[starterId];
+    team=team.filter(p=>!EEVEELUTIONS.has(p.name)||p.name===keepEevee);
+  }
+
+  if(finalsInTeam.length>=2&&keepFinal){
+    const nonFinal=team.filter(p=>!finals.includes(p.name));
+    const kept=team.find(p=>p.name===keepFinal);
+    if(kept)team=[...nonFinal.slice(0,MAX_TEAM-1),kept];
+    else team=nonFinal.slice(0,MAX_TEAM);
+  }
+
+  if(team.length>MAX_TEAM)team=trimTeamByLevelCluster(team,trainer.type);
+  if(team.length>MAX_TEAM)team=team.slice(0,MAX_TEAM);
+  return team;
+}
+
+function trimTeamByLevelCluster(team,trainerType){
+  if(team.length<=MAX_TEAM)return team;
+  const clusters=[];
+  let cur=[team[0]];
+  for(let i=1;i<team.length;i++){
+    const prev=team[i-1].level||0;
+    const lv=team[i].level||0;
+    if(Math.abs(lv-prev)>=12){
+      clusters.push(cur);
+      cur=[team[i]];
+    }else cur.push(team[i]);
+  }
+  clusters.push(cur);
+  if(clusters.length<=1)return team.slice(0,MAX_TEAM);
+  const preferHigh=['elite4','champion','kahuna'].includes(trainerType);
+  const pick=preferHigh?clusters[clusters.length-1]:clusters[0];
+  return pick.length<=MAX_TEAM?pick:pick.slice(0,MAX_TEAM);
 }
 
 // ── Resolver nombre de pokémon del entrenador → pokemon_db ──
@@ -132,30 +267,29 @@ function loadTrainer(){
   if(!trainer) return;
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
+  const starterId=document.getElementById('sel-starter').value;
+  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId);
+  const starterLabel=document.getElementById('sel-starter').selectedOptions[0]?.textContent||'';
 
-  // Actualizar cabecera rival
   document.getElementById('trainer-b-name').textContent = trainer.name || 'Rival';
-  document.getElementById('trainer-b-game').textContent = gameName;
+  document.getElementById('trainer-b-game').textContent =
+    starterLabel?`${gameName} · Inicial: ${starterLabel}`:gameName;
   const tnb=document.getElementById('team-name-b'); if(tnb) tnb.value!==undefined ? tnb.value=trainer.name||'Rival' : tnb.textContent=trainer.name||'Rival';
 
-  const teamSize=Math.max(6, trainer.team.length);
-  setRivalTeamSize(teamSize);
-  for(let i=0;i<teamSize;i++){
+  for(let i=0;i<MAX_TEAM;i++){
     teams.b[i]=null;
     const st=slotSt('b',i);
     st.shiny=false; st.stats=false;
   }
 
-  // Renderizar sprite del entrenador arriba del lado B
   renderTrainerSprite(trainer, 'b');
 
   let skipped=0;
-  // Rellenar equipo B con todos los pokémon del entrenador
-  trainer.team.forEach((tp, i)=>{
+  resolvedTeam.forEach((tp,i)=>{
+    if(i>=MAX_TEAM)return;
     const pData=resolveTrainerPokemon(tp);
     if(!pData){ skipped++; return; }
 
-    // Moves por nivel: filtrar los que aprende hasta el nivel del pokémon en el entrenador
     const level = tp.level || 100;
     const movesForLevel = getMovesForLevel(pData, level);
 
@@ -171,9 +305,9 @@ function loadTrainer(){
   renderAllSlots('b');
   setTimeout(()=>addLevelBadges(), 60);
 
-  const loaded=trainer.team.length-skipped;
+  const loaded=resolvedTeam.length-skipped;
   const msg=skipped
-    ? `Equipo de ${trainer.name}: ${loaded}/${trainer.team.length} Pokémon (${skipped} sin datos en la DB).`
+    ? `Equipo de ${trainer.name}: ${loaded}/${resolvedTeam.length} Pokémon (${skipped} sin datos en la DB).`
     : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
   showToast(msg, skipped?'warn':'ok');
 }
@@ -227,7 +361,7 @@ function renderTrainerSprite(trainer, team){
 }
 
 function addLevelBadges(){
-  for(let i=0;i<teams.b.length;i++){
+  for(let i=0;i<MAX_TEAM;i++){
     const p = teams.b[i];
     if(!p) continue;
     const slotEl = document.getElementById(`poke-row-b-${i}`);
@@ -246,8 +380,7 @@ function addLevelBadges(){
 
 function clearTrainer(){
   showConfirm('¿Limpiar el equipo rival?', ()=>{
-    setRivalTeamSize(6);
-    for(let i=0;i<teams.b.length;i++){
+    for(let i=0;i<MAX_TEAM;i++){
       teams.b[i]=null;
       const st=slotSt('b',i);
       st.shiny=false; st.stats=false;
