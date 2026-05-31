@@ -50,16 +50,18 @@ const EEVEELUTIONS=new Set(['vaporeon','jolteon','flareon','espeon','umbreon','l
 
 const MAX_TEAM=6;
 
-/** Juegos con equipos distintos en Normal/Fácil vs Challenge Mode (Gen 5). */
-const CHALLENGE_MODE_GAMES=new Set(['black-white-2']);
 const DIFFICULTY_LEVEL_GAP=3;
+
+/** Textos del desplegable según juego (Challenge Mode solo en BW2). */
+function getDifficultyLabels(slug){
+  if(slug==='black-white-2'){
+    return{normal:'Normal / Fácil',challenge:'Challenge Mode'};
+  }
+  return{normal:'Normal / Fácil',challenge:'Difícil'};
+}
 
 function getGameGen(slug){
   return TRAINERS_DB?.games?.find(g=>g.slug===slug)?.gen||0;
-}
-
-function gameHasChallengeMode(slug){
-  return CHALLENGE_MODE_GAMES.has(slug);
 }
 
 /** Segunda aparición del mismo Pokémon con nivel mucho mayor → bloque Challenge (BW2). */
@@ -77,9 +79,24 @@ function splitDifficultyBlocks(team,levelGap=DIFFICULTY_LEVEL_GAP){
   return[team];
 }
 
-function trainerHasDifficultyVariants(trainer){
-  const blocks=splitDifficultyBlocks(trainer?.team||[]);
-  return blocks.length>=2&&blocks[0].length>0&&blocks[1].length>0;
+/** Equipos distintos por dificultad (mismo Pokémon repetido con nivel mucho mayor). */
+function trainerHasDifficultyVariants(trainer,slug){
+  const team=trainer?.team||[];
+  const blocks=splitDifficultyBlocks(team);
+  if(blocks.length<2||blocks[0].length<2||blocks[1].length<2)return false;
+  if(team.length>14)return false;
+  if(blocks[0].length>=MAX_TEAM&&blocks[1].length>MAX_TEAM)return false;
+  const gen=getGameGen(slug);
+  const finals=STARTER_FINALS_BY_GEN[gen]||[];
+  if(finals.filter(f=>team.some(p=>p.name===f)).length>=3)return false;
+  return true;
+}
+
+function setDifficultySelectorVisible(show){
+  const group=document.getElementById('sel-difficulty-group');
+  const arrow=group?.previousElementSibling;
+  if(group)group.hidden=!show;
+  if(arrow?.classList?.contains('selector-arrow'))arrow.hidden=!show;
 }
 
 function resetDifficultySelector(){
@@ -87,14 +104,19 @@ function resetDifficultySelector(){
   sel.value='normal';
   sel.disabled=true;
   sel.onchange=updateLoadTrainerButton;
+  setDifficultySelectorVisible(false);
 }
 
 function buildDifficultySelector(slug,trainer){
   const sel=document.getElementById('sel-difficulty');
-  if(!gameHasChallengeMode(slug)||!trainerHasDifficultyVariants(trainer)){
+  if(!trainer||!trainerHasDifficultyVariants(trainer,slug)){
     resetDifficultySelector();
     return;
   }
+  setDifficultySelectorVisible(true);
+  const labels=getDifficultyLabels(slug);
+  sel.options[0].textContent=labels.normal;
+  sel.options[1].textContent=labels.challenge;
   sel.disabled=false;
   sel.value=sel.value==='challenge'?'challenge':'normal';
   sel.onchange=updateLoadTrainerButton;
@@ -257,8 +279,8 @@ function resolveTrainerTeam(trainer, slug, starterId, difficulty){
     else team=nonFinal.slice(0,MAX_TEAM);
   }
 
-  const diffBlocks=splitDifficultyBlocks(team);
-  if(diffBlocks.length>=2){
+  if(trainerHasDifficultyVariants({team},slug)){
+    const diffBlocks=splitDifficultyBlocks(team);
     const wantChallenge=difficulty==='challenge';
     team=wantChallenge?diffBlocks[diffBlocks.length-1]:diffBlocks[0];
   }else if(team.length>MAX_TEAM){

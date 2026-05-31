@@ -23689,6 +23689,139 @@
                 "name_display": "Dragon Claw"
               }
             ]
+          },
+          {
+            "name": "shiftry",
+            "name_display": "Shiftry",
+            "level": 70,
+            "types": [
+              "grass",
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "fake-out",
+                "name_display": "Fake Out"
+              },
+              {
+                "name": "feint-attack",
+                "name_display": "Feint Attack"
+              },
+              {
+                "name": "extrasensory",
+                "name_display": "Extrasensory"
+              },
+              {
+                "name": "leaf-blade",
+                "name_display": "Leaf Blade"
+              }
+            ]
+          },
+          {
+            "name": "zoroark",
+            "name_display": "Zoroark",
+            "level": 70,
+            "types": [
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "night-slash",
+                "name_display": "Night Slash"
+              },
+              {
+                "name": "shadow-claw",
+                "name_display": "Shadow Claw"
+              },
+              {
+                "name": "dark-pulse",
+                "name_display": "Dark Pulse"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              }
+            ]
+          },
+          {
+            "name": "sharpedo",
+            "name_display": "Sharpedo",
+            "level": 70,
+            "types": [
+              "water",
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "poison-fang",
+                "name_display": "Poison Fang"
+              },
+              {
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
+              },
+              {
+                "name": "slash",
+                "name_display": "Slash"
+              }
+            ]
+          },
+          {
+            "name": "mandibuzz",
+            "name_display": "Mandibuzz",
+            "level": 70,
+            "types": [
+              "dark",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "brave-bird",
+                "name_display": "Brave Bird"
+              },
+              {
+                "name": "bone-rush",
+                "name_display": "Bone Rush"
+              },
+              {
+                "name": "feint-attack",
+                "name_display": "Feint Attack"
+              },
+              {
+                "name": "tailwind",
+                "name_display": "Tailwind"
+              }
+            ]
+          },
+          {
+            "name": "absol",
+            "name_display": "Absol",
+            "level": 72,
+            "types": [
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
+              },
+              {
+                "name": "night-slash",
+                "name_display": "Night Slash"
+              },
+              {
+                "name": "psycho-cut",
+                "name_display": "Psycho Cut"
+              },
+              {
+                "name": "slash",
+                "name_display": "Slash"
+              }
+            ]
           }
         ]
       },
