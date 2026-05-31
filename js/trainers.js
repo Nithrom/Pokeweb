@@ -287,11 +287,11 @@ function loadTrainer(){
     if(!pData){ skipped++; return; }
 
     const level = tp.level || 100;
-    const movesForLevel = getMovesForLevel(pData, level);
+    const moves = resolveTrainerMoves(pData, tp);
 
     teams.b[i] = {
       ...pData,
-      moves: movesForLevel,
+      moves,
       trainerLevel: level,
     };
     slotSt('b',i).shiny=false;
@@ -306,6 +306,37 @@ function loadTrainer(){
     ? `Equipo de ${trainer.name}: ${loaded}/${resolvedTeam.length} Pokémon (${skipped} sin datos en la DB).`
     : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
   showToast(msg, skipped?'warn':'ok');
+}
+
+/** Movimientos del JSON (Bulbapedia) o inferidos por nivel si faltan. */
+function resolveTrainerMoves(pData, tp){
+  const raw = tp.moves || [];
+  if(!raw.length) return getMovesForLevel(pData, tp.level || 100);
+
+  const out = [];
+  for(const m of raw.slice(0, 4)){
+    const name = typeof m === 'string' ? m : m.name;
+    if(!name) continue;
+    const fromSlot = pData.allMoves?.find(x => x.name === name);
+    const global = DB?.moves?.[name];
+    const detail = fromSlot?.detail || global || {
+      type: 'normal', category: 'status', power: null, accuracy: null, pp: null,
+    };
+    out.push({
+      name,
+      byLevel: false,
+      level: 0,
+      detail: {
+        type: detail.type || 'normal',
+        category: detail.category || 'status',
+        power: detail.power ?? null,
+        accuracy: detail.accuracy ?? null,
+        pp: detail.pp ?? null,
+      },
+    });
+  }
+  if(out.length) return out;
+  return getMovesForLevel(pData, tp.level || 100);
 }
 
 function getMovesForLevel(pData, level){
