@@ -736,7 +736,7 @@ function normalizeTrainerFromApi(t,gameSlug){
       name:m.name,
       name_display:m.name_es||formatName(m.name),
       level:m.level,
-      types:m.types_en||m.types||[],
+      types:Array.isArray(m.types_en)?m.types_en:(m.types||[]),
       moves:(m.moves||[]).map(mv=>{
         const slug=normalizeMoveSlug(mv.name);
         return{
@@ -746,6 +746,42 @@ function normalizeTrainerFromApi(t,gameSlug){
       }),
     })),
   };
+}
+
+function trainerHasLoadedTeam(tr){
+  return!!(
+    (tr?.team?.length)>0||
+    (tr?.teamByStarter&&Object.keys(tr.teamByStarter).length)||
+    (tr?.teamByEeveelution&&Object.keys(tr.teamByEeveelution).length)
+  );
+}
+
+function patchTrainerInCache(trainer,gameSlug){
+  const list=TRAINERS_DB?.trainers?.[gameSlug];
+  if(!list||!trainer?.slug)return;
+  const i=list.findIndex(t=>t.slug===trainer.slug);
+  if(i<0)return;
+  list[i]={
+    ...list[i],
+    ...trainer,
+    team:trainer.team,
+    teamByStarter:trainer.teamByStarter,
+    teamByEeveelution:trainer.teamByEeveelution,
+  };
+}
+
+async function fetchTrainerTeamFromApi(trainer,gameSlug){
+  if(!useApi()||!trainer?.slug)return trainer;
+  if(trainerHasLoadedTeam(trainer))return trainer;
+  try{
+    const full=await fetchApi(
+      `/trainers/${encodeURIComponent(gameSlug)}/${encodeURIComponent(trainer.slug)}`,
+    );
+    return normalizeTrainerFromApi(full,gameSlug);
+  }catch(e){
+    console.warn('Equipo desde API',e);
+    return trainer;
+  }
 }
 
 async function loadTrainersForGame(slug){
@@ -987,7 +1023,13 @@ function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel, ee
   else if(rematchSel==='rematch'){
     if(peers.rematch1)roster=peers.rematch1;
     else if(peers.rematch2)roster=peers.rematch2;
-  }else if(rematchSel==='first'&&peers.story)roster=peers.story;
+  }else if(
+    rematchSel==='first'&&
+    peers.story&&
+    (isRematchEntry(trainer)||isRematch2Entry(trainer))
+  ){
+    roster=peers.story;
+  }
 
   let team;
   const base=getTrainerBaseTeam(roster,starterId,slug,eeveelutionId);
@@ -1082,13 +1124,14 @@ async function loadTrainer(){
   let trainer=findTrainerInSorted(sorted,slug,val);
   if(!trainer)return;
 
-  if(useApi()&&trainer.slug){
-    try{
-      const full=await fetchApi(
-        `/trainers/${encodeURIComponent(slug)}/${encodeURIComponent(trainer.slug)}`,
-      );
-      trainer=normalizeTrainerFromApi(full,slug);
-    }catch(e){console.warn('Equipo desde API',e);}
+  trainer=await fetchTrainerTeamFromApi(trainer,slug);
+  patchTrainerInCache(trainer,slug);
+
+  const peers=getRematchPeers(trainer,slug);
+  for(const peer of [peers.story,peers.rematch1,peers.rematch2]){
+    if(!peer||peer.slug===trainer.slug)continue;
+    const loaded=await fetchTrainerTeamFromApi(peer,slug);
+    patchTrainerInCache(loaded,slug);
   }
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
