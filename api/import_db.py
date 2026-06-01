@@ -1,14 +1,14 @@
 """
-import_db.py — Importa pokemon_db.json y trainers_db.json a MariaDB
-====================================================================
-Uso local (MariaDB en tu PC):
-  set DB_HOST=127.0.0.1
-  set DB_USER=pokeweb_user
-  set DB_PASS=pokeweb_pass
+import_db.py — Importa pokemon_db.json y trainers_db.json a la BD
+================================================================
+Supabase (PostgreSQL):
+  api/.env → DATABASE_URL=postgresql://...
+  Ejecutar antes sql/init.postgres.sql en el SQL Editor de Supabase
   python import_db.py --reset
 
-Docker:
-  docker exec pokeweb_api python import_db.py --reset
+MariaDB local / Docker:
+  DB_HOST, DB_USER, DB_PASS, DB_NAME
+  python import_db.py --reset
 
 Opciones:
   --reset          Vacía tablas ANTES de importar (¡borra datos existentes!)
@@ -34,7 +34,7 @@ import sys
 import time
 import unicodedata
 
-import pymysql
+import db
 
 # ── Rutas ─────────────────────────────────────────────────────────────────────
 API_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -62,17 +62,6 @@ def trainers_json_path() -> str | None:
         os.path.join(DATA_DIR, 'trainers_db.json'),
     )
 
-
-# ── BD ────────────────────────────────────────────────────────────────────────
-DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', '127.0.0.1'),
-    'port': int(os.environ.get('DB_PORT', 3306)),
-    'user': os.environ.get('DB_USER', 'pokeweb_user'),
-    'password': os.environ.get('DB_PASS', 'pokeweb_pass'),
-    'database': os.environ.get('DB_NAME', 'pokeweb'),
-    'charset': 'utf8mb4',
-    'cursorclass': pymysql.cursors.DictCursor,
-}
 
 TIPOS_ES = {
     'normal': 'Normal', 'fighting': 'Lucha', 'flying': 'Volador', 'poison': 'Veneno',
@@ -208,34 +197,6 @@ def trainer_slug(tr: dict, game_slug: str | None = None) -> str:
     return base
 
 
-def column_exists(cur, table: str, column: str) -> bool:
-    cur.execute(
-        '''SELECT 1 FROM information_schema.COLUMNS
-           WHERE TABLE_SCHEMA=%s AND TABLE_NAME=%s AND COLUMN_NAME=%s''',
-        (DB_CONFIG['database'], table, column),
-    )
-    return cur.fetchone() is not None
-
-
-def column_type(cur, table: str, column: str) -> str:
-    cur.execute(
-        '''SELECT COLUMN_TYPE FROM information_schema.COLUMNS
-           WHERE TABLE_SCHEMA=%s AND TABLE_NAME=%s AND COLUMN_NAME=%s''',
-        (DB_CONFIG['database'], table, column),
-    )
-    row = cur.fetchone()
-    return (row.get('COLUMN_TYPE') or '').lower() if row else ''
-
-
-def reset_table_autoincrement(cur, table: str) -> None:
-    """Tras DELETE, MariaDB no baja AUTO_INCREMENT; el siguiente INSERT puede fallar."""
-    if not re.match(r'^[a-zA-Z0-9_]+$', table):
-        raise ValueError(f'Tabla inválida: {table}')
-    cur.execute(f'SELECT COALESCE(MAX(id), 0) AS m FROM {table}')
-    nxt = int(cur.fetchone()['m']) + 1
-    cur.execute(f'ALTER TABLE {table} AUTO_INCREMENT = %s', (nxt,))
-
-
 def dedupe_games_by_slug(cur, conn) -> int:
     """Fusiona filas duplicadas en games (misma slug) y reasigna trainers.game_id."""
     cur.execute('SELECT id, slug FROM games ORDER BY id')
@@ -260,20 +221,30 @@ def dedupe_games_by_slug(cur, conn) -> int:
 
 
 def _trainers_game_fk_name(cur) -> str | None:
+    if db.is_postgres():
+        return None
     cur.execute(
         '''SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE
            WHERE TABLE_SCHEMA=%s AND TABLE_NAME='trainers'
              AND COLUMN_NAME='game_id' AND REFERENCED_TABLE_NAME='games'
            LIMIT 1''',
-        (DB_CONFIG['database'],),
+        (db.schema_name(),),
     )
     row = cur.fetchone()
     return row['CONSTRAINT_NAME'] if row else None
 
 
 def ensure_games_schema(cur, conn) -> None:
-    """games.id era TINYINT (máx. 255); importes repetidos agotaban AUTO_INCREMENT."""
-    games_id_type = column_type(cur, 'games', 'id')
+    """Fusiona juegos duplicados; en MariaDB antigua amplía games.id."""
+    if db.is_postgres():
+        removed = dedupe_games_by_slug(cur, conn)
+        if removed:
+            print(f'[esquema] {removed} juegos duplicados fusionados', end=' ', flush=True)
+        db.reset_table_autoincrement(cur, 'games')
+        conn.commit()
+        return
+
+    games_id_type = db.column_type(cur, 'games', 'id')
     if 'tinyint' in games_id_type:
         fk = _trainers_game_fk_name(cur)
         cur.execute('SET FOREIGN_KEY_CHECKS=0')
@@ -298,19 +269,24 @@ def ensure_games_schema(cur, conn) -> None:
     if removed:
         print(f'[esquema] {removed} juegos duplicados fusionados', end=' ', flush=True)
 
-    reset_table_autoincrement(cur, 'games')
+    db.reset_table_autoincrement(cur, 'games')
     conn.commit()
 
 
 def ensure_schema(cur, conn) -> None:
-    """Aplica cambios de sql/init.sql v2 en bases antiguas."""
+    """Aplica cambios de sql/init.sql v2 en bases MariaDB antiguas."""
     print('[esquema] Comprobando columnas...', end=' ', flush=True)
 
-    if not column_exists(cur, 'games', 'slug'):
+    if db.is_postgres():
+        ensure_games_schema(cur, conn)
+        print('OK (PostgreSQL)')
+        return
+
+    if not db.column_exists(cur, 'games', 'slug'):
         cur.execute('ALTER TABLE games ADD COLUMN slug VARCHAR(40) NULL AFTER id')
         conn.commit()
 
-    if column_exists(cur, 'games', 'slug'):
+    if db.column_exists(cur, 'games', 'slug'):
         cur.execute('SELECT id, name FROM games WHERE slug IS NULL OR slug = ""')
         for row in cur.fetchall():
             cur.execute(
@@ -321,15 +297,15 @@ def ensure_schema(cur, conn) -> None:
         try:
             cur.execute('ALTER TABLE games MODIFY slug VARCHAR(40) NOT NULL')
             cur.execute('ALTER TABLE games ADD UNIQUE KEY uq_games_slug (slug)')
-        except pymysql.err.OperationalError:
+        except db.operational_error_type():
             pass
         conn.commit()
 
-    if column_exists(cur, 'trainers', 'trainer_class'):
+    if db.column_exists(cur, 'trainers', 'trainer_class'):
         cur.execute(
             "SELECT COLUMN_TYPE FROM information_schema.COLUMNS "
             "WHERE TABLE_SCHEMA=%s AND TABLE_NAME='trainers' AND COLUMN_NAME='trainer_class'",
-            (DB_CONFIG['database'],),
+            (db.schema_name(),),
         )
         row = cur.fetchone()
         if row and 'enum' in (row.get('COLUMN_TYPE') or '').lower():
@@ -341,15 +317,15 @@ def ensure_schema(cur, conn) -> None:
         ('specialty', 'ALTER TABLE trainers ADD COLUMN specialty VARCHAR(40) NULL'),
         ('location', 'ALTER TABLE trainers ADD COLUMN location VARCHAR(60) NULL'),
     ):
-        if not column_exists(cur, 'trainers', col):
+        if not db.column_exists(cur, 'trainers', col):
             cur.execute(ddl)
             conn.commit()
 
-    if not column_exists(cur, 'trainers', 'team_by_starter'):
+    if not db.column_exists(cur, 'trainers', 'team_by_starter'):
         cur.execute('ALTER TABLE trainers ADD COLUMN team_by_starter JSON NULL')
         conn.commit()
 
-    if column_exists(cur, 'trainers', 'slug'):
+    if db.column_exists(cur, 'trainers', 'slug'):
         cur.execute('SELECT id, name, specialty, gym_order, trainer_class FROM trainers WHERE slug IS NULL OR slug = ""')
         for row in cur.fetchall():
             fake = {
@@ -362,7 +338,7 @@ def ensure_schema(cur, conn) -> None:
         conn.commit()
         try:
             cur.execute('ALTER TABLE trainers ADD UNIQUE KEY uq_trainer_game_slug (game_id, slug)')
-        except pymysql.err.OperationalError:
+        except db.operational_error_type():
             pass
         conn.commit()
 
@@ -371,30 +347,30 @@ def ensure_schema(cur, conn) -> None:
 
 
 def wait_for_db(max_tries: int = 20) -> None:
-    print(f'Conectando a MariaDB ({DB_CONFIG["host"]})...', end='', flush=True)
+    print(f'Conectando a {db.db_label()}...', end='', flush=True)
     for _ in range(max_tries):
         try:
-            conn = pymysql.connect(**DB_CONFIG)
+            conn = db.connect()
             conn.close()
             print(' OK')
             return
         except Exception:
             print('.', end='', flush=True)
             time.sleep(2)
-    print('\nERROR: no se pudo conectar. Revisa DB_HOST, usuario y contraseña.')
+    print('\nERROR: no se pudo conectar. Revisa DATABASE_URL o DB_HOST/DB_USER/DB_PASS.')
     sys.exit(1)
 
 
 def reset_tables(cur, conn, scope: str = 'all') -> None:
     if scope == 'pokemon':
         tables = RESET_POKEMON
-        print('AVISO: --reset --only pokemon → se borran pokémon, movimientos y tipos.')
+        print('AVISO: --reset --only pokemon - se borran pokemon, movimientos y tipos.')
     elif scope == 'trainers':
         tables = RESET_TRAINERS
-        print('AVISO: --reset --only trainers → NO se borra pokemon (solo entrenadores/juegos).')
+        print('AVISO: --reset --only trainers - NO se borra pokemon (solo entrenadores/juegos).')
     else:
         tables = RESET_ALL
-        print('AVISO: --reset (import completo) → se borra TODA la base (pokémon + entrenadores).')
+        print('AVISO: --reset (import completo) - se borra TODA la base (pokemon + entrenadores).')
     print(f'Borrando datos ({scope})...')
     for table in tables:
         if not re.match(r'^[a-zA-Z0-9_]+$', table):
@@ -402,7 +378,7 @@ def reset_tables(cur, conn, scope: str = 'all') -> None:
         cur.execute(f'DELETE FROM {table}')
     for table in ('trainer_pokemon', 'trainers', 'games'):
         if table in tables:
-            reset_table_autoincrement(cur, table)
+            db.reset_table_autoincrement(cur, table)
     conn.commit()
     print('  Tablas vaciadas.')
 
@@ -411,7 +387,7 @@ def import_types_and_effectiveness(cur, conn) -> dict[str, int]:
     print('\n[tipos] Insertando...')
     for name_en, name_es in TIPOS_ES.items():
         cur.execute(
-            'INSERT IGNORE INTO types (name_en, name_es) VALUES (%s,%s)',
+            db.sql_insert_ignore_types(),
             (name_en, name_es),
         )
     conn.commit()
@@ -427,11 +403,7 @@ def import_types_and_effectiveness(cur, conn) -> dict[str, int]:
             did = type_id_map.get(deftype)
             if did:
                 rows.append((aid, did, int(mult * 100)))
-    cur.executemany(
-        '''INSERT INTO type_effectiveness (attack_type_id, defend_type_id, multiplier)
-           VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE multiplier=VALUES(multiplier)''',
-        rows,
-    )
+    cur.executemany(db.sql_upsert_effectiveness(), rows)
     conn.commit()
     print(f'  {len(type_id_map)} tipos, {len(rows)} efectividades')
     return type_id_map
@@ -448,8 +420,7 @@ def ensure_move(cur, conn, move_id_map: dict, type_id_map: dict,
         cat = 'status'
     name_es = det.get('name_es') or name.replace('-', ' ').title()
     cur.execute(
-        '''INSERT IGNORE INTO moves (name, name_es, type_id, category, power, accuracy, pp)
-           VALUES (%s,%s,%s,%s,%s,%s,%s)''',
+        db.sql_insert_ignore_move(),
         (name, name_es, tid, cat, det.get('power'), det.get('accuracy'), det.get('pp')),
     )
     conn.commit()
@@ -476,8 +447,7 @@ def import_moves(cur, conn, moves_data: dict, type_id_map: dict) -> dict[str, in
         ))
     for i in range(0, len(move_rows), 500):
         cur.executemany(
-            '''INSERT IGNORE INTO moves (name, name_es, type_id, category, power, accuracy, pp)
-               VALUES (%s,%s,%s,%s,%s,%s,%s)''',
+            db.sql_insert_ignore_move(),
             move_rows[i:i + 500],
         )
     conn.commit()
@@ -525,26 +495,17 @@ def import_pokemon(cur, conn, pokemon_data: dict, type_id_map: dict,
         evo_fam = pid if pid in EVO_FAMILY_IDS else None
 
         cur.execute(
-            '''INSERT INTO pokemon
-               (id, name, name_es, sprite_url, hp, attack, defense,
-                sp_attack, sp_defense, speed, is_legendary, evo_family_id)
-               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-               ON DUPLICATE KEY UPDATE
-                 name_es=VALUES(name_es), sprite_url=VALUES(sprite_url),
-                 hp=VALUES(hp), attack=VALUES(attack), defense=VALUES(defense),
-                 sp_attack=VALUES(sp_attack), sp_defense=VALUES(sp_defense),
-                 speed=VALUES(speed), is_legendary=VALUES(is_legendary),
-                 evo_family_id=VALUES(evo_family_id)''',
+            db.sql_upsert_pokemon(),
             (pid, name, name_es, sprite,
              hp, attack, defense, sp_attack, sp_defense, speed,
-             is_legendary, evo_fam),
+             bool(is_legendary), evo_fam),
         )
 
         for slot, type_en in enumerate(pdata.get('types', []), 1):
             tid = type_id_map.get(type_en)
             if tid:
                 cur.execute(
-                    'INSERT IGNORE INTO pokemon_types (pokemon_id,type_id,slot) VALUES(%s,%s,%s)',
+                    db.sql_insert_ignore_pokemon_types(),
                     (pid, tid, slot),
                 )
 
@@ -563,11 +524,7 @@ def import_pokemon(cur, conn, pokemon_data: dict, type_id_map: dict,
             pm_rows.append((pid, mid, method, lvl))
 
         if pm_rows:
-            cur.executemany(
-                '''INSERT IGNORE INTO pokemon_moves (pokemon_id,move_id,learn_method,level)
-                   VALUES(%s,%s,%s,%s)''',
-                pm_rows,
-            )
+            cur.executemany(db.sql_insert_ignore_pokemon_moves(), pm_rows)
 
         done += 1
         if done % 100 == 0 or done == total:
@@ -614,9 +571,7 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
 
     for slug, meta in games_meta.items():
         cur.execute(
-            '''INSERT INTO games (slug, name, region, gen)
-               VALUES (%s,%s,%s,%s)
-               ON DUPLICATE KEY UPDATE name=VALUES(name), region=VALUES(region), gen=VALUES(gen)''',
+            db.sql_upsert_game(),
             (slug, meta['name'], meta.get('region', ''), meta.get('gen', 0)),
         )
     conn.commit()
@@ -654,16 +609,7 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
             tbs_json = json.dumps(tbs, ensure_ascii=False) if tbs else None
 
             cur.execute(
-                '''INSERT INTO trainers
-                   (slug, name, name_es, trainer_class, game_id, gym_order,
-                    badge_name, specialty, location, sprite_url, team_by_starter)
-                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                   ON DUPLICATE KEY UPDATE
-                     name=VALUES(name), name_es=VALUES(name_es),
-                     trainer_class=VALUES(trainer_class), gym_order=VALUES(gym_order),
-                     badge_name=VALUES(badge_name), specialty=VALUES(specialty),
-                     location=VALUES(location), sprite_url=VALUES(sprite_url),
-                     team_by_starter=VALUES(team_by_starter)''',
+                db.sql_upsert_trainer(),
                 (tslug, name, name_es, tclass, game_id, order,
                  badge, specialty, location, sprite, tbs_json),
             )
@@ -685,12 +631,11 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
                     missing_mons.add(pname)
                     continue
                 level = mon.get('level') or 50
-                cur.execute(
-                    '''INSERT INTO trainer_pokemon (trainer_id, pokemon_id, level, slot)
-                       VALUES (%s,%s,%s,%s)''',
+                tp_id = db.insert_returning_id(
+                    cur,
+                    db.sql_insert_trainer_pokemon(),
                     (trainer_id, pid, level, slot),
                 )
-                tp_id = cur.lastrowid
 
                 for mslot, mv in enumerate(mon.get('moves') or [], 1):
                     mname = normalize_move_slug(mv.get('name') or '')
@@ -706,9 +651,7 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
                         missing_moves.add(mname)
                         continue
                     cur.execute(
-                        '''INSERT INTO trainer_pokemon_moves (trainer_pokemon_id, move_id, slot)
-                           VALUES (%s,%s,%s)
-                           ON DUPLICATE KEY UPDATE move_id=VALUES(move_id)''',
+                        db.sql_upsert_trainer_pokemon_move(),
                         (tp_id, mid, mslot),
                     )
 
@@ -741,14 +684,14 @@ def print_stats(cur) -> None:
         cur.execute(f'SELECT COUNT(*) AS n FROM {table}')
         return cur.fetchone()['n']
 
-    print('\n=== Resumen en MariaDB ===')
+    print(f'\n=== Resumen en {db.db_label()} ===')
     for t in ('types', 'pokemon', 'moves', 'pokemon_moves', 'games', 'trainers',
               'trainer_pokemon', 'trainer_pokemon_moves'):
         print(f'  {t:24} {count(t)}')
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Importar Pokeweb JSON → MariaDB')
+    parser = argparse.ArgumentParser(description='Importar Pokeweb JSON → BD (Supabase/MariaDB)')
     parser.add_argument('--reset', action='store_true', help='Vaciar tablas antes de importar')
     parser.add_argument('--only', choices=('pokemon', 'trainers', 'all'), default='all')
     args = parser.parse_args()
@@ -764,8 +707,8 @@ def main() -> None:
         sys.exit(1)
 
     wait_for_db()
-    conn = pymysql.connect(**DB_CONFIG)
-    cur = conn.cursor()
+    conn = db.connect()
+    cur = db.cursor(conn)
     ensure_schema(cur, conn)
 
     if args.reset:
@@ -815,7 +758,7 @@ def main() -> None:
         print('  python import_db.py --only pokemon --reset')
         sys.exit(1)
     if args.only in ('trainers', 'all') and n_poke == 0:
-        print('\nAVISO: hay 0 pokémon en MariaDB. Importa primero:')
+        print('\nAVISO: hay 0 pokémon en la BD. Importa primero:')
         print('  python import_db.py --only pokemon --reset')
 
     print('\nPrueba: http://127.0.0.1:5000/health')

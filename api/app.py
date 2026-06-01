@@ -1,5 +1,5 @@
 """
-Pokeweb API — Flask + MariaDB
+Pokeweb API — Flask + MariaDB o PostgreSQL (Supabase)
 Endpoints:
   GET  /health, /stats
   GET  /pokemon, /pokemon/<name>, /pokemon/<name>/moves
@@ -14,59 +14,18 @@ import json as _json
 import os
 import re
 
-import pymysql
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+import db
 from move_gen_types import resolve_move_type
 
 app = Flask(__name__)
 CORS(app)
 
-DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', '127.0.0.1'),
-    'port': int(os.environ.get('DB_PORT', 3306)),
-    'user': os.environ.get('DB_USER', 'pokeweb_user'),
-    'password': os.environ.get('DB_PASS', 'pokeweb_pass'),
-    'database': os.environ.get('DB_NAME', 'pokeweb'),
-    'charset': 'utf8mb4',
-    'cursorclass': pymysql.cursors.DictCursor,
-}
-
-
-def get_db():
-    return pymysql.connect(**DB_CONFIG)
-
-
-def query(sql, params=None):
-    db = get_db()
-    try:
-        with db.cursor() as cur:
-            cur.execute(sql, params or ())
-            return cur.fetchall()
-    finally:
-        db.close()
-
-
-def query_one(sql, params=None):
-    db = get_db()
-    try:
-        with db.cursor() as cur:
-            cur.execute(sql, params or ())
-            return cur.fetchone()
-    finally:
-        db.close()
-
-
-def execute(sql, params=None):
-    db = get_db()
-    try:
-        with db.cursor() as cur:
-            cur.execute(sql, params or ())
-            db.commit()
-            return cur.lastrowid
-    finally:
-        db.close()
+query = db.query
+query_one = db.query_one
+execute = db.execute
 
 
 def split_types(row, key_en='types_en', key_es='types_es'):
@@ -98,8 +57,8 @@ def trainer_team_rows(trainer_id: int, game_gen: int = 0) -> list:
     team = query("""
         SELECT tp.id, tp.slot, tp.level,
                p.id AS pokemon_id, p.name, p.name_es, p.sprite_url,
-               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
-               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
+               {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
+               {db.group_concat('t.name_es', 'pt.slot')} AS types_es
         FROM trainer_pokemon tp
         JOIN pokemon p ON p.id = tp.pokemon_id
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
@@ -186,11 +145,25 @@ def index():
 
 @app.route('/health')
 def health():
+    hint = db.missing_database_config_hint()
+    if hint:
+        return jsonify({
+            'status': 'error',
+            'db': 'not_configured',
+            'detail': hint,
+            'backend': db.get_backend(),
+        }), 500
     try:
         query_one('SELECT 1')
-        return jsonify({'status': 'ok', 'db': 'connected', 'host': DB_CONFIG['host']})
+        return jsonify({'status': 'ok', 'db': 'connected', 'backend': db.get_backend(), 'label': db.db_label()})
     except Exception as e:
-        return jsonify({'status': 'error', 'detail': str(e)}), 500
+        return jsonify({
+            'status': 'error',
+            'db': 'connection_failed',
+            'detail': str(e),
+            'backend': db.get_backend(),
+            'label': db.db_label(),
+        }), 500
 
 
 @app.route('/stats')
@@ -215,8 +188,8 @@ def stats():
 def list_pokemon():
     rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
-               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
+               {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
+               {db.group_concat('t.name_es', 'pt.slot')} AS types_es
         FROM pokemon p
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
@@ -229,8 +202,8 @@ def list_pokemon():
 @app.route('/pokemon/<name>')
 def get_pokemon(name):
     p = query_one("""
-        SELECT p.*, GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
-               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
+        SELECT p.*, {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
+               {db.group_concat('t.name_es', 'pt.slot')} AS types_es
         FROM pokemon p
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
@@ -263,8 +236,8 @@ def get_pokemon_moves(name):
 def pokemon_by_type(type_name):
     rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               GROUP_CONCAT(t2.name_en ORDER BY pt2.slot) AS types_en,
-               GROUP_CONCAT(t2.name_es ORDER BY pt2.slot) AS types_es
+               {db.group_concat('t2.name_en', 'pt2.slot')} AS types_en,
+               {db.group_concat('t2.name_es', 'pt2.slot')} AS types_es
         FROM pokemon p
         JOIN pokemon_types pt  ON pt.pokemon_id  = p.id
         JOIN types t           ON t.id           = pt.type_id  AND t.name_en = %s
@@ -281,7 +254,7 @@ def pokemon_by_type(type_name):
 def pokemon_by_dual_type(t1, t2):
     rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
+               {db.group_concat('t.name_en', 'pt.slot')} AS types_en
         FROM pokemon p
         JOIN pokemon_types pt1 ON pt1.pokemon_id = p.id
         JOIN types ty1 ON ty1.id = pt1.type_id AND ty1.name_en = %s
@@ -392,7 +365,7 @@ def db_pokemon():
     for p in query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url, p.hp, p.attack, p.defense,
                p.sp_attack, p.sp_defense, p.speed, p.is_legendary,
-               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
+               {db.group_concat('t.name_en', 'pt.slot')} AS types_en
         FROM pokemon p
         LEFT JOIN pokemon_types pt ON pt.pokemon_id = p.id
         LEFT JOIN types t ON t.id = pt.type_id
@@ -483,17 +456,26 @@ def list_trainers_for_game(game_slug):
 def create_team():
     data = request.json or {}
     name = data.get('name', 'Mi equipo')
-    team_id = execute('INSERT INTO user_teams (name) VALUES (%s)', (name,))
-    for slot, member in enumerate(data.get('pokemon', []), 1):
-        tp_id = execute(
-            'INSERT INTO user_team_pokemon (team_id, pokemon_id, slot) VALUES (%s,%s,%s)',
-            (team_id, member['pokemon_id'], slot),
-        )
-        for mslot, move_id in enumerate(member.get('move_ids', []), 1):
-            execute(
-                'INSERT INTO user_team_pokemon_moves (team_pokemon_id, move_id, slot) VALUES (%s,%s,%s)',
-                (tp_id, move_id, mslot),
+    conn = db.connect()
+    try:
+        with db.cursor(conn) as cur:
+            team_id = db.insert_returning_id(
+                cur, 'INSERT INTO user_teams (name) VALUES (%s)', (name,),
             )
+            for slot, member in enumerate(data.get('pokemon', []), 1):
+                tp_id = db.insert_returning_id(
+                    cur,
+                    'INSERT INTO user_team_pokemon (team_id, pokemon_id, slot) VALUES (%s,%s,%s)',
+                    (team_id, member['pokemon_id'], slot),
+                )
+                for mslot, move_id in enumerate(member.get('move_ids', []), 1):
+                    cur.execute(
+                        'INSERT INTO user_team_pokemon_moves (team_pokemon_id, move_id, slot) VALUES (%s,%s,%s)',
+                        (tp_id, move_id, mslot),
+                    )
+            conn.commit()
+    finally:
+        conn.close()
     return jsonify({'id': team_id}), 201
 
 
@@ -504,7 +486,7 @@ def get_team(team_id):
         return jsonify({'error': 'Not found'}), 404
     members = query("""
         SELECT utp.id, utp.slot, p.name, p.name_es, p.sprite_url,
-               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
+               {db.group_concat('t.name_en', 'pt.slot')} AS types_en
         FROM user_team_pokemon utp
         JOIN pokemon p ON p.id = utp.pokemon_id
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
