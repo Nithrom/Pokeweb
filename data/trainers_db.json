@@ -117,7 +117,7 @@
       "name": "Espada / Escudo",
       "gen": 8,
       "region": "Galar",
-      "trainer_count": 8
+      "trainer_count": 10
     },
     {
       "slug": "lets-go-pikachu-eevee",
@@ -29607,7 +29607,7 @@
         "order": 1,
         "location": "Turffield",
         "badge": "",
-        "specialty": "rematchgrass",
+        "specialty": "badgegrass",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/milo.jpg",
         "team": [
           {
@@ -29619,16 +29619,20 @@
             ],
             "moves": [
               {
-                "name": "magical-leaf",
-                "name_display": "Magical Leaf"
+                "name": "rapid-spin",
+                "name_display": "Rapid Spin"
+              },
+              {
+                "name": "leafage",
+                "name_display": "Leafage"
               },
               {
                 "name": "round",
                 "name_display": "Round"
               },
               {
-                "name": "rapid-spin",
-                "name_display": "Rapid Spin"
+                "name": "magical-leaf",
+                "name_display": "Magical Leaf"
               }
             ]
           },
@@ -29641,16 +29645,20 @@
             ],
             "moves": [
               {
-                "name": "magical-leaf",
-                "name_display": "Magical Leaf"
+                "name": "round",
+                "name_display": "Round"
               },
               {
                 "name": "leafage",
                 "name_display": "Leafage"
               },
               {
-                "name": "round",
-                "name_display": "Round"
+                "name": "cotton-spore",
+                "name_display": "Cotton Spore"
+              },
+              {
+                "name": "razor-leaf",
+                "name_display": "Razor Leaf"
               }
             ]
           }
@@ -29662,7 +29670,7 @@
         "order": 2,
         "location": "Hulbury",
         "badge": "",
-        "specialty": "rematchwater",
+        "specialty": "badgewater",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/nessa.jpg",
         "team": [
           {
@@ -29678,16 +29686,16 @@
                 "name_display": "Water Pulse"
               },
               {
-                "name": "whirlpool",
-                "name_display": "Whirlpool"
-              },
-              {
                 "name": "horn-attack",
                 "name_display": "Horn Attack"
               },
               {
                 "name": "agility",
                 "name_display": "Agility"
+              },
+              {
+                "name": "fury-attack",
+                "name_display": "Fury Attack"
               }
             ]
           },
@@ -29708,12 +29716,12 @@
                 "name_display": "Bite"
               },
               {
-                "name": "whirlpool",
-                "name_display": "Whirlpool"
-              },
-              {
                 "name": "fury-attack",
                 "name_display": "Fury Attack"
+              },
+              {
+                "name": "scary-face",
+                "name_display": "Scary Face"
               }
             ]
           },
@@ -29731,16 +29739,16 @@
                 "name_display": "Razor Shell"
               },
               {
-                "name": "water-gun",
-                "name_display": "Water Gun"
-              },
-              {
                 "name": "bite",
                 "name_display": "Bite"
               },
               {
-                "name": "headbutt",
-                "name_display": "Headbutt"
+                "name": "rock-tomb",
+                "name_display": "Rock Tomb"
+              },
+              {
+                "name": "water-gun",
+                "name_display": "Water Gun"
               }
             ]
           }
@@ -29752,7 +29760,7 @@
         "order": 3,
         "location": "Motostoke",
         "badge": "",
-        "specialty": "rematchfire",
+        "specialty": "badgefire",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/kabu.jpg",
         "team": [
           {
@@ -29776,8 +29784,8 @@
                 "name_display": "Quick Attack"
               },
               {
-                "name": "ember",
-                "name_display": "Ember"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               }
             ]
           },
@@ -29790,16 +29798,16 @@
             ],
             "moves": [
               {
-                "name": "will-o-wisp",
-                "name_display": "Will-O-Wisp"
-              },
-              {
                 "name": "flame-wheel",
                 "name_display": "Flame Wheel"
               },
               {
                 "name": "bite",
                 "name_display": "Bite"
+              },
+              {
+                "name": "roar",
+                "name_display": "Roar"
               },
               {
                 "name": "agility",
@@ -29821,12 +29829,12 @@
                 "name_display": "Flame Wheel"
               },
               {
-                "name": "coil",
-                "name_display": "Coil"
-              },
-              {
                 "name": "bug-bite",
                 "name_display": "Bug Bite"
+              },
+              {
+                "name": "coil",
+                "name_display": "Coil"
               },
               {
                 "name": "smokescreen",
@@ -29842,7 +29850,7 @@
         "order": 4,
         "location": "Stow-on-Side",
         "badge": "",
-        "specialty": "ghost",
+        "specialty": "beafighting",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/bea.jpg",
         "team": [
           {
@@ -29852,7 +29860,24 @@
             "types": [
               "fighting"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "triple-kick",
+                "name_display": "Triple Kick"
+              },
+              {
+                "name": "counter",
+                "name_display": "Counter"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "pursuit",
+                "name_display": "Pursuit"
+              }
+            ]
           },
           {
             "name": "pangoro",
@@ -29862,7 +29887,24 @@
               "fighting",
               "dark"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "circle-throw",
+                "name_display": "Circle Throw"
+              },
+              {
+                "name": "night-slash",
+                "name_display": "Night Slash"
+              },
+              {
+                "name": "work-up",
+                "name_display": "Work Up"
+              },
+              {
+                "name": "karate-chop",
+                "name_display": "Karate Chop"
+              }
+            ]
           },
           {
             "name": "sirfetchd",
@@ -29871,7 +29913,24 @@
             "types": [
               "fighting"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "brick-break",
+                "name_display": "Brick Break"
+              },
+              {
+                "name": "brutal-swing",
+                "name_display": "Brutal Swing"
+              },
+              {
+                "name": "swords-dance",
+                "name_display": "Swords Dance"
+              },
+              {
+                "name": "detect",
+                "name_display": "Detect"
+              }
+            ]
           },
           {
             "name": "machamp",
@@ -29880,63 +29939,62 @@
             "types": [
               "fighting"
             ],
-            "moves": []
-          },
-          {
-            "name": "hawlucha",
-            "name_display": "Hawlucha",
-            "level": 60,
-            "types": [
-              "fighting",
-              "flying"
-            ],
-            "moves": []
-          },
-          {
-            "name": "grapploct",
-            "name_display": "Grapploct",
-            "level": 60,
-            "types": [
-              "fighting"
-            ],
-            "moves": []
-          },
-          {
-            "name": "sirfetchd",
-            "name_display": "Sirfetch'd",
-            "level": 61,
-            "types": [
-              "fighting"
-            ],
-            "moves": []
-          },
-          {
-            "name": "falinks",
-            "name_display": "Falinks",
-            "level": 61,
-            "types": [
-              "fighting"
-            ],
-            "moves": []
-          },
-          {
-            "name": "machamp",
-            "name_display": "Machamp",
-            "level": 62,
-            "types": [
-              "fighting"
-            ],
-            "moves": []
-          },
+            "moves": [
+              {
+                "name": "revenge",
+                "name_display": "Revenge"
+              },
+              {
+                "name": "strength",
+                "name_display": "Strength"
+              },
+              {
+                "name": "scary-face",
+                "name_display": "Scary Face"
+              },
+              {
+                "name": "seismic-toss",
+                "name_display": "Seismic Toss"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Allister",
+        "type": "gym",
+        "order": 4,
+        "location": "Stow-on-Side",
+        "badge": "",
+        "specialty": "allisterghost",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/allister.jpg",
+        "team": [
           {
             "name": "yamask-galar",
-            "name_display": "Galarian Yamask",
+            "name_display": "Yamask",
             "level": 34,
             "types": [
               "ground",
               "ghost"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "brutal-swing",
+                "name_display": "Brutal Swing"
+              },
+              {
+                "name": "hex",
+                "name_display": "Hex"
+              },
+              {
+                "name": "disable",
+                "name_display": "Disable"
+              },
+              {
+                "name": "protect",
+                "name_display": "Protect"
+              }
+            ]
           },
           {
             "name": "mimikyu",
@@ -29946,7 +30004,24 @@
               "ghost",
               "fairy"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "shadow-sneak",
+                "name_display": "Shadow Sneak"
+              },
+              {
+                "name": "slash",
+                "name_display": "Slash"
+              },
+              {
+                "name": "baby-doll-eyes",
+                "name_display": "Baby-Doll Eyes"
+              },
+              {
+                "name": "hone-claws",
+                "name_display": "Hone Claws"
+              }
+            ]
           },
           {
             "name": "cursola",
@@ -29955,7 +30030,24 @@
             "types": [
               "ghost"
             ],
-            "moves": []
+            "moves": [
+              {
+                "name": "ancient-power",
+                "name_display": "Ancient Power"
+              },
+              {
+                "name": "hex",
+                "name_display": "Hex"
+              },
+              {
+                "name": "strength-sap",
+                "name_display": "Strength Sap"
+              },
+              {
+                "name": "curse",
+                "name_display": "Curse"
+              }
+            ]
           },
           {
             "name": "gengar",
@@ -29965,55 +30057,24 @@
               "ghost",
               "poison"
             ],
-            "moves": []
-          },
-          {
-            "name": "dusknoir",
-            "name_display": "Dusknoir",
-            "level": 60,
-            "types": [
-              "ghost"
-            ],
-            "moves": []
-          },
-          {
-            "name": "chandelure",
-            "name_display": "Chandelure",
-            "level": 60,
-            "types": [
-              "ghost",
-              "fire"
-            ],
-            "moves": []
-          },
-          {
-            "name": "cursola",
-            "name_display": "Cursola",
-            "level": 61,
-            "types": [
-              "ghost"
-            ],
-            "moves": []
-          },
-          {
-            "name": "runerigus",
-            "name_display": "Runerigus",
-            "level": 61,
-            "types": [
-              "ground",
-              "ghost"
-            ],
-            "moves": []
-          },
-          {
-            "name": "gengar",
-            "name_display": "Gengar",
-            "level": 62,
-            "types": [
-              "ghost",
-              "poison"
-            ],
-            "moves": []
+            "moves": [
+              {
+                "name": "venoshock",
+                "name_display": "Venoshock"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "hypnosis",
+                "name_display": "Hypnosis"
+              },
+              {
+                "name": "payback",
+                "name_display": "Payback"
+              }
+            ]
           }
         ]
       },
@@ -30027,7 +30088,7 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/opal.jpg",
         "team": [
           {
-            "name": "weezing",
+            "name": "weezing-galar",
             "name_display": "Weezing",
             "level": 36,
             "types": [
@@ -30046,6 +30107,10 @@
               {
                 "name": "tackle",
                 "name_display": "Tackle"
+              },
+              {
+                "name": "smokescreen",
+                "name_display": "Smokescreen"
               }
             ]
           },
@@ -30096,6 +30161,10 @@
               {
                 "name": "ancient-power",
                 "name_display": "Ancient Power"
+              },
+              {
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
               }
             ]
           },
@@ -30118,6 +30187,10 @@
               {
                 "name": "sweet-kiss",
                 "name_display": "Sweet Kiss"
+              },
+              {
+                "name": "dazzling-gleam",
+                "name_display": "Dazzling Gleam"
               }
             ]
           }
@@ -30129,7 +30202,7 @@
         "order": 6,
         "location": "Circhester",
         "badge": "",
-        "specialty": "ice",
+        "specialty": "gordierock",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/gordie.jpg",
         "team": [
           {
@@ -30146,12 +30219,16 @@
                 "name_display": "Shell Smash"
               },
               {
+                "name": "razor-shell",
+                "name_display": "Razor Shell"
+              },
+              {
                 "name": "rock-tomb",
                 "name_display": "Rock Tomb"
               },
               {
-                "name": "razor-shell",
-                "name_display": "Razor Shell"
+                "name": "cross-chop",
+                "name_display": "Cross Chop"
               }
             ]
           },
@@ -30165,20 +30242,20 @@
             ],
             "moves": [
               {
-                "name": "power-split",
-                "name_display": "Power Split"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
                 "name": "struggle-bug",
                 "name_display": "Struggle Bug"
               },
               {
                 "name": "rock-tomb",
                 "name_display": "Rock Tomb"
+              },
+              {
+                "name": "power-split",
+                "name_display": "Power Split"
+              },
+              {
+                "name": "guard-split",
+                "name_display": "Guard Split"
               }
             ]
           },
@@ -30191,20 +30268,20 @@
             ],
             "moves": [
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
-              },
-              {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
                 "name": "body-slam",
                 "name_display": "Body Slam"
               },
               {
-                "name": "wonder-room",
-                "name_display": "Wonder Room"
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
+              },
+              {
+                "name": "wide-guard",
+                "name_display": "Wide Guard"
               }
             ]
           },
@@ -30222,16 +30299,133 @@
                 "name_display": "Tar Shot"
               },
               {
-                "name": "stealth-rock",
-                "name_display": "Stealth Rock"
-              },
-              {
                 "name": "heat-crash",
                 "name_display": "Heat Crash"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "rock-blast",
+                "name_display": "Rock Blast"
+              },
+              {
+                "name": "stealth-rock",
+                "name_display": "Stealth Rock"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Melony",
+        "type": "gym",
+        "order": 6,
+        "location": "Circhester",
+        "badge": "",
+        "specialty": "melonyice",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/melony.jpg",
+        "team": [
+          {
+            "name": "frosmoth",
+            "name_display": "Frosmoth",
+            "level": 40,
+            "types": [
+              "ice",
+              "bug"
+            ],
+            "moves": [
+              {
+                "name": "icy-wind",
+                "name_display": "Icy Wind"
+              },
+              {
+                "name": "bug-buzz",
+                "name_display": "Bug Buzz"
+              },
+              {
+                "name": "feather-dance",
+                "name_display": "Feather Dance"
+              },
+              {
+                "name": "hail",
+                "name_display": "Hail"
+              }
+            ]
+          },
+          {
+            "name": "darmanitan-galar-standard",
+            "name_display": "Darmanitan",
+            "level": 40,
+            "types": [
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "fire-fang",
+                "name_display": "Fire Fang"
+              },
+              {
+                "name": "icicle-crash",
+                "name_display": "Icicle Crash"
+              },
+              {
+                "name": "headbutt",
+                "name_display": "Headbutt"
+              },
+              {
+                "name": "taunt",
+                "name_display": "Taunt"
+              }
+            ]
+          },
+          {
+            "name": "eiscue",
+            "name_display": "Eiscue",
+            "level": 41,
+            "types": [
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "aurora-veil",
+                "name_display": "Aurora Veil"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "headbutt",
+                "name_display": "Headbutt"
+              }
+            ]
+          },
+          {
+            "name": "lapras",
+            "name_display": "Lapras",
+            "level": 42,
+            "types": [
+              "water",
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "body-slam",
+                "name_display": "Body Slam"
+              },
+              {
+                "name": "sing",
+                "name_display": "Sing"
               }
             ]
           }
@@ -30260,12 +30454,12 @@
                 "name_display": "Fake Out"
               },
               {
-                "name": "sand-attack",
-                "name_display": "Sand Attack"
-              },
-              {
                 "name": "brick-break",
                 "name_display": "Brick Break"
+              },
+              {
+                "name": "sand-attack",
+                "name_display": "Sand Attack"
               },
               {
                 "name": "payback",
@@ -30295,8 +30489,8 @@
                 "name_display": "Psycho Cut"
               },
               {
-                "name": "payback",
-                "name_display": "Payback"
+                "name": "topsy-turvy",
+                "name_display": "Topsy-Turvy"
               }
             ]
           },
@@ -30314,16 +30508,16 @@
                 "name_display": "Sucker Punch"
               },
               {
-                "name": "screech",
-                "name_display": "Screech"
-              },
-              {
                 "name": "toxic",
                 "name_display": "Toxic"
               },
               {
-                "name": "snarl",
-                "name_display": "Snarl"
+                "name": "screech",
+                "name_display": "Screech"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           },
@@ -30362,7 +30556,7 @@
         "order": 8,
         "location": "Hammerlocke",
         "badge": "",
-        "specialty": "rematchdragon",
+        "specialty": "raihandragon",
         "sprite": "https://img.pokemondb.net/sprites/trainers/swsh/raihan.jpg",
         "team": [
           {
@@ -30378,16 +30572,16 @@
                 "name_display": "Stealth Rock"
               },
               {
-                "name": "sand-tomb",
-                "name_display": "Sand Tomb"
+                "name": "body-press",
+                "name_display": "Body Press"
               },
               {
                 "name": "rock-blast",
                 "name_display": "Rock Blast"
               },
               {
-                "name": "body-press",
-                "name_display": "Body Press"
+                "name": "sandstorm",
+                "name_display": "Sandstorm"
               }
             ]
           },
@@ -30401,16 +30595,16 @@
             ],
             "moves": [
               {
-                "name": "thunder-punch",
-                "name_display": "Thunder Punch"
-              },
-              {
-                "name": "breaking-swipe",
-                "name_display": "Breaking Swipe"
+                "name": "dragon-rush",
+                "name_display": "Dragon Rush"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
+              },
+              {
+                "name": "fire-punch",
+                "name_display": "Fire Punch"
               },
               {
                 "name": "steel-wing",
@@ -30427,10 +30621,6 @@
             ],
             "moves": [
               {
-                "name": "protect",
-                "name_display": "Protect"
-              },
-              {
                 "name": "glare",
                 "name_display": "Glare"
               },
@@ -30441,6 +30631,10 @@
               {
                 "name": "earth-power",
                 "name_display": "Earth Power"
+              },
+              {
+                "name": "protect",
+                "name_display": "Protect"
               }
             ]
           },
@@ -30462,12 +30656,12 @@
                 "name_display": "Body Press"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
                 "name": "iron-head",
                 "name_display": "Iron Head"
+              },
+              {
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               }
             ]
           }
