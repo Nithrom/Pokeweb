@@ -391,18 +391,39 @@ function isRematchBlockPattern(blocks){
   return blockAvgLevel(b1)>=blockAvgLevel(b0)+6;
 }
 
+function isRematch2Entry(trainer){
+  return(trainer?.specialty||'').startsWith('rematch2');
+}
+
 function isRematchEntry(trainer){
-  return(trainer?.specialty||'').startsWith('rematch');
+  const s=trainer?.specialty||'';
+  return s.startsWith('rematch')&&!s.startsWith('rematch2');
+}
+
+function trainerRematchTier(trainer){
+  if(isRematch2Entry(trainer))return 2;
+  if(isRematchEntry(trainer))return 1;
+  return 0;
+}
+
+/** Liga + revancha(s) del mismo entrenador (BDSP E4 tiene dos revanchas). */
+function getRematchPeers(trainer,slug){
+  if(!trainer||!slug||!TRAINERS_DB)return{story:null,rematch1:null,rematch2:null};
+  const all=TRAINERS_DB.trainers[slug]||[];
+  const key=t=>t.name===trainer.name&&t.type===trainer.type;
+  return{
+    story:all.find(t=>key(t)&&!isRematchEntry(t)&&!isRematch2Entry(t))||null,
+    rematch1:all.find(t=>key(t)&&isRematchEntry(t))||null,
+    rematch2:all.find(t=>key(t)&&isRematch2Entry(t))||null,
+  };
 }
 
 /** Otro registro en el mismo juego (p. ej. líder vs revancha en la liga). */
 function getRematchPeer(trainer,slug){
-  if(!trainer||!slug||!TRAINERS_DB)return null;
-  const all=TRAINERS_DB.trainers[slug]||[];
-  if(isRematchEntry(trainer)){
-    return all.find(t=>t.name===trainer.name&&t.type===trainer.type&&!isRematchEntry(t))||null;
-  }
-  return all.find(t=>t.name===trainer.name&&t.type===trainer.type&&isRematchEntry(t))||null;
+  const peers=getRematchPeers(trainer,slug);
+  if(isRematch2Entry(trainer))return peers.story||peers.rematch1;
+  if(isRematchEntry(trainer))return peers.story;
+  return peers.rematch1||peers.rematch2;
 }
 
 function getEmbeddedRematchBlocks(team){
@@ -412,11 +433,25 @@ function getEmbeddedRematchBlocks(team){
 
 function trainerHasRematchVariants(trainer,slug){
   if(!trainer)return false;
-  if(getRematchPeer(trainer,slug))return true;
+  const peers=getRematchPeers(trainer,slug);
+  if(peers.rematch1||peers.rematch2)return true;
   const embedded=getEmbeddedRematchBlocks(trainer.team||[]);
   if(!embedded)return false;
   // Equipo embebido en un solo JSON: liga/campeón/rival, no gimnasios (evita falsos positivos scrape)
   if(['gym','kahuna','captain'].includes(trainer.type))return false;
+  return true;
+}
+
+/** E4/campeón BDSP: revancha 1 y 2 en JSON separados; no duplicar en el desplegable. */
+function shouldShowInTrainerSelect(trainer,allTrainers){
+  if(isRematch2Entry(trainer))return false;
+  if(!isRematchEntry(trainer))return true;
+  const hasStory=allTrainers.some(t=>
+    t.name===trainer.name&&
+    t.type===trainer.type&&
+    !isRematchEntry(t)&&
+    !isRematch2Entry(t));
+  if(hasStory&&['elite4','champion'].includes(trainer.type))return false;
   return true;
 }
 
@@ -493,9 +528,18 @@ function buildRematchSelector(slug,trainer){
     resetRematchSelector();
     return;
   }
+  const peers=getRematchPeers(trainer,slug);
+  const dual=!!(peers.rematch1&&peers.rematch2);
+  sel.innerHTML=dual
+    ?`<option value="first">Liga Pokémon</option>
+       <option value="rematch">Revancha 1</option>
+       <option value="rematch2">Revancha 2</option>`
+    :`<option value="first">Primera batalla</option>
+       <option value="rematch">Revancha</option>`;
   setRematchSelectorVisible(true);
-  if(isRematchEntry(trainer))sel.value='rematch';
-  else if(sel.value!=='rematch')sel.value='first';
+  if(isRematch2Entry(trainer))sel.value='rematch2';
+  else if(isRematchEntry(trainer))sel.value='rematch';
+  else if(sel.value!=='rematch'&&sel.value!=='rematch2')sel.value='first';
   sel.onchange=updateLoadTrainerButton;
 }
 
@@ -576,17 +620,17 @@ async function ensureTrainersJson(){
 
 function findJsonTrainer(json,gameSlug,trainer){
   const list=json?.trainers?.[gameSlug]||[];
-  const rem=isRematchEntry(trainer);
-  const matchRematch=(t)=>isRematchEntry(t)===rem;
+  const tier=trainerRematchTier(trainer);
+  const matchTier=(t)=>trainerRematchTier(t)===tier;
   return list.find(t=>
     t.name===trainer.name&&
     t.type===trainer.type&&
     (t.order||0)===(trainer.order||0)&&
-    matchRematch(t)
+    matchTier(t)
   )||list.find(t=>
     t.name===trainer.name&&
     t.type===trainer.type&&
-    matchRematch(t)
+    matchTier(t)
   )||list.find(t=>t.name===trainer.name&&t.type===trainer.type);
 }
 
@@ -849,6 +893,7 @@ function populateTrainerSelect(trainers,sorted){
   let lastGroup='';
   let currentOg=null;
   sorted.forEach((t,i)=>{
+    if(!shouldShowInTrainerSelect(t,trainers))return;
     const typeLabel={gym:'🏟 Líder',kahuna:'🌺 Kahuna',captain:'🏝 Capitán',elite4:'🏆 Alto Mando',champion:'👑 Campeón',other:'⚔ Otro'}[t.type]||'';
     const groupKey=trainerSelectGroupKey(t,slug);
     if(groupKey!==lastGroup){
@@ -956,20 +1001,25 @@ function collapseDuplicatedRoster(team){
 
 /** Iniciales rivales, revancha, Challenge Mode (BW2). */
 function resolveTrainerTeam(trainer, slug, starterId, difficulty, rematchSel, eeveelutionId){
-  const peer=getRematchPeer(trainer,slug);
-  let team;
-  const base=getTrainerBaseTeam(trainer,starterId,slug,eeveelutionId);
+  const peers=getRematchPeers(trainer,slug);
+  let roster=trainer;
+  if(rematchSel==='rematch2'&&peers.rematch2)roster=peers.rematch2;
+  else if(rematchSel==='rematch'){
+    if(peers.rematch1)roster=peers.rematch1;
+    else if(peers.rematch2)roster=peers.rematch2;
+  }else if(rematchSel==='first'&&peers.story)roster=peers.story;
 
-  if(rematchSel==='rematch'&&peer){
-    team=getTrainerBaseTeam(peer,starterId,slug,eeveelutionId);
-  }else if(rematchSel==='rematch'){
+  let team;
+  const base=getTrainerBaseTeam(roster,starterId,slug,eeveelutionId);
+
+  if(rematchSel==='rematch'&&!peers.rematch1&&!peers.rematch2){
     const embedded=getEmbeddedRematchBlocks(base);
     team=embedded?embedded[embedded.length-1]:[...base];
-  }else if(peer&&!isRematchEntry(trainer)){
-    team=[...base];
-  }else{
+  }else if(rematchSel==='first'&&!peers.story){
     const embedded=getEmbeddedRematchBlocks(base);
     team=embedded?embedded[0]:[...base];
+  }else{
+    team=[...base];
   }
 
   team=collapseDuplicatedRoster(team);

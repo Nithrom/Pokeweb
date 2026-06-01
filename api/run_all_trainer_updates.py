@@ -19,6 +19,7 @@ SCRIPTS = [
     'update_emerald_gyms.py',
     'update_frlg_gyms.py',
     'update_dp_gyms.py',
+    'update_bdsp_gyms.py',
     'update_bw_gyms.py',
     'update_bw2_gyms.py',
     'update_xy_trainers.py',
