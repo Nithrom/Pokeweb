@@ -751,17 +751,8 @@ function normalizeTrainerFromApi(t,gameSlug){
 async function loadTrainersForGame(slug){
   if(!slug)return[];
   if(useApi()){
-    let json=null;
-    try{
-      json=await ensureTrainersJson();
-    }catch(e){
-      console.warn('Equipos desde API (sin trainers_db.json):',e);
-    }
     const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
-    const normalized=list.map(t=>{
-      const n=normalizeTrainerFromApi(t,slug);
-      return json?applyJsonTeam(n,slug,json):n;
-    });
+    const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
     if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
     TRAINERS_DB.trainers[slug]=normalized;
     return normalized;
@@ -788,30 +779,20 @@ async function initTrainers(){
         fetchApi('/games'),
         fetchApi('/stats').catch(()=>({})),
       ]);
-      let gamesMeta=[];
-      try{
-        const jRes=await fetch('data/trainers_db.json');
-        if(jRes.ok)gamesMeta=(await jRes.json()).games||[];
-      }catch(_e){/* games locales opcionales */}
       TRAINERS_DB={
-        games:games.map(g=>{
-          const meta=gamesMeta.find(x=>x.slug===g.slug);
-          const gen=Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0;
-          return{
-            slug:g.slug,
-            name:g.name,
-            gen,
-            region:g.region||meta?.region||'',
-            trainer_count:Number(meta?.trainer_count)||Number(g.trainer_count)||0,
-          };
-        }),
+        games:games.map(g=>({
+          slug:g.slug,
+          name:g.name,
+          gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+          region:g.region||'',
+          trainer_count:0,
+        })),
         trainers:{},
       };
       const apiTrainerTotal=Number(stats?.trainers);
       if(Number.isFinite(apiTrainerTotal)&&apiTrainerTotal>0){
         TRAINERS_DB._trainerTotal=apiTrainerTotal;
       }
-      ensureTrainersJson().then(()=>refreshTrainersStatusBar()).catch(()=>{});
     }else{
       const res=await fetch('data/trainers_db.json');
       if(!res.ok)throw new Error('No trainers DB');
@@ -1101,11 +1082,13 @@ async function loadTrainer(){
   let trainer=findTrainerInSorted(sorted,slug,val);
   if(!trainer)return;
 
-  if(useApi()){
+  if(useApi()&&trainer.slug){
     try{
-      const json=await ensureTrainersJson();
-      trainer=applyJsonTeam(trainer,slug,json);
-    }catch(e){console.warn('JSON team overlay',e);}
+      const full=await fetchApi(
+        `/trainers/${encodeURIComponent(slug)}/${encodeURIComponent(trainer.slug)}`,
+      );
+      trainer=normalizeTrainerFromApi(full,slug);
+    }catch(e){console.warn('Equipo desde API',e);}
   }
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;

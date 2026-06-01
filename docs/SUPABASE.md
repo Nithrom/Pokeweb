@@ -1,7 +1,7 @@
 # Pokeweb en Supabase
 
-La fuente de datos en JSON sigue siendo `data/pokemon_db.json` y `data/trainers_db.json`.  
-Supabase guarda la misma información en PostgreSQL para que la API Flask sirva la web sin cargar JSON enormes.
+La fuente editable en repo es `data/pokemon_db.json` y `data/trainers_db.json` (solo desarrollo + import).  
+Supabase es lo que sirve la web en producción vía la API. No hace falta desplegar `data/` en el hosting estático.
 
 ## 1. Crear tablas en Supabase
 

@@ -1,6 +1,9 @@
-api/.env
-api/.env.*
-api/__pycache__/
+# API local + Railway (no subir a GitHub; despliegue aparte)
+api/
 backup/
 docker-compose.yml
 nginx.conf
+
+# Opcional: no versionar JSON enormes (mantener en data/ local e importar a Supabase)
+# data/pokemon_db.json
+# data/trainers_db.json
