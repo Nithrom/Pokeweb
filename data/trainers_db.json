@@ -96,7 +96,7 @@
       "name": "Rubí Omega / Zafiro Alfa",
       "gen": 6,
       "region": "Hoenn",
-      "trainer_count": 13
+      "trainer_count": 18
     },
     {
       "slug": "sun-moon",
@@ -10280,12 +10280,12 @@
             ]
           },
           {
-            "name": "blaziken",
-            "name_display": "Blaziken",
+            "name": "aggron",
+            "name_display": "Aggron",
             "level": 56,
             "types": [
-              "fire",
-              "fighting"
+              "steel",
+              "rock"
             ],
             "moves": [
               {
@@ -13483,12 +13483,11 @@
             ]
           },
           {
-            "name": "charizard",
-            "name_display": "Charizard",
+            "name": "arcanine",
+            "name_display": "Arcanine",
             "level": 59,
             "types": [
-              "fire",
-              "flying"
+              "fire"
             ],
             "moves": [
               {
@@ -14825,20 +14824,20 @@
             ],
             "moves": [
               {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
                 "name": "dark-pulse",
                 "name_display": "Dark Pulse"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
                 "name": "silver-wind",
                 "name_display": "Silver Wind"
-              },
-              {
-                "name": "embargo",
-                "name_display": "Embargo"
               }
             ]
           },
@@ -14852,47 +14851,47 @@
             ],
             "moves": [
               {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
                 "name": "energy-ball",
                 "name_display": "Energy Ball"
               },
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "toxic-spikes",
+                "name_display": "Toxic Spikes"
               },
               {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
-              },
-              {
-                "name": "extrasensory",
-                "name_display": "Extrasensory"
               }
             ]
           },
           {
-            "name": "gastrodon",
-            "name_display": "Gastrodon",
+            "name": "togekiss",
+            "name_display": "Togekiss",
             "level": 60,
             "types": [
-              "water",
-              "ground"
+              "fairy",
+              "flying"
             ],
             "moves": [
               {
-                "name": "muddy-water",
-                "name_display": "Muddy Water"
+                "name": "air-slash",
+                "name_display": "Air Slash"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
               },
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           },
@@ -14914,12 +14913,12 @@
                 "name_display": "Dragon Pulse"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "extreme-speed",
+                "name_display": "Extreme Speed"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               }
             ]
           },
@@ -14928,7 +14927,7 @@
             "name_display": "Milotic",
             "level": 63,
             "types": [
-              "water"
+              "normal"
             ],
             "moves": [
               {
@@ -14940,12 +14939,12 @@
                 "name_display": "Ice Beam"
               },
               {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
+                "name": "recover",
+                "name_display": "Recover"
               },
               {
-                "name": "aqua-ring",
-                "name_display": "Aqua Ring"
+                "name": "mirror-coat",
+                "name_display": "Mirror Coat"
               }
             ]
           },
@@ -14959,20 +14958,20 @@
             ],
             "moves": [
               {
-                "name": "dragon-rush",
-                "name_display": "Dragon Rush"
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "brick-break",
-                "name_display": "Brick Break"
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               },
               {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           }
@@ -16285,107 +16284,54 @@
           {
             "name": "spiritomb",
             "name_display": "Spiritomb",
-            "level": 58,
+            "level": 61,
             "types": [
               "ghost",
               "dark"
             ],
             "moves": [
               {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
                 "name": "dark-pulse",
                 "name_display": "Dark Pulse"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               },
               {
                 "name": "silver-wind",
                 "name_display": "Silver Wind"
-              },
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
               }
             ]
           },
           {
             "name": "roserade",
             "name_display": "Roserade",
-            "level": 58,
+            "level": 60,
             "types": [
               "grass",
               "poison"
             ],
             "moves": [
               {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
-              },
-              {
                 "name": "sludge-bomb",
                 "name_display": "Sludge Bomb"
               },
               {
-                "name": "toxic",
-                "name_display": "Toxic"
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
               },
               {
-                "name": "extrasensory",
-                "name_display": "Extrasensory"
-              }
-            ]
-          },
-          {
-            "name": "milotic",
-            "name_display": "Milotic",
-            "level": 58,
-            "types": [
-              "water"
-            ],
-            "moves": [
-              {
-                "name": "surf",
-                "name_display": "Surf"
-              },
-              {
-                "name": "ice-beam",
-                "name_display": "Ice Beam"
-              },
-              {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
-              },
-              {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
-              }
-            ]
-          },
-          {
-            "name": "lucario",
-            "name_display": "Lucario",
-            "level": 60,
-            "types": [
-              "fighting",
-              "steel"
-            ],
-            "moves": [
-              {
-                "name": "aura-sphere",
-                "name_display": "Aura Sphere"
-              },
-              {
-                "name": "extreme-speed",
-                "name_display": "Extreme Speed"
+                "name": "toxic-spikes",
+                "name_display": "Toxic Spikes"
               },
               {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
               }
             ]
           },
@@ -16394,7 +16340,7 @@
             "name_display": "Togekiss",
             "level": 60,
             "types": [
-              "normal",
+              "fairy",
               "flying"
             ],
             "moves": [
@@ -16407,39 +16353,92 @@
                 "name_display": "Aura Sphere"
               },
               {
-                "name": "water-pulse",
-                "name_display": "Water Pulse"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
-                "name": "shock-wave",
-                "name_display": "Shock Wave"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              }
+            ]
+          },
+          {
+            "name": "lucario",
+            "name_display": "Lucario",
+            "level": 63,
+            "types": [
+              "fighting",
+              "steel"
+            ],
+            "moves": [
+              {
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
+              },
+              {
+                "name": "dragon-pulse",
+                "name_display": "Dragon Pulse"
+              },
+              {
+                "name": "extreme-speed",
+                "name_display": "Extreme Speed"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              }
+            ]
+          },
+          {
+            "name": "milotic",
+            "name_display": "Milotic",
+            "level": 63,
+            "types": [
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              },
+              {
+                "name": "mirror-coat",
+                "name_display": "Mirror Coat"
               }
             ]
           },
           {
             "name": "garchomp",
             "name_display": "Garchomp",
-            "level": 62,
+            "level": 66,
             "types": [
               "dragon",
               "ground"
             ],
             "moves": [
               {
-                "name": "dragon-rush",
-                "name_display": "Dragon Rush"
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               },
               {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           }
@@ -22643,16 +22642,16 @@
             ],
             "moves": [
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
                 "name": "bubble",
                 "name_display": "Bubble"
               },
               {
-                "name": "water-sport",
-                "name_display": "Water Sport"
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
+              },
+              {
+                "name": "sweet-scent",
+                "name_display": "Sweet Scent"
               }
             ]
           },
@@ -22666,20 +22665,20 @@
             ],
             "moves": [
               {
-                "name": "safeguard",
-                "name_display": "Safeguard"
+                "name": "struggle-bug",
+                "name_display": "Struggle Bug"
               },
               {
-                "name": "quiver-dance",
-                "name_display": "Quiver Dance"
+                "name": "stun-spore",
+                "name_display": "Stun Spore"
               },
               {
-                "name": "hurricane",
-                "name_display": "Hurricane"
+                "name": "gust",
+                "name_display": "Gust"
               },
               {
-                "name": "powder",
-                "name_display": "Powder"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               }
             ]
           }
@@ -22704,20 +22703,20 @@
             ],
             "moves": [
               {
-                "name": "aurora-beam",
-                "name_display": "Aurora Beam"
+                "name": "icy-wind",
+                "name_display": "Icy Wind"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
               },
               {
                 "name": "thunder-wave",
                 "name_display": "Thunder Wave"
               },
               {
-                "name": "take-down",
-                "name_display": "Take Down"
+                "name": "aurora-beam",
+                "name_display": "Aurora Beam"
               }
             ]
           },
@@ -22731,12 +22730,16 @@
             ],
             "moves": [
               {
+                "name": "bite",
+                "name_display": "Bite"
+              },
+              {
                 "name": "rock-tomb",
                 "name_display": "Rock Tomb"
               },
               {
-                "name": "bite",
-                "name_display": "Bite"
+                "name": "dragon-tail",
+                "name_display": "Dragon Tail"
               },
               {
                 "name": "stomp",
@@ -22764,16 +22767,20 @@
             ],
             "moves": [
               {
-                "name": "power-up-punch",
-                "name_display": "Power-Up Punch"
+                "name": "drain-punch",
+                "name_display": "Drain Punch"
+              },
+              {
+                "name": "knock-off",
+                "name_display": "Knock Off"
+              },
+              {
+                "name": "acrobatics",
+                "name_display": "Acrobatics"
               },
               {
                 "name": "fake-out",
                 "name_display": "Fake Out"
-              },
-              {
-                "name": "double-slap",
-                "name_display": "Double Slap"
               }
             ]
           },
@@ -22786,16 +22793,20 @@
             ],
             "moves": [
               {
-                "name": "power-up-punch",
-                "name_display": "Power-Up Punch"
+                "name": "karate-chop",
+                "name_display": "Karate Chop"
               },
               {
-                "name": "rock-tomb",
-                "name_display": "Rock Tomb"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               },
               {
-                "name": "leer",
-                "name_display": "Leer"
+                "name": "bulk-up",
+                "name_display": "Bulk Up"
+              },
+              {
+                "name": "strength",
+                "name_display": "Strength"
               }
             ]
           },
@@ -22813,16 +22824,16 @@
                 "name_display": "Flying Press"
               },
               {
+                "name": "acrobatics",
+                "name_display": "Acrobatics"
+              },
+              {
                 "name": "swords-dance",
                 "name_display": "Swords Dance"
               },
               {
-                "name": "feather-dance",
-                "name_display": "Feather Dance"
-              },
-              {
-                "name": "brave-bird",
-                "name_display": "Brave Bird"
+                "name": "bounce",
+                "name_display": "Bounce"
               }
             ]
           }
@@ -22847,16 +22858,20 @@
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
-              },
-              {
                 "name": "acrobatics",
                 "name_display": "Acrobatics"
               },
               {
-                "name": "leech-seed",
-                "name_display": "Leech Seed"
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
+              },
+              {
+                "name": "cotton-spore",
+                "name_display": "Cotton Spore"
+              },
+              {
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
               }
             ]
           },
@@ -22870,20 +22885,20 @@
             ],
             "moves": [
               {
-                "name": "grass-knot",
-                "name_display": "Grass Knot"
+                "name": "razor-leaf",
+                "name_display": "Razor Leaf"
               },
               {
                 "name": "acid",
                 "name_display": "Acid"
               },
               {
-                "name": "poison-powder",
-                "name_display": "Poison Powder"
+                "name": "sleep-powder",
+                "name_display": "Sleep Powder"
               },
               {
-                "name": "gastro-acid",
-                "name_display": "Gastro Acid"
+                "name": "wrap",
+                "name_display": "Wrap"
               }
             ]
           },
@@ -22896,20 +22911,20 @@
             ],
             "moves": [
               {
-                "name": "leaf-blade",
-                "name_display": "Leaf Blade"
-              },
-              {
-                "name": "milk-drink",
-                "name_display": "Milk Drink"
+                "name": "horn-leech",
+                "name_display": "Horn Leech"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "milk-drink",
+                "name_display": "Milk Drink"
+              },
+              {
+                "name": "leaf-blade",
+                "name_display": "Leaf Blade"
               }
             ]
           }
@@ -22938,12 +22953,16 @@
                 "name_display": "Volt Switch"
               },
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
+                "name": "acrobatics",
+                "name_display": "Acrobatics"
               },
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
+                "name": "electro-ball",
+                "name_display": "Electro Ball"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               }
             ]
           },
@@ -22961,12 +22980,16 @@
                 "name_display": "Thunderbolt"
               },
               {
-                "name": "electric-terrain",
-                "name_display": "Electric Terrain"
+                "name": "flash-cannon",
+                "name_display": "Flash Cannon"
               },
               {
-                "name": "mirror-shot",
-                "name_display": "Mirror Shot"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
+              },
+              {
+                "name": "tri-attack",
+                "name_display": "Tri Attack"
               }
             ]
           },
@@ -22980,20 +23003,20 @@
             ],
             "moves": [
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
-                "name": "thunder",
-                "name_display": "Thunder"
-              },
-              {
-                "name": "charge",
-                "name_display": "Charge"
-              },
-              {
                 "name": "parabolic-charge",
-                "name_display": "Parabolic Charge"
+                "name_display": "Parabolic Charge"
+              },
+              {
+                "name": "hyper-voice",
+                "name_display": "Hyper Voice"
+              },
+              {
+                "name": "dark-pulse",
+                "name_display": "Dark Pulse"
+              },
+              {
+                "name": "volt-switch",
+                "name_display": "Volt Switch"
               }
             ]
           }
@@ -23018,20 +23041,20 @@
             ],
             "moves": [
               {
-                "name": "swallow",
-                "name_display": "Swallow"
-              },
-              {
-                "name": "spit-up",
-                "name_display": "Spit Up"
+                "name": "play-rough",
+                "name_display": "Play Rough"
               },
               {
                 "name": "iron-head",
                 "name_display": "Iron Head"
               },
               {
-                "name": "play-rough",
-                "name_display": "Play Rough"
+                "name": "sucker-punch",
+                "name_display": "Sucker Punch"
+              },
+              {
+                "name": "fake-tears",
+                "name_display": "Fake Tears"
               }
             ]
           },
@@ -23045,20 +23068,20 @@
             ],
             "moves": [
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              },
-              {
-                "name": "reflect",
-                "name_display": "Reflect"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
               },
               {
                 "name": "dazzling-gleam",
                 "name_display": "Dazzling Gleam"
+              },
+              {
+                "name": "light-screen",
+                "name_display": "Light Screen"
+              },
+              {
+                "name": "reflect",
+                "name_display": "Reflect"
               }
             ]
           },
@@ -23071,20 +23094,20 @@
             ],
             "moves": [
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              },
-              {
                 "name": "moonblast",
                 "name_display": "Moonblast"
               },
               {
-                "name": "last-resort",
-                "name_display": "Last Resort"
+                "name": "calm-mind",
+                "name_display": "Calm Mind"
               },
               {
-                "name": "psych-up",
-                "name_display": "Psych Up"
+                "name": "swift",
+                "name_display": "Swift"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               }
             ]
           }
@@ -23117,12 +23140,12 @@
                 "name_display": "Air Slash"
               },
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
+                "name": "cosmic-power",
+                "name_display": "Cosmic Power"
               },
               {
-                "name": "reflect",
-                "name_display": "Reflect"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               }
             ]
           },
@@ -23140,21 +23163,21 @@
                 "name_display": "Psychic"
               },
               {
-                "name": "trump-card",
-                "name_display": "Trump Card"
+                "name": "surf",
+                "name_display": "Surf"
               },
               {
-                "name": "psych-up",
-                "name_display": "Psych Up"
+                "name": "slack-off",
+                "name_display": "Slack Off"
               },
               {
-                "name": "heal-pulse",
-                "name_display": "Heal Pulse"
+                "name": "fire-blast",
+                "name_display": "Fire Blast"
               }
             ]
           },
           {
-            "name": "meowstic",
+            "name": "meowstic-male",
             "name_display": "Meowstic",
             "level": 48,
             "types": [
@@ -23162,20 +23185,20 @@
             ],
             "moves": [
               {
-                "name": "signal-beam",
-                "name_display": "Signal Beam"
+                "name": "psychic",
+                "name_display": "Psychic"
               },
               {
-                "name": "sucker-punch",
-                "name_display": "Sucker Punch"
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
-                "name": "future-sight",
-                "name_display": "Future Sight"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
-                "name": "stored-power",
-                "name_display": "Stored Power"
+                "name": "light-screen",
+                "name_display": "Light Screen"
               }
             ]
           }
@@ -23200,20 +23223,20 @@
             ],
             "moves": [
               {
-                "name": "ingrain",
-                "name_display": "Ingrain"
+                "name": "ice-shard",
+                "name_display": "Ice Shard"
               },
               {
                 "name": "wood-hammer",
                 "name_display": "Wood Hammer"
               },
               {
-                "name": "blizzard",
-                "name_display": "Blizzard"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "sheer-cold",
-                "name_display": "Sheer Cold"
+                "name": "blizzard",
+                "name_display": "Blizzard"
               }
             ]
           },
@@ -23230,16 +23253,16 @@
                 "name_display": "Ice Beam"
               },
               {
+                "name": "light-screen",
+                "name_display": "Light Screen"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              },
+              {
                 "name": "confuse-ray",
                 "name_display": "Confuse Ray"
-              },
-              {
-                "name": "flash-cannon",
-                "name_display": "Flash Cannon"
-              },
-              {
-                "name": "hail",
-                "name_display": "Hail"
               }
             ]
           },
@@ -23252,20 +23275,256 @@
             ],
             "moves": [
               {
+                "name": "avalanche",
+                "name_display": "Avalanche"
+              },
+              {
                 "name": "recover",
                 "name_display": "Recover"
               },
               {
-                "name": "double-edge",
-                "name_display": "Double-Edge"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
-                "name": "skull-bash",
-                "name_display": "Skull Bash"
+                "name": "iron-defense",
+                "name_display": "Iron Defense"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Malva",
+        "type": "elite4",
+        "order": 1,
+        "location": "",
+        "badge": "",
+        "specialty": "malvafire",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/x-y/malva.jpg",
+        "team": [
+          {
+            "name": "pyroar",
+            "name_display": "Pyroar",
+            "level": 63,
+            "types": [
+              "fire",
+              "normal"
+            ],
+            "moves": [
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "hyper-voice",
+                "name_display": "Hyper Voice"
+              },
+              {
+                "name": "noble-roar",
+                "name_display": "Noble Roar"
               },
               {
                 "name": "crunch",
                 "name_display": "Crunch"
+              }
+            ]
+          },
+          {
+            "name": "torkoal",
+            "name_display": "Torkoal",
+            "level": 63,
+            "types": [
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "lava-plume",
+                "name_display": "Lava Plume"
+              },
+              {
+                "name": "protect",
+                "name_display": "Protect"
+              },
+              {
+                "name": "curse",
+                "name_display": "Curse"
+              },
+              {
+                "name": "body-slam",
+                "name_display": "Body Slam"
+              }
+            ]
+          },
+          {
+            "name": "chandelure",
+            "name_display": "Chandelure",
+            "level": 63,
+            "types": [
+              "ghost",
+              "fire"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              },
+              {
+                "name": "energy-ball",
+                "name_display": "Energy Ball"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
+              }
+            ]
+          },
+          {
+            "name": "talonflame",
+            "name_display": "Talonflame",
+            "level": 65,
+            "types": [
+              "fire",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "brave-bird",
+                "name_display": "Brave Bird"
+              },
+              {
+                "name": "flare-blitz",
+                "name_display": "Flare Blitz"
+              },
+              {
+                "name": "roost",
+                "name_display": "Roost"
+              },
+              {
+                "name": "swords-dance",
+                "name_display": "Swords Dance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siebold",
+        "type": "elite4",
+        "order": 2,
+        "location": "",
+        "badge": "",
+        "specialty": "sieboldwater",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/x-y/siebold.jpg",
+        "team": [
+          {
+            "name": "clawitzer",
+            "name_display": "Clawitzer",
+            "level": 63,
+            "types": [
+              "water"
+            ],
+            "moves": [
+              {
+                "name": "aura-sphere",
+                "name_display": "Aura Sphere"
+              },
+              {
+                "name": "dark-pulse",
+                "name_display": "Dark Pulse"
+              },
+              {
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              }
+            ]
+          },
+          {
+            "name": "gyarados",
+            "name_display": "Gyarados",
+            "level": 63,
+            "types": [
+              "water",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "aqua-tail",
+                "name_display": "Aqua Tail"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "dragon-dance",
+                "name_display": "Dragon Dance"
+              }
+            ]
+          },
+          {
+            "name": "starmie",
+            "name_display": "Starmie",
+            "level": 63,
+            "types": [
+              "water",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              }
+            ]
+          },
+          {
+            "name": "barbaracle",
+            "name_display": "Barbaracle",
+            "level": 65,
+            "types": [
+              "rock",
+              "water"
+            ],
+            "moves": [
+              {
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
+              },
+              {
+                "name": "cross-chop",
+                "name_display": "Cross Chop"
+              },
+              {
+                "name": "razor-shell",
+                "name_display": "Razor Shell"
+              },
+              {
+                "name": "shell-smash",
+                "name_display": "Shell Smash"
               }
             ]
           }
@@ -23274,7 +23533,7 @@
       {
         "name": "Wikstrom",
         "type": "elite4",
-        "order": 1,
+        "order": 3,
         "location": "",
         "badge": "",
         "specialty": "wikstromsteel",
@@ -23290,16 +23549,16 @@
             ],
             "moves": [
               {
-                "name": "dazzling-gleam",
-                "name_display": "Dazzling Gleam"
-              },
-              {
                 "name": "flash-cannon",
                 "name_display": "Flash Cannon"
               },
               {
-                "name": "torment",
-                "name_display": "Torment"
+                "name": "dazzling-gleam",
+                "name_display": "Dazzling Gleam"
+              },
+              {
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
                 "name": "spikes",
@@ -23317,16 +23576,16 @@
             ],
             "moves": [
               {
-                "name": "earth-power",
-                "name_display": "Earth Power"
-              },
-              {
                 "name": "power-gem",
                 "name_display": "Power Gem"
               },
               {
-                "name": "discharge",
-                "name_display": "Discharge"
+                "name": "earth-power",
+                "name_display": "Earth Power"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
                 "name": "flash-cannon",
@@ -23352,8 +23611,8 @@
                 "name_display": "X-Scissor"
               },
               {
-                "name": "iron-head",
-                "name_display": "Iron Head"
+                "name": "swords-dance",
+                "name_display": "Swords Dance"
               },
               {
                 "name": "night-slash",
@@ -23371,16 +23630,16 @@
             ],
             "moves": [
               {
-                "name": "king-s-shield",
+                "name": "kings-shield",
                 "name_display": "King's Shield"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
               },
               {
                 "name": "sacred-sword",
                 "name_display": "Sacred Sword"
-              },
-              {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
               },
               {
                 "name": "iron-head",
@@ -23391,127 +23650,9 @@
         ]
       },
       {
-        "name": "Malva",
-        "type": "elite4",
-        "order": 2,
-        "location": "",
-        "badge": "",
-        "specialty": "malvafire",
-        "sprite": "https://img.pokemondb.net/sprites/trainers/x-y/malva.jpg",
-        "team": [
-          {
-            "name": "pyroar",
-            "name_display": "Pyroar",
-            "level": 63,
-            "types": [
-              "fire",
-              "normal"
-            ],
-            "moves": [
-              {
-                "name": "hyper-voice",
-                "name_display": "Hyper Voice"
-              },
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
-              },
-              {
-                "name": "wild-charge",
-                "name_display": "Wild Charge"
-              },
-              {
-                "name": "noble-roar",
-                "name_display": "Noble Roar"
-              }
-            ]
-          },
-          {
-            "name": "torkoal",
-            "name_display": "Torkoal",
-            "level": 63,
-            "types": [
-              "fire"
-            ],
-            "moves": [
-              {
-                "name": "curse",
-                "name_display": "Curse"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
-                "name": "flame-wheel",
-                "name_display": "Flame Wheel"
-              }
-            ]
-          },
-          {
-            "name": "chandelure",
-            "name_display": "Chandelure",
-            "level": 63,
-            "types": [
-              "ghost",
-              "fire"
-            ],
-            "moves": [
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
-              },
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
-                "name": "confide",
-                "name_display": "Confide"
-              }
-            ]
-          },
-          {
-            "name": "talonflame",
-            "name_display": "Talonflame",
-            "level": 65,
-            "types": [
-              "fire",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "brave-bird",
-                "name_display": "Brave Bird"
-              },
-              {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
-                "name": "flare-blitz",
-                "name_display": "Flare Blitz"
-              },
-              {
-                "name": "flail",
-                "name_display": "Flail"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "name": "Drasna",
         "type": "elite4",
-        "order": 3,
+        "order": 4,
         "location": "",
         "badge": "",
         "specialty": "drasnadragon",
@@ -23527,6 +23668,10 @@
             ],
             "moves": [
               {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
                 "name": "dragon-pulse",
                 "name_display": "Dragon Pulse"
               },
@@ -23535,12 +23680,8 @@
                 "name_display": "Surf"
               },
               {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
-              },
-              {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
+                "name": "focus-blast",
+                "name_display": "Focus Blast"
               }
             ]
           },
@@ -23553,20 +23694,20 @@
             ],
             "moves": [
               {
-                "name": "dragon-tail",
-                "name_display": "Dragon Tail"
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               },
               {
                 "name": "revenge",
                 "name_display": "Revenge"
-              },
-              {
-                "name": "retaliate",
-                "name_display": "Retaliate"
-              },
-              {
-                "name": "chip-away",
-                "name_display": "Chip Away"
               }
             ]
           },
@@ -23580,20 +23721,20 @@
             ],
             "moves": [
               {
-                "name": "moonblast",
-                "name_display": "Moonblast"
-              },
-              {
                 "name": "dragon-pulse",
                 "name_display": "Dragon Pulse"
+              },
+              {
+                "name": "moonblast",
+                "name_display": "Moonblast"
               },
               {
                 "name": "cotton-guard",
                 "name_display": "Cotton Guard"
               },
               {
-                "name": "sing",
-                "name_display": "Sing"
+                "name": "roost",
+                "name_display": "Roost"
               }
             ]
           },
@@ -23607,138 +23748,20 @@
             ],
             "moves": [
               {
-                "name": "air-slash",
-                "name_display": "Air Slash"
+                "name": "draco-meteor",
+                "name_display": "Draco Meteor"
               },
               {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
+                "name": "hurricane",
+                "name_display": "Hurricane"
               },
               {
                 "name": "flamethrower",
                 "name_display": "Flamethrower"
               },
               {
-                "name": "super-fang",
-                "name_display": "Super Fang"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Siebold",
-        "type": "elite4",
-        "order": 4,
-        "location": "",
-        "badge": "",
-        "specialty": "sieboldwater",
-        "sprite": "https://img.pokemondb.net/sprites/trainers/x-y/siebold.jpg",
-        "team": [
-          {
-            "name": "clawitzer",
-            "name_display": "Clawitzer",
-            "level": 63,
-            "types": [
-              "water"
-            ],
-            "moves": [
-              {
-                "name": "water-pulse",
-                "name_display": "Water Pulse"
-              },
-              {
-                "name": "dark-pulse",
-                "name_display": "Dark Pulse"
-              },
-              {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
-              },
-              {
-                "name": "aura-sphere",
-                "name_display": "Aura Sphere"
-              }
-            ]
-          },
-          {
-            "name": "gyarados",
-            "name_display": "Gyarados",
-            "level": 63,
-            "types": [
-              "water",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "waterfall",
-                "name_display": "Waterfall"
-              },
-              {
-                "name": "ice-fang",
-                "name_display": "Ice Fang"
-              },
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "dragon-dance",
-                "name_display": "Dragon Dance"
-              }
-            ]
-          },
-          {
-            "name": "starmie",
-            "name_display": "Starmie",
-            "level": 63,
-            "types": [
-              "water",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "dazzling-gleam",
-                "name_display": "Dazzling Gleam"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
-              {
-                "name": "surf",
-                "name_display": "Surf"
-              },
-              {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              }
-            ]
-          },
-          {
-            "name": "barbaracle",
-            "name_display": "Barbaracle",
-            "level": 65,
-            "types": [
-              "rock",
-              "water"
-            ],
-            "moves": [
-              {
-                "name": "cross-chop",
-                "name_display": "Cross Chop"
-              },
-              {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
-              },
-              {
-                "name": "razor-shell",
-                "name_display": "Razor Shell"
-              },
-              {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
+                "name": "boomburst",
+                "name_display": "Boomburst"
               }
             ]
           }
@@ -23763,47 +23786,20 @@
             ],
             "moves": [
               {
-                "name": "high-jump-kick",
-                "name_display": "High Jump Kick"
+                "name": "flying-press",
+                "name_display": "Flying Press"
               },
               {
-                "name": "sky-attack",
-                "name_display": "Sky Attack"
-              },
-              {
-                "name": "sky-drop",
-                "name_display": "Sky Drop"
+                "name": "x-scissor",
+                "name_display": "X-Scissor"
               },
               {
                 "name": "swords-dance",
                 "name_display": "Swords Dance"
-              }
-            ]
-          },
-          {
-            "name": "aurorus",
-            "name_display": "Aurorus",
-            "level": 65,
-            "types": [
-              "rock",
-              "ice"
-            ],
-            "moves": [
-              {
-                "name": "thunder",
-                "name_display": "Thunder"
               },
               {
-                "name": "blizzard",
-                "name_display": "Blizzard"
-              },
-              {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              },
-              {
-                "name": "reflect",
-                "name_display": "Reflect"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
               }
             ]
           },
@@ -23821,16 +23817,70 @@
                 "name_display": "Head Smash"
               },
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
                 "name": "dragon-claw",
                 "name_display": "Dragon Claw"
               },
               {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
                 "name": "crunch",
                 "name_display": "Crunch"
+              }
+            ]
+          },
+          {
+            "name": "aurorus",
+            "name_display": "Aurorus",
+            "level": 65,
+            "types": [
+              "rock",
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "reflect",
+                "name_display": "Reflect"
+              },
+              {
+                "name": "light-screen",
+                "name_display": "Light Screen"
+              }
+            ]
+          },
+          {
+            "name": "gourgeist",
+            "name_display": "Gourgeist",
+            "level": 65,
+            "types": [
+              "ghost",
+              "grass"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "seed-bomb",
+                "name_display": "Seed Bomb"
+              },
+              {
+                "name": "trick-or-treat",
+                "name_display": "Trick-or-Treat"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
               }
             ]
           },
@@ -23847,49 +23897,22 @@
                 "name_display": "Dragon Pulse"
               },
               {
-                "name": "aqua-tail",
-                "name_display": "Aqua Tail"
+                "name": "muddy-water",
+                "name_display": "Muddy Water"
               },
               {
-                "name": "power-whip",
-                "name_display": "Power Whip"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
-                "name": "outrage",
-                "name_display": "Outrage"
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
               }
             ]
           },
           {
-            "name": "gourgeist",
-            "name_display": "Gourgeist (Average Size)",
-            "level": 65,
-            "types": [
-              "ghost",
-              "grass"
-            ],
-            "moves": [
-              {
-                "name": "seed-bomb",
-                "name_display": "Seed Bomb"
-              },
-              {
-                "name": "phantom-force",
-                "name_display": "Phantom Force"
-              },
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
-                "name": "explosion",
-                "name_display": "Explosion"
-              }
-            ]
-          },
-          {
-            "name": "gardevoir",
-            "name_display": "Gardevoir",
+            "name": "gardevoir-mega",
+            "name_display": "Gardevoir (Mega)",
             "level": 68,
             "types": [
               "psychic",
@@ -23897,20 +23920,20 @@
             ],
             "moves": [
               {
-                "name": "captivate",
-                "name_display": "Captivate"
+                "name": "moonblast",
+                "name_display": "Moonblast"
               },
               {
-                "name": "hypnosis",
-                "name_display": "Hypnosis"
+                "name": "psychic",
+                "name_display": "Psychic"
               },
               {
-                "name": "dream-eater",
-                "name_display": "Dream Eater"
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
               },
               {
-                "name": "stored-power",
-                "name_display": "Stored Power"
+                "name": "focus-blast",
+                "name_display": "Focus Blast"
               }
             ]
           }
@@ -23945,6 +23968,10 @@
                 "name_display": "Defense Curl"
               },
               {
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
+              },
+              {
                 "name": "rock-tomb",
                 "name_display": "Rock Tomb"
               }
@@ -23965,6 +23992,10 @@
               {
                 "name": "harden",
                 "name_display": "Harden"
+              },
+              {
+                "name": "rock-throw",
+                "name_display": "Rock Throw"
               },
               {
                 "name": "rock-tomb",
@@ -23992,6 +24023,10 @@
             ],
             "moves": [
               {
+                "name": "bulk-up",
+                "name_display": "Bulk Up"
+              },
+              {
                 "name": "leer",
                 "name_display": "Leer"
               },
@@ -24002,10 +24037,6 @@
               {
                 "name": "seismic-toss",
                 "name_display": "Seismic Toss"
-              },
-              {
-                "name": "bulk-up",
-                "name_display": "Bulk Up"
               }
             ]
           },
@@ -24022,16 +24053,16 @@
                 "name_display": "Arm Thrust"
               },
               {
-                "name": "knock-off",
-                "name_display": "Knock Off"
-              },
-              {
                 "name": "sand-attack",
                 "name_display": "Sand Attack"
               },
               {
-                "name": "bulk-up",
-                "name_display": "Bulk Up"
+                "name": "fake-out",
+                "name_display": "Fake Out"
+              },
+              {
+                "name": "vital-throw",
+                "name_display": "Vital Throw"
               }
             ]
           }
@@ -24047,12 +24078,11 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/oras/wattson.jpg",
         "team": [
           {
-            "name": "magnemite",
-            "name_display": "Magnemite",
+            "name": "voltorb",
+            "name_display": "Voltorb",
             "level": 19,
             "types": [
-              "electric",
-              "steel"
+              "electric"
             ],
             "moves": [
               {
@@ -24066,24 +24096,33 @@
               {
                 "name": "volt-switch",
                 "name_display": "Volt Switch"
+              },
+              {
+                "name": "sonic-boom",
+                "name_display": "Sonic Boom"
               }
             ]
           },
           {
-            "name": "voltorb",
-            "name_display": "Voltorb",
+            "name": "magnemite",
+            "name_display": "Magnemite",
             "level": 19,
             "types": [
-              "electric"
+              "electric",
+              "steel"
             ],
             "moves": [
               {
-                "name": "rollout",
-                "name_display": "Rollout"
+                "name": "thunder-shock",
+                "name_display": "Thunder Shock"
               },
               {
-                "name": "charge",
-                "name_display": "Charge"
+                "name": "supersonic",
+                "name_display": "Supersonic"
+              },
+              {
+                "name": "sonic-boom",
+                "name_display": "Sonic Boom"
               },
               {
                 "name": "volt-switch",
@@ -24101,12 +24140,16 @@
             ],
             "moves": [
               {
-                "name": "supersonic",
-                "name_display": "Supersonic"
+                "name": "thunder-wave",
+                "name_display": "Thunder Wave"
               },
               {
                 "name": "magnet-bomb",
                 "name_display": "Magnet Bomb"
+              },
+              {
+                "name": "supersonic",
+                "name_display": "Supersonic"
               },
               {
                 "name": "volt-switch",
@@ -24134,47 +24177,46 @@
             ],
             "moves": [
               {
-                "name": "overheat",
-                "name_display": "Overheat"
+                "name": "lava-plume",
+                "name_display": "Lava Plume"
               },
               {
-                "name": "rock-throw",
-                "name_display": "Rock Throw"
-              },
-              {
-                "name": "light-screen",
-                "name_display": "Light Screen"
+                "name": "smog",
+                "name_display": "Smog"
               },
               {
                 "name": "sunny-day",
                 "name_display": "Sunny Day"
+              },
+              {
+                "name": "amnesia",
+                "name_display": "Amnesia"
               }
             ]
           },
           {
-            "name": "numel",
-            "name_display": "Numel",
+            "name": "slugma",
+            "name_display": "Slugma",
             "level": 26,
             "types": [
-              "fire",
-              "ground"
+              "fire"
             ],
             "moves": [
-              {
-                "name": "earth-power",
-                "name_display": "Earth Power"
-              },
               {
                 "name": "lava-plume",
                 "name_display": "Lava Plume"
               },
               {
-                "name": "amnesia",
-                "name_display": "Amnesia"
+                "name": "earth-power",
+                "name_display": "Earth Power"
               },
               {
                 "name": "sunny-day",
                 "name_display": "Sunny Day"
+              },
+              {
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               }
             ]
           },
@@ -24224,20 +24266,20 @@
             ],
             "moves": [
               {
-                "name": "retaliate",
-                "name_display": "Retaliate"
+                "name": "feint-attack",
+                "name_display": "Feint Attack"
               },
               {
                 "name": "yawn",
                 "name_display": "Yawn"
               },
               {
-                "name": "feint-attack",
-                "name_display": "Feint Attack"
+                "name": "slack-off",
+                "name_display": "Slack Off"
               },
               {
-                "name": "encore",
-                "name_display": "Encore"
+                "name": "retaliate",
+                "name_display": "Retaliate"
               }
             ]
           },
@@ -24250,16 +24292,16 @@
             ],
             "moves": [
               {
+                "name": "slash",
+                "name_display": "Slash"
+              },
+              {
                 "name": "encore",
                 "name_display": "Encore"
               },
               {
                 "name": "feint-attack",
                 "name_display": "Feint Attack"
-              },
-              {
-                "name": "retaliate",
-                "name_display": "Retaliate"
               },
               {
                 "name": "fury-swipes",
@@ -24280,16 +24322,16 @@
                 "name_display": "Retaliate"
               },
               {
+                "name": "yawn",
+                "name_display": "Yawn"
+              },
+              {
+                "name": "encore",
+                "name_display": "Encore"
+              },
+              {
                 "name": "feint-attack",
                 "name_display": "Feint Attack"
-              },
-              {
-                "name": "swagger",
-                "name_display": "Swagger"
-              },
-              {
-                "name": "chip-away",
-                "name_display": "Chip Away"
               }
             ]
           }
@@ -24314,16 +24356,16 @@
             ],
             "moves": [
               {
-                "name": "quick-attack",
-                "name_display": "Quick Attack"
-              },
-              {
                 "name": "aerial-ace",
                 "name_display": "Aerial Ace"
               },
               {
                 "name": "double-team",
                 "name_display": "Double Team"
+              },
+              {
+                "name": "quick-attack",
+                "name_display": "Quick Attack"
               },
               {
                 "name": "endeavor",
@@ -24345,16 +24387,16 @@
                 "name_display": "Water Pulse"
               },
               {
-                "name": "roost",
-                "name_display": "Roost"
-              },
-              {
                 "name": "protect",
                 "name_display": "Protect"
               },
               {
                 "name": "aerial-ace",
                 "name_display": "Aerial Ace"
+              },
+              {
+                "name": "roost",
+                "name_display": "Roost"
               }
             ]
           },
@@ -24368,16 +24410,16 @@
             ],
             "moves": [
               {
-                "name": "sand-attack",
-                "name_display": "Sand Attack"
+                "name": "steel-wing",
+                "name_display": "Steel Wing"
               },
               {
                 "name": "air-cutter",
                 "name_display": "Air Cutter"
               },
               {
-                "name": "steel-wing",
-                "name_display": "Steel Wing"
+                "name": "sand-attack",
+                "name_display": "Sand Attack"
               },
               {
                 "name": "aerial-ace",
@@ -24395,10 +24437,6 @@
             ],
             "moves": [
               {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
                 "name": "dragon-breath",
                 "name_display": "Dragon Breath"
               },
@@ -24407,15 +24445,19 @@
                 "name_display": "Cotton Guard"
               },
               {
-                "name": "roost",
-                "name_display": "Roost"
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
               }
             ]
           }
         ]
       },
       {
-        "name": "Liza & Tate",
+        "name": "Tate & Liza",
         "type": "gym",
         "order": 7,
         "location": "Mossdeep City",
@@ -24424,75 +24466,21 @@
         "sprite": "https://img.pokemondb.net/sprites/trainers/oras/liza-tate.jpg",
         "team": [
           {
-            "name": "claydol",
-            "name_display": "Claydol",
-            "level": 41,
-            "types": [
-              "ground",
-              "psychic"
-            ],
-            "moves": [
-              {
-                "name": "earthquake",
-                "name_display": "Earthquake"
-              },
-              {
-                "name": "ancient-power",
-                "name_display": "AncientPower"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
-              {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              }
-            ]
-          },
-          {
-            "name": "xatu",
-            "name_display": "Xatu",
-            "level": 41,
-            "types": [
-              "psychic",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
-              {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              },
-              {
-                "name": "calm-mind",
-                "name_display": "Calm Mind"
-              }
-            ]
-          },
-          {
             "name": "lunatone",
             "name_display": "Lunatone",
-            "level": 42,
+            "level": 45,
             "types": [
               "rock",
               "psychic"
             ],
             "moves": [
               {
-                "name": "light-screen",
-                "name_display": "Light Screen"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
+              },
+              {
+                "name": "light-screen",
+                "name_display": "Light Screen"
               },
               {
                 "name": "hypnosis",
@@ -24507,27 +24495,27 @@
           {
             "name": "solrock",
             "name_display": "Solrock",
-            "level": 42,
+            "level": 45,
             "types": [
               "rock",
               "psychic"
             ],
             "moves": [
               {
-                "name": "sunny-day",
-                "name_display": "Sunny Day"
-              },
-              {
-                "name": "solarbeam",
-                "name_display": "SolarBeam"
-              },
-              {
                 "name": "psychic",
                 "name_display": "Psychic"
               },
               {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
+              },
+              {
+                "name": "sunny-day",
+                "name_display": "Sunny Day"
+              },
+              {
+                "name": "solar-beam",
+                "name_display": "Solar Beam"
               }
             ]
           }
@@ -24551,8 +24539,8 @@
             ],
             "moves": [
               {
-                "name": "draining-kiss",
-                "name_display": "Draining Kiss"
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
               },
               {
                 "name": "attract",
@@ -24563,8 +24551,8 @@
                 "name_display": "Sweet Kiss"
               },
               {
-                "name": "water-pulse",
-                "name_display": "Water Pulse"
+                "name": "draining-kiss",
+                "name_display": "Draining Kiss"
               }
             ]
           },
@@ -24578,16 +24566,16 @@
             ],
             "moves": [
               {
+                "name": "waterfall",
+                "name_display": "Waterfall"
+              },
+              {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
                 "name": "zen-headbutt",
                 "name_display": "Zen Headbutt"
-              },
-              {
-                "name": "waterfall",
-                "name_display": "Waterfall"
               },
               {
                 "name": "mud-sport",
@@ -24605,20 +24593,20 @@
             ],
             "moves": [
               {
-                "name": "encore",
-                "name_display": "Encore"
-              },
-              {
-                "name": "waterfall",
-                "name_display": "Waterfall"
-              },
-              {
                 "name": "aurora-beam",
                 "name_display": "Aurora Beam"
               },
               {
                 "name": "body-slam",
                 "name_display": "Body Slam"
+              },
+              {
+                "name": "encore",
+                "name_display": "Encore"
+              },
+              {
+                "name": "waterfall",
+                "name_display": "Waterfall"
               }
             ]
           },
@@ -24631,20 +24619,20 @@
             ],
             "moves": [
               {
-                "name": "waterfall",
-                "name_display": "Waterfall"
+                "name": "water-pulse",
+                "name_display": "Water Pulse"
+              },
+              {
+                "name": "horn-drill",
+                "name_display": "Horn Drill"
               },
               {
                 "name": "rain-dance",
                 "name_display": "Rain Dance"
               },
               {
-                "name": "aqua-ring",
-                "name_display": "Aqua Ring"
-              },
-              {
-                "name": "horn-drill",
-                "name_display": "Horn Drill"
+                "name": "fury-attack",
+                "name_display": "Fury Attack"
               }
             ]
           },
@@ -24661,12 +24649,12 @@
                 "name_display": "Hydro Pump"
               },
               {
-                "name": "recover",
-                "name_display": "Recover"
-              },
-              {
                 "name": "ice-beam",
                 "name_display": "Ice Beam"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
               },
               {
                 "name": "disarming-voice",
@@ -24682,7 +24670,7 @@
         "order": 1,
         "location": "",
         "badge": "",
-        "specialty": "rematchdark",
+        "specialty": "sidneydark",
         "sprite": "https://img.pokemondb.net/sprites/trainers/oras/sidney.jpg",
         "team": [
           {
@@ -24694,20 +24682,20 @@
             ],
             "moves": [
               {
-                "name": "swagger",
-                "name_display": "Swagger"
-              },
-              {
-                "name": "take-down",
-                "name_display": "Take Down"
+                "name": "crunch",
+                "name_display": "Crunch"
               },
               {
                 "name": "sucker-punch",
                 "name_display": "Sucker Punch"
               },
               {
-                "name": "crunch",
-                "name_display": "Crunch"
+                "name": "take-down",
+                "name_display": "Take Down"
+              },
+              {
+                "name": "swagger",
+                "name_display": "Swagger"
               }
             ]
           },
@@ -24721,8 +24709,8 @@
             ],
             "moves": [
               {
-                "name": "fake-out",
-                "name_display": "Fake Out"
+                "name": "leaf-blade",
+                "name_display": "Leaf Blade"
               },
               {
                 "name": "feint-attack",
@@ -24733,8 +24721,8 @@
                 "name_display": "Extrasensory"
               },
               {
-                "name": "leaf-blade",
-                "name_display": "Leaf Blade"
+                "name": "fake-out",
+                "name_display": "Fake Out"
               }
             ]
           },
@@ -24748,16 +24736,16 @@
             ],
             "moves": [
               {
-                "name": "leech-seed",
-                "name_display": "Leech Seed"
+                "name": "needle-arm",
+                "name_display": "Needle Arm"
               },
               {
                 "name": "payback",
                 "name_display": "Payback"
               },
               {
-                "name": "needle-arm",
-                "name_display": "Needle Arm"
+                "name": "leech-seed",
+                "name_display": "Leech Seed"
               },
               {
                 "name": "spiky-shield",
@@ -24775,16 +24763,16 @@
             ],
             "moves": [
               {
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
+              },
+              {
                 "name": "crunch",
                 "name_display": "Crunch"
               },
               {
                 "name": "poison-fang",
                 "name_display": "Poison Fang"
-              },
-              {
-                "name": "aqua-jet",
-                "name_display": "Aqua Jet"
               },
               {
                 "name": "slash",
@@ -24801,10 +24789,6 @@
             ],
             "moves": [
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
-              },
-              {
                 "name": "night-slash",
                 "name_display": "Night Slash"
               },
@@ -24813,164 +24797,8 @@
                 "name_display": "Psycho Cut"
               },
               {
-                "name": "slash",
-                "name_display": "Slash"
-              }
-            ]
-          },
-          {
-            "name": "scrafty",
-            "name_display": "Scrafty",
-            "level": 70,
-            "types": [
-              "dark",
-              "fighting"
-            ],
-            "moves": [
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
-              },
-              {
-                "name": "poison-jab",
-                "name_display": "Poison Jab"
-              },
-              {
-                "name": "dragon-claw",
-                "name_display": "Dragon Claw"
-              }
-            ]
-          },
-          {
-            "name": "shiftry",
-            "name_display": "Shiftry",
-            "level": 70,
-            "types": [
-              "grass",
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "fake-out",
-                "name_display": "Fake Out"
-              },
-              {
-                "name": "feint-attack",
-                "name_display": "Feint Attack"
-              },
-              {
-                "name": "extrasensory",
-                "name_display": "Extrasensory"
-              },
-              {
-                "name": "leaf-blade",
-                "name_display": "Leaf Blade"
-              }
-            ]
-          },
-          {
-            "name": "zoroark",
-            "name_display": "Zoroark",
-            "level": 70,
-            "types": [
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "night-slash",
-                "name_display": "Night Slash"
-              },
-              {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
-              },
-              {
-                "name": "dark-pulse",
-                "name_display": "Dark Pulse"
-              },
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
-              }
-            ]
-          },
-          {
-            "name": "sharpedo",
-            "name_display": "Sharpedo",
-            "level": 70,
-            "types": [
-              "water",
-              "dark"
-            ],
-            "moves": [
-              {
-                "name": "crunch",
-                "name_display": "Crunch"
-              },
-              {
-                "name": "poison-fang",
-                "name_display": "Poison Fang"
-              },
-              {
-                "name": "aqua-jet",
-                "name_display": "Aqua Jet"
-              },
-              {
-                "name": "slash",
-                "name_display": "Slash"
-              }
-            ]
-          },
-          {
-            "name": "mandibuzz",
-            "name_display": "Mandibuzz",
-            "level": 70,
-            "types": [
-              "dark",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "brave-bird",
-                "name_display": "Brave Bird"
-              },
-              {
-                "name": "bone-rush",
-                "name_display": "Bone Rush"
-              },
-              {
-                "name": "feint-attack",
-                "name_display": "Feint Attack"
-              },
-              {
-                "name": "tailwind",
-                "name_display": "Tailwind"
-              }
-            ]
-          },
-          {
-            "name": "absol",
-            "name_display": "Absol",
-            "level": 72,
-            "types": [
-              "dark"
-            ],
-            "moves": [
-              {
                 "name": "aerial-ace",
                 "name_display": "Aerial Ace"
-              },
-              {
-                "name": "night-slash",
-                "name_display": "Night Slash"
-              },
-              {
-                "name": "psycho-cut",
-                "name_display": "Psycho Cut"
               },
               {
                 "name": "slash",
@@ -24986,13 +24814,39 @@
         "order": 2,
         "location": "",
         "badge": "",
-        "specialty": "rematchghost",
+        "specialty": "phoebeghost",
         "sprite": "https://img.pokemondb.net/sprites/trainers/oras/phoebe.jpg",
         "team": [
           {
+            "name": "dusclops",
+            "name_display": "Dusclops",
+            "level": 52,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-punch",
+                "name_display": "Shadow Punch"
+              },
+              {
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
+              },
+              {
+                "name": "curse",
+                "name_display": "Curse"
+              },
+              {
+                "name": "future-sight",
+                "name_display": "Future Sight"
+              }
+            ]
+          },
+          {
             "name": "banette",
             "name_display": "Banette",
-            "level": 71,
+            "level": 51,
             "types": [
               "ghost"
             ],
@@ -25002,129 +24856,23 @@
                 "name_display": "Shadow Ball"
               },
               {
-                "name": "grudge",
-                "name_display": "Grudge"
+                "name": "feint-attack",
+                "name_display": "Feint Attack"
               },
               {
-                "name": "toxic",
-                "name_display": "Toxic"
+                "name": "spite",
+                "name_display": "Spite"
               },
               {
-                "name": "psychic",
-                "name_display": "Psychic"
-              }
-            ]
-          },
-          {
-            "name": "mismagius",
-            "name_display": "Mismagius",
-            "level": 71,
-            "types": [
-              "ghost"
-            ],
-            "moves": [
-              {
-                "name": "shadow-ball",
-                "name_display": "Shadow Ball"
-              },
-              {
-                "name": "power-gem",
-                "name_display": "Power Gem"
-              },
-              {
-                "name": "thunderbolt",
-                "name_display": "Thunderbolt"
-              },
-              {
-                "name": "pain-split",
-                "name_display": "Pain Split"
-              }
-            ]
-          },
-          {
-            "name": "drifblim",
-            "name_display": "Drifblim",
-            "level": 71,
-            "types": [
-              "ghost",
-              "flying"
-            ],
-            "moves": [
-              {
-                "name": "phantom-force",
-                "name_display": "Phantom Force"
-              },
-              {
-                "name": "psychic",
-                "name_display": "Psychic"
-              },
-              {
-                "name": "icy-wind",
-                "name_display": "Icy Wind"
-              },
-              {
-                "name": "acrobatics",
-                "name_display": "Acrobatics"
-              }
-            ]
-          },
-          {
-            "name": "chandelure",
-            "name_display": "Chandelure",
-            "level": 71,
-            "types": [
-              "ghost",
-              "fire"
-            ],
-            "moves": [
-              {
-                "name": "hex",
-                "name_display": "Hex"
-              },
-              {
-                "name": "flamethrower",
-                "name_display": "Flamethrower"
-              },
-              {
-                "name": "energy-ball",
-                "name_display": "Energy Ball"
-              },
-              {
-                "name": "dark-pulse",
-                "name_display": "Dark Pulse"
-              }
-            ]
-          },
-          {
-            "name": "dusknoir",
-            "name_display": "Dusknoir",
-            "level": 71,
-            "types": [
-              "ghost"
-            ],
-            "moves": [
-              {
-                "name": "hex",
-                "name_display": "Hex"
-              },
-              {
-                "name": "fire-punch",
-                "name_display": "Fire Punch"
-              },
-              {
-                "name": "ice-punch",
-                "name_display": "Ice Punch"
-              },
-              {
-                "name": "thunder-punch",
-                "name_display": "Thunder Punch"
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
               }
             ]
           },
           {
             "name": "sableye",
             "name_display": "Sableye",
-            "level": 73,
+            "level": 51,
             "types": [
               "dark",
               "ghost"
@@ -25139,12 +24887,788 @@
                 "name_display": "Foul Play"
               },
               {
+                "name": "fake-out",
+                "name_display": "Fake Out"
+              },
+              {
                 "name": "power-gem",
                 "name_display": "Power Gem"
+              }
+            ]
+          },
+          {
+            "name": "banette",
+            "name_display": "Banette",
+            "level": 51,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "toxic",
+                "name_display": "Toxic"
+              },
+              {
+                "name": "grudge",
+                "name_display": "Grudge"
+              }
+            ]
+          },
+          {
+            "name": "dusknoir",
+            "name_display": "Dusknoir",
+            "level": 53,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-punch",
+                "name_display": "Shadow Punch"
+              },
+              {
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
+              },
+              {
+                "name": "fire-punch",
+                "name_display": "Fire Punch"
+              },
+              {
+                "name": "thunder-punch",
+                "name_display": "Thunder Punch"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Glacia",
+        "type": "elite4",
+        "order": 3,
+        "location": "",
+        "badge": "",
+        "specialty": "glaciaice",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/oras/glacia.jpg",
+        "team": [
+          {
+            "name": "glalie",
+            "name_display": "Glalie",
+            "level": 52,
+            "types": [
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "freeze-dry",
+                "name_display": "Freeze-Dry"
+              },
+              {
+                "name": "hail",
+                "name_display": "Hail"
+              }
+            ]
+          },
+          {
+            "name": "froslass",
+            "name_display": "Froslass",
+            "level": 52,
+            "types": [
+              "ice",
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "double-team",
+                "name_display": "Double Team"
+              }
+            ]
+          },
+          {
+            "name": "glalie",
+            "name_display": "Glalie",
+            "level": 52,
+            "types": [
+              "ice"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "freeze-dry",
+                "name_display": "Freeze-Dry"
+              },
+              {
+                "name": "hail",
+                "name_display": "Hail"
+              }
+            ]
+          },
+          {
+            "name": "froslass",
+            "name_display": "Froslass",
+            "level": 52,
+            "types": [
+              "ice",
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "double-team",
+                "name_display": "Double Team"
+              }
+            ]
+          },
+          {
+            "name": "walrein",
+            "name_display": "Walrein",
+            "level": 54,
+            "types": [
+              "ice",
+              "water"
+            ],
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "blizzard",
+                "name_display": "Blizzard"
+              },
+              {
+                "name": "body-slam",
+                "name_display": "Body Slam"
+              },
+              {
+                "name": "sheer-cold",
+                "name_display": "Sheer Cold"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Drake",
+        "type": "elite4",
+        "order": 4,
+        "location": "",
+        "badge": "",
+        "specialty": "drakedragon",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/oras/drake.jpg",
+        "team": [
+          {
+            "name": "altaria",
+            "name_display": "Altaria",
+            "level": 53,
+            "types": [
+              "dragon",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "dragon-pulse",
+                "name_display": "Dragon Pulse"
+              },
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
+              },
+              {
+                "name": "cotton-guard",
+                "name_display": "Cotton Guard"
+              },
+              {
+                "name": "moonblast",
+                "name_display": "Moonblast"
+              }
+            ]
+          },
+          {
+            "name": "flygon",
+            "name_display": "Flygon",
+            "level": 53,
+            "types": [
+              "ground",
+              "dragon"
+            ],
+            "moves": [
+              {
+                "name": "dragon-rush",
+                "name_display": "Dragon Rush"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
+              },
+              {
+                "name": "flamethrower",
+                "name_display": "Flamethrower"
+              }
+            ]
+          },
+          {
+            "name": "salamence",
+            "name_display": "Salamence",
+            "level": 55,
+            "types": [
+              "dragon",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
+              },
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "dragon-dance",
+                "name_display": "Dragon Dance"
+              }
+            ]
+          },
+          {
+            "name": "kingdra",
+            "name_display": "Kingdra",
+            "level": 53,
+            "types": [
+              "water",
+              "dragon"
+            ],
+            "moves": [
+              {
+                "name": "surf",
+                "name_display": "Surf"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "dragon-pulse",
+                "name_display": "Dragon Pulse"
+              },
+              {
+                "name": "yawn",
+                "name_display": "Yawn"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Steven",
+        "type": "champion",
+        "order": 1,
+        "location": "",
+        "badge": "",
+        "specialty": "stevensteel",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/oras/steven.jpg",
+        "team": [
+          {
+            "name": "skarmory",
+            "name_display": "Skarmory",
+            "level": 57,
+            "types": [
+              "steel",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "spikes",
+                "name_display": "Spikes"
+              },
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
+              },
+              {
+                "name": "steel-wing",
+                "name_display": "Steel Wing"
+              },
+              {
+                "name": "toxic",
+                "name_display": "Toxic"
+              }
+            ]
+          },
+          {
+            "name": "claydol",
+            "name_display": "Claydol",
+            "level": 57,
+            "types": [
+              "ground",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "earth-power",
+                "name_display": "Earth Power"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
+              },
+              {
+                "name": "reflect",
+                "name_display": "Reflect"
+              },
+              {
+                "name": "light-screen",
+                "name_display": "Light Screen"
+              }
+            ]
+          },
+          {
+            "name": "aggron",
+            "name_display": "Aggron",
+            "level": 57,
+            "types": [
+              "steel",
+              "rock"
+            ],
+            "moves": [
+              {
+                "name": "iron-tail",
+                "name_display": "Iron Tail"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
+              },
+              {
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
+              }
+            ]
+          },
+          {
+            "name": "cradily",
+            "name_display": "Cradily",
+            "level": 57,
+            "types": [
+              "rock",
+              "grass"
+            ],
+            "moves": [
+              {
+                "name": "giga-drain",
+                "name_display": "Giga Drain"
+              },
+              {
+                "name": "ancient-power",
+                "name_display": "Ancient Power"
+              },
+              {
+                "name": "sludge-bomb",
+                "name_display": "Sludge Bomb"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              }
+            ]
+          },
+          {
+            "name": "armaldo",
+            "name_display": "Armaldo",
+            "level": 57,
+            "types": [
+              "rock",
+              "bug"
+            ],
+            "moves": [
+              {
+                "name": "x-scissor",
+                "name_display": "X-Scissor"
+              },
+              {
+                "name": "rock-blast",
+                "name_display": "Rock Blast"
+              },
+              {
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
+              },
+              {
+                "name": "slash",
+                "name_display": "Slash"
+              }
+            ]
+          },
+          {
+            "name": "metagross",
+            "name_display": "Metagross",
+            "level": 59,
+            "types": [
+              "steel",
+              "psychic"
+            ],
+            "moves": [
+              {
+                "name": "meteor-mash",
+                "name_display": "Meteor Mash"
+              },
+              {
+                "name": "zen-headbutt",
+                "name_display": "Zen Headbutt"
+              },
+              {
+                "name": "bullet-punch",
+                "name_display": "Bullet Punch"
+              },
+              {
+                "name": "giga-impact",
+                "name_display": "Giga Impact"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sidney",
+        "type": "elite4",
+        "order": 1,
+        "location": "",
+        "badge": "",
+        "specialty": "rematchdark",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/oras/sidney.jpg",
+        "team": [
+          {
+            "name": "shiftry",
+            "name_display": "Shiftry",
+            "level": 72,
+            "types": [
+              "grass",
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "leaf-blade",
+                "name_display": "Leaf Blade"
+              },
+              {
+                "name": "foul-play",
+                "name_display": "Foul Play"
               },
               {
                 "name": "fake-out",
                 "name_display": "Fake Out"
+              },
+              {
+                "name": "extrasensory",
+                "name_display": "Extrasensory"
+              }
+            ]
+          },
+          {
+            "name": "cacturne",
+            "name_display": "Cacturne",
+            "level": 72,
+            "types": [
+              "grass",
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "needle-arm",
+                "name_display": "Needle Arm"
+              },
+              {
+                "name": "spikes",
+                "name_display": "Spikes"
+              },
+              {
+                "name": "payback",
+                "name_display": "Payback"
+              },
+              {
+                "name": "leech-seed",
+                "name_display": "Leech Seed"
+              }
+            ]
+          },
+          {
+            "name": "sharpedo",
+            "name_display": "Sharpedo",
+            "level": 72,
+            "types": [
+              "water",
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
+              },
+              {
+                "name": "crunch",
+                "name_display": "Crunch"
+              },
+              {
+                "name": "ice-fang",
+                "name_display": "Ice Fang"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              }
+            ]
+          },
+          {
+            "name": "mandibuzz",
+            "name_display": "Mandibuzz",
+            "level": 72,
+            "types": [
+              "dark",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "brave-bird",
+                "name_display": "Brave Bird"
+              },
+              {
+                "name": "foul-play",
+                "name_display": "Foul Play"
+              },
+              {
+                "name": "roost",
+                "name_display": "Roost"
+              },
+              {
+                "name": "toxic",
+                "name_display": "Toxic"
+              }
+            ]
+          },
+          {
+            "name": "absol",
+            "name_display": "Absol",
+            "level": 74,
+            "types": [
+              "dark"
+            ],
+            "moves": [
+              {
+                "name": "night-slash",
+                "name_display": "Night Slash"
+              },
+              {
+                "name": "psycho-cut",
+                "name_display": "Psycho Cut"
+              },
+              {
+                "name": "play-rough",
+                "name_display": "Play Rough"
+              },
+              {
+                "name": "swords-dance",
+                "name_display": "Swords Dance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Phoebe",
+        "type": "elite4",
+        "order": 2,
+        "location": "",
+        "badge": "",
+        "specialty": "rematchghost",
+        "sprite": "https://img.pokemondb.net/sprites/trainers/oras/phoebe.jpg",
+        "team": [
+          {
+            "name": "dusclops",
+            "name_display": "Dusclops",
+            "level": 72,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-punch",
+                "name_display": "Shadow Punch"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
+              },
+              {
+                "name": "pain-split",
+                "name_display": "Pain Split"
+              },
+              {
+                "name": "ice-punch",
+                "name_display": "Ice Punch"
+              }
+            ]
+          },
+          {
+            "name": "banette",
+            "name_display": "Banette",
+            "level": 72,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "will-o-wisp",
+                "name_display": "Will-O-Wisp"
+              }
+            ]
+          },
+          {
+            "name": "sableye",
+            "name_display": "Sableye",
+            "level": 72,
+            "types": [
+              "dark",
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "foul-play",
+                "name_display": "Foul Play"
+              },
+              {
+                "name": "shadow-claw",
+                "name_display": "Shadow Claw"
+              },
+              {
+                "name": "recover",
+                "name_display": "Recover"
+              },
+              {
+                "name": "power-gem",
+                "name_display": "Power Gem"
+              }
+            ]
+          },
+          {
+            "name": "froslass",
+            "name_display": "Froslass",
+            "level": 72,
+            "types": [
+              "ice",
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
+              },
+              {
+                "name": "shadow-ball",
+                "name_display": "Shadow Ball"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "destiny-bond",
+                "name_display": "Destiny Bond"
+              }
+            ]
+          },
+          {
+            "name": "dusknoir",
+            "name_display": "Dusknoir",
+            "level": 74,
+            "types": [
+              "ghost"
+            ],
+            "moves": [
+              {
+                "name": "shadow-punch",
+                "name_display": "Shadow Punch"
+              },
+              {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "fire-punch",
+                "name_display": "Fire Punch"
+              },
+              {
+                "name": "thunder-punch",
+                "name_display": "Thunder Punch"
               }
             ]
           }
@@ -25177,12 +25701,12 @@
                 "name_display": "Wood Hammer"
               },
               {
-                "name": "ice-shard",
-                "name_display": "Ice Shard"
-              },
-              {
                 "name": "earthquake",
                 "name_display": "Earthquake"
+              },
+              {
+                "name": "ice-shard",
+                "name_display": "Ice Shard"
               }
             ]
           },
@@ -25199,16 +25723,16 @@
                 "name_display": "Icicle Crash"
               },
               {
+                "name": "superpower",
+                "name_display": "Superpower"
+              },
+              {
+                "name": "aqua-jet",
+                "name_display": "Aqua Jet"
+              },
+              {
                 "name": "slash",
                 "name_display": "Slash"
-              },
-              {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
-              },
-              {
-                "name": "brick-break",
-                "name_display": "Brick Break"
               }
             ]
           },
@@ -25222,20 +25746,20 @@
             ],
             "moves": [
               {
-                "name": "draining-kiss",
-                "name_display": "Draining Kiss"
-              },
-              {
-                "name": "blizzard",
-                "name_display": "Blizzard"
-              },
-              {
-                "name": "hail",
-                "name_display": "Hail"
+                "name": "ice-beam",
+                "name_display": "Ice Beam"
               },
               {
                 "name": "shadow-ball",
                 "name_display": "Shadow Ball"
+              },
+              {
+                "name": "thunderbolt",
+                "name_display": "Thunderbolt"
+              },
+              {
+                "name": "confuse-ray",
+                "name_display": "Confuse Ray"
               }
             ]
           },
@@ -25252,8 +25776,8 @@
                 "name_display": "Ice Beam"
               },
               {
-                "name": "mirror-coat",
-                "name_display": "Mirror Coat"
+                "name": "mirror-shot",
+                "name_display": "Mirror Shot"
               },
               {
                 "name": "freeze-dry",
@@ -25279,12 +25803,12 @@
                 "name_display": "Surf"
               },
               {
-                "name": "body-slam",
-                "name_display": "Body Slam"
-              },
-              {
                 "name": "blizzard",
                 "name_display": "Blizzard"
+              },
+              {
+                "name": "body-slam",
+                "name_display": "Body Slam"
               },
               {
                 "name": "sheer-cold",
@@ -25293,28 +25817,28 @@
             ]
           },
           {
-            "name": "glalie",
-            "name_display": "Glalie",
+            "name": "glalie-mega",
+            "name_display": "Mega Glalie",
             "level": 74,
             "types": [
               "ice"
             ],
             "moves": [
               {
-                "name": "protect",
-                "name_display": "Protect"
+                "name": "return",
+                "name_display": "Return"
               },
               {
                 "name": "ice-shard",
                 "name_display": "Ice Shard"
               },
               {
-                "name": "hail",
-                "name_display": "Hail"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "freeze-dry",
-                "name_display": "Freeze-Dry"
+                "name": "explosion",
+                "name_display": "Explosion"
               }
             ]
           }
@@ -25339,20 +25863,20 @@
             ],
             "moves": [
               {
-                "name": "aerial-ace",
-                "name_display": "Aerial Ace"
-              },
-              {
-                "name": "cotton-guard",
-                "name_display": "Cotton Guard"
-              },
-              {
                 "name": "dragon-pulse",
                 "name_display": "Dragon Pulse"
               },
               {
                 "name": "moonblast",
                 "name_display": "Moonblast"
+              },
+              {
+                "name": "cotton-guard",
+                "name_display": "Cotton Guard"
+              },
+              {
+                "name": "aerial-ace",
+                "name_display": "Aerial Ace"
               }
             ]
           },
@@ -25370,16 +25894,16 @@
                 "name_display": "Dragon Pulse"
               },
               {
-                "name": "hydro-pump",
-                "name_display": "Hydro Pump"
-              },
-              {
                 "name": "sludge-wave",
                 "name_display": "Sludge Wave"
               },
               {
                 "name": "thunderbolt",
                 "name_display": "Thunderbolt"
+              },
+              {
+                "name": "hydro-pump",
+                "name_display": "Hydro Pump"
               }
             ]
           },
@@ -25401,12 +25925,12 @@
                 "name_display": "Surf"
               },
               {
-                "name": "yawn",
-                "name_display": "Yawn"
-              },
-              {
                 "name": "ice-beam",
                 "name_display": "Ice Beam"
+              },
+              {
+                "name": "yawn",
+                "name_display": "Yawn"
               }
             ]
           },
@@ -25420,20 +25944,20 @@
             ],
             "moves": [
               {
+                "name": "earthquake",
+                "name_display": "Earthquake"
+              },
+              {
+                "name": "dragon-claw",
+                "name_display": "Dragon Claw"
+              },
+              {
                 "name": "flamethrower",
                 "name_display": "Flamethrower"
               },
               {
-                "name": "boomburst",
-                "name_display": "Boomburst"
-              },
-              {
-                "name": "dragon-pulse",
-                "name_display": "Dragon Pulse"
-              },
-              {
-                "name": "screech",
-                "name_display": "Screech"
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
               }
             ]
           },
@@ -25458,14 +25982,14 @@
                 "name_display": "X-Scissor"
               },
               {
-                "name": "shadow-claw",
-                "name_display": "Shadow Claw"
+                "name": "poison-jab",
+                "name_display": "Poison Jab"
               }
             ]
           },
           {
-            "name": "salamence",
-            "name_display": "Salamence",
+            "name": "salamence-mega",
+            "name_display": "Mega Salamence",
             "level": 75,
             "types": [
               "dragon",
@@ -25477,16 +26001,16 @@
                 "name_display": "Dragon Rush"
               },
               {
-                "name": "zen-headbutt",
-                "name_display": "Zen Headbutt"
+                "name": "double-edge",
+                "name_display": "Double-Edge"
               },
               {
-                "name": "crunch",
-                "name_display": "Crunch"
+                "name": "earthquake",
+                "name_display": "Earthquake"
               },
               {
-                "name": "thunder-fang",
-                "name_display": "Thunder Fang"
+                "name": "fire-blast",
+                "name_display": "Fire Blast"
               }
             ]
           }
@@ -25504,7 +26028,7 @@
           {
             "name": "skarmory",
             "name_display": "Skarmory",
-            "level": 57,
+            "level": 77,
             "types": [
               "steel",
               "flying"
@@ -25531,7 +26055,7 @@
           {
             "name": "claydol",
             "name_display": "Claydol",
-            "level": 57,
+            "level": 77,
             "types": [
               "ground",
               "psychic"
@@ -25546,8 +26070,35 @@
                 "name_display": "Light Screen"
               },
               {
+                "name": "earth-power",
+                "name_display": "Earth Power"
+              },
+              {
                 "name": "extrasensory",
                 "name_display": "Extrasensory"
+              }
+            ]
+          },
+          {
+            "name": "carbink",
+            "name_display": "Carbink",
+            "level": 77,
+            "types": [
+              "rock",
+              "fairy"
+            ],
+            "moves": [
+              {
+                "name": "moonblast",
+                "name_display": "Moonblast"
+              },
+              {
+                "name": "power-gem",
+                "name_display": "Power Gem"
+              },
+              {
+                "name": "psychic",
+                "name_display": "Psychic"
               },
               {
                 "name": "earth-power",
@@ -25556,110 +26107,83 @@
             ]
           },
           {
+            "name": "aerodactyl",
+            "name_display": "Aerodactyl",
+            "level": 77,
+            "types": [
+              "rock",
+              "flying"
+            ],
+            "moves": [
+              {
+                "name": "rock-slide",
+                "name_display": "Rock Slide"
+              },
+              {
+                "name": "ice-fang",
+                "name_display": "Ice Fang"
+              },
+              {
+                "name": "thunder-fang",
+                "name_display": "Thunder Fang"
+              },
+              {
+                "name": "fire-fang",
+                "name_display": "Fire Fang"
+              }
+            ]
+          },
+          {
             "name": "aggron",
             "name_display": "Aggron",
-            "level": 57,
+            "level": 77,
             "types": [
               "steel",
               "rock"
             ],
             "moves": [
               {
-                "name": "stone-edge",
-                "name_display": "Stone Edge"
+                "name": "iron-tail",
+                "name_display": "Iron Tail"
               },
               {
                 "name": "earthquake",
                 "name_display": "Earthquake"
               },
               {
-                "name": "iron-tail",
-                "name_display": "Iron Tail"
-              },
-              {
                 "name": "dragon-claw",
                 "name_display": "Dragon Claw"
+              },
+              {
+                "name": "stone-edge",
+                "name_display": "Stone Edge"
               }
             ]
           },
           {
-            "name": "cradily",
-            "name_display": "Cradily",
-            "level": 57,
-            "types": [
-              "rock",
-              "grass"
-            ],
-            "moves": [
-              {
-                "name": "giga-drain",
-                "name_display": "Giga Drain"
-              },
-              {
-                "name": "ancient-power",
-                "name_display": "Ancient Power"
-              },
-              {
-                "name": "sludge-bomb",
-                "name_display": "Sludge Bomb"
-              },
-              {
-                "name": "confuse-ray",
-                "name_display": "Confuse Ray"
-              }
-            ]
-          },
-          {
-            "name": "armaldo",
-            "name_display": "Armaldo",
-            "level": 57,
-            "types": [
-              "rock",
-              "bug"
-            ],
-            "moves": [
-              {
-                "name": "x-scissor",
-                "name_display": "X-Scissor"
-              },
-              {
-                "name": "rock-blast",
-                "name_display": "Rock Blast"
-              },
-              {
-                "name": "metal-claw",
-                "name_display": "Metal Claw"
-              },
-              {
-                "name": "crush-claw",
-                "name_display": "Crush Claw"
-              }
-            ]
-          },
-          {
-            "name": "metagross",
-            "name_display": "Metagross",
-            "level": 59,
+            "name": "metagross-mega",
+            "name_display": "Mega Metagross",
+            "level": 79,
             "types": [
               "steel",
               "psychic"
             ],
             "moves": [
               {
-                "name": "bullet-punch",
-                "name_display": "Bullet Punch"
+                "name": "meteor-mash",
+                "name_display": "Meteor Mash"
               },
               {
                 "name": "zen-headbutt",
                 "name_display": "Zen Headbutt"
               },
               {
-                "name": "meteor-mash",
-                "name_display": "Meteor Mash"
+                "name": "bullet-punch",
+                "name_display": "Bullet Punch"
               },
               {
-                "name": "giga-impact",
-                "name_display": "Giga Impact"
+                "name": "hammer-arm",
+                "name_display": "Hammer Arm"
               }
             ]
           }
