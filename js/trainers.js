@@ -567,10 +567,17 @@ async function ensureTrainersJson(){
 
 function findJsonTrainer(json,gameSlug,trainer){
   const list=json?.trainers?.[gameSlug]||[];
+  const rem=isRematchEntry(trainer);
+  const matchRematch=(t)=>isRematchEntry(t)===rem;
   return list.find(t=>
     t.name===trainer.name&&
     t.type===trainer.type&&
-    (t.order||0)===(trainer.order||0)
+    (t.order||0)===(trainer.order||0)&&
+    matchRematch(t)
+  )||list.find(t=>
+    t.name===trainer.name&&
+    t.type===trainer.type&&
+    matchRematch(t)
   )||list.find(t=>t.name===trainer.name&&t.type===trainer.type);
 }
 
