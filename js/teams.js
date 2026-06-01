@@ -126,7 +126,7 @@ async function loadPokemonDb(opts={}){
     return false;
   }
   if(opts.quiet!==true&&typeof setStatusLoading==='function'){
-    setStatusLoading('Cargando Pokédex…');
+    setStatusLoading('Cargando Pokédex (puede tardar 1–2 min)…');
   }
   try{
     const db=await loadPokemonDbFromApi();

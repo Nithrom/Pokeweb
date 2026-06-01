@@ -82,14 +82,8 @@ function useApi() {
   return _useApi === true;
 }
 
-/** Pokédex completa (~varios MB). */
 async function loadPokemonDbFromApi() {
   return fetchApi('/db/pokemon', { timeout: 300000 });
-}
-
-/** Todos los entrenadores de todos los juegos con equipos. */
-async function loadAllTrainersFromApi() {
-  return fetchApi('/trainers?include_team=1', { timeout: 300000 });
 }
 
 window.getApiBase = getApiBase;
@@ -98,4 +92,3 @@ window.checkApiAvailable = checkApiAvailable;
 window.useApi = useApi;
 window.setStatusLoading = setStatusLoading;
 window.loadPokemonDbFromApi = loadPokemonDbFromApi;
-window.loadAllTrainersFromApi = loadAllTrainersFromApi;

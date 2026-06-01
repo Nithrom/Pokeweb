@@ -641,12 +641,13 @@ function trainerSelectGroupLabel(groupKey){
 
 function findTrainerInSorted(sorted,gameSlug,val){
   if(!val||!sorted)return null;
+  const idx=parseInt(val,10);
+  if(!isNaN(idx)&&sorted[idx]!=null)return sorted[idx];
   if(useApi()){
     const key=val.includes('/')?val:`${gameSlug}/${val}`;
     return sorted.find(t=>trainerOptionValue(gameSlug,t)===key)||null;
   }
-  const idx=parseInt(val);
-  return !isNaN(idx)?sorted[idx]:null;
+  return null;
 }
 
 function parseTeamByEeveelution(t,slug){
@@ -689,59 +690,26 @@ function normalizeTrainerFromApi(t,gameSlug){
   };
 }
 
-function groupTrainersByGame(allTrainers){
-  const byGame={};
-  for(const t of allTrainers||[]){
-    const slug=t.game_slug||t.gameSlug;
-    if(!slug)continue;
-    if(!byGame[slug])byGame[slug]=[];
-    byGame[slug].push(normalizeTrainerFromApi(t,slug));
-  }
-  return byGame;
-}
-
-function mergeJsonTeamsIntoDb(json){
-  if(!json||!TRAINERS_DB?.trainers)return;
-  for(const [slug,list] of Object.entries(TRAINERS_DB.trainers)){
-    TRAINERS_DB.trainers[slug]=list.map(t=>applyJsonTeam(t,slug,json));
-  }
-}
-
-async function loadTrainersBundleFromApi(){
-  const [games,allTrainers]=await Promise.all([
-    fetchApi('/games'),
-    loadAllTrainersFromApi(),
-  ]);
-  const trainers=groupTrainersByGame(allTrainers);
-  return{
-    games:games.map(g=>({
-      slug:g.slug,
-      name:g.name,
-      gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
-      region:g.region||'',
-      trainer_count:Number(g.trainer_count)||(trainers[g.slug]?.length||0),
-    })),
-    trainers,
-  };
-}
-
-function getTrainersForGame(slug){
-  return TRAINERS_DB?.trainers?.[slug]||[];
-}
-
 async function loadTrainersForGame(slug){
   if(!slug)return[];
-  const cached=getTrainersForGame(slug);
-  if(cached.length)return cached;
+  if(TRAINERS_DB?.trainers?.[slug]?.length){
+    return TRAINERS_DB.trainers[slug];
+  }
   if(!useApi()){
-    console.warn('loadTrainersForGame requiere API');
+    console.warn('loadTrainersForGame requiere API o trainers_db.json');
     return [];
   }
-  const list=await fetchApi(
-    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`,
-    {timeout:120000},
-  );
-  const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
+  let json=null;
+  try{
+    json=await ensureTrainersJson();
+  }catch(e){
+    console.warn('trainers_db.json:',e);
+  }
+  const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
+  const normalized=list.map(t=>{
+    const n=normalizeTrainerFromApi(t,slug);
+    return json?applyJsonTeam(n,slug,json):n;
+  });
   if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
   TRAINERS_DB.trainers[slug]=normalized;
   return normalized;
@@ -751,37 +719,47 @@ async function loadTrainersForGame(slug){
 async function initTrainers(){
   const bar=document.getElementById('status-bar');
   try{
-    const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
-    if(!apiOk){
-      throw new Error('API no disponible');
-    }
     if(typeof setStatusLoading==='function'){
-      setStatusLoading('Cargando base de datos completa (1–3 min)…');
+      setStatusLoading('Cargando base de datos (puede tardar 1–2 min)…');
     }
 
-    const loadDex=typeof loadPokemonDb==='function'
-      ?loadPokemonDb({quiet:true})
-      :new Promise(resolve=>{
-          let tries=0;
-          const tick=()=>{
-            if((DB&&allPokemon.length)||tries>=50)return resolve();
-            tries++;
-            setTimeout(tick,200);
+    if(typeof loadPokemonDb==='function'){
+      const dexOk=await loadPokemonDb({quiet:true});
+      if(dexOk===false)throw new Error('Pokédex no cargada');
+    }else{
+      let tries=0;
+      while((!DB||!allPokemon.length)&&tries<50){
+        await new Promise(r=>setTimeout(r,200));
+        tries++;
+      }
+    }
+
+    const json=await ensureTrainersJson();
+    const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
+
+    if(apiOk){
+      let apiGames=[];
+      try{
+        apiGames=await fetchApi('/games');
+      }catch(e){
+        console.warn('/games',e);
+      }
+      TRAINERS_DB={
+        games:(apiGames.length?apiGames:json.games).map(g=>{
+          const meta=json.games?.find(x=>x.slug===g.slug);
+          return{
+            slug:g.slug,
+            name:g.name||meta?.name,
+            gen:Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+            region:g.region||meta?.region||'',
+            trainer_count:Number(g.trainer_count)||Number(meta?.trainer_count)||0,
           };
-          tick();
-        });
-
-    const [dexOk,bundle,json]=await Promise.all([
-      loadDex,
-      loadTrainersBundleFromApi(),
-      ensureTrainersJson().catch(e=>{
-        console.warn('trainers_db.json no disponible',e);
-        return null;
-      }),
-    ]);
-
-    TRAINERS_DB=bundle;
-    if(json)mergeJsonTeamsIntoDb(json);
+        }),
+        trainers:json.trainers||{},
+      };
+    }else{
+      TRAINERS_DB=json;
+    }
 
     buildGameSelector();
     resetStarterSelector();
@@ -789,16 +767,10 @@ async function initTrainers(){
     resetDifficultySelector();
     resetEeveelutionSelector();
     refreshTrainersStatusBar();
-
-    if(dexOk===false){
-      if(bar)bar.textContent='Pokédex no cargada; entrenadores listos.';
-    }
   }catch(e){
     console.error('initTrainers',e);
     if(bar){
-      bar.textContent=e?.message?.includes('API')
-        ?'Sin API (arranca Flask con DATABASE_URL de Supabase).'
-        :'Error cargando la base de datos.';
+      bar.textContent='Error cargando la base de datos. Comprueba la API y data/trainers_db.json.';
     }
   }
 }
@@ -914,7 +886,17 @@ async function onGameChange(){
   resetDifficultySelector();
   resetEeveelutionSelector();
 
-  const trainers=getTrainersForGame(slug);
+  selTrainer.disabled=true;
+  selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
+
+  let trainers=[];
+  try{
+    trainers=await loadTrainersForGame(slug);
+  }catch(e){
+    console.error('onGameChange',slug,e);
+    selTrainer.innerHTML='<option value="">Error al cargar</option>';
+    return;
+  }
   if(!trainers.length){
     selTrainer.innerHTML='<option value="">Sin entrenadores</option>';
     selTrainer.disabled=true;
