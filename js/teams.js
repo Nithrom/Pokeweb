@@ -63,7 +63,7 @@ function bestMult(attacker,defender){
 }
 
 // ── Estado global ──
-let DB=null, allPokemon=[], pokemonByName=new Map();
+let DB=null, allPokemon=[];
 let RIVAL_TEAM='b'; // en trainers.html el equipo rival no es editable
 let IS_TRAINER_PAGE=false; // true en trainers.html
 const DEFAULT_TEAM_SIZE=6;
@@ -95,37 +95,21 @@ function showToast(msg,type='info'){
 // ══════════════════════════════
 //  INIT
 // ══════════════════════════════
-function _offensiveMoveCounts(moves){
-  let ph=0,sp=0;
-  for(const m of moves||[]){
-    const d=m.detail||{};
-    if(!d.power||d.category==='status')continue;
-    if(d.category==='physical')ph++;
-    else if(d.category==='special')sp++;
-  }
-  return{ph,sp};
-}
-
 function applyPokemonDb(db){
   DB=db;
-  pokemonByName.clear();
   allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
     let sprite=p.sprite||'';
     if(sprite&&sprite.includes('/pokemon/'+p.id+'.png'))
       sprite=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
-    const allMoves=(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
-      detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}));
-    const{ph,sp}=_offensiveMoveCounts(allMoves);
-    const row={
+    return{
       name,id:p.id,types:p.types,sprite,
       is_legendary:!!p.is_legendary,
       hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
       sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
       evolvesFrom:p.evolves_from||null,
-      allMoves,_offPh:ph,_offSp:sp,
+      allMoves:(p.moves||[]).map(m=>({name:m.name,byLevel:m.byLevel,level:m.level,
+        detail:m.detail||(DB.moves&&DB.moves[m.name])||{type:'normal',category:'status',power:null,accuracy:null,pp:null}}))
     };
-    pokemonByName.set(name,row);
-    return row;
   }).sort((a,b)=>a.id-b.id);
   _evolvesFromSet=null;
   if(IS_TRAINER_PAGE&&typeof refreshTrainersStatusBar==='function'){
@@ -136,19 +120,13 @@ function applyPokemonDb(db){
   }
 }
 
-function setStatusLoading(msg){
-  const bar=document.getElementById('status-bar');
-  if(bar)bar.innerHTML=`<span class="spinner"></span> ${msg}`;
-}
-
 async function loadPokemonDb(){
   if(typeof checkApiAvailable!=='function'||!await checkApiAvailable()){
     document.getElementById('status-bar').textContent='Sin API (arranca Flask y configura DATABASE_URL en Supabase).';
     return false;
   }
-  setStatusLoading('Cargando base de datos (puede tardar 1-2 min)...');
   try{
-    const db=await loadPokemonDbFromApi({full:true});
+    const db=await loadPokemonDbFromApi();
     applyPokemonDb(db);
     return true;
   }catch(e){
@@ -410,8 +388,8 @@ function applyPokeFilters(){
     if(q&&!p.name.includes(q)&&!formatName(p.name).toLowerCase().includes(q))return false;
     if(_mP.typeFilters.length>0&&!_mP.typeFilters.every(t=>p.types.includes(t)))return false;
     if(_mP.flags.legendary&&!p.is_legendary)return false;
-    if(_mP.flags.physical&&p._offPh<=p._offSp)return false;
-    if(_mP.flags.special&&p._offSp<=p._offPh)return false;
+    if(_mP.flags.physical){const mv=p.allMoves||[];const ph=mv.filter(m=>m.detail?.category==='physical'&&m.detail?.power).length;const sp=mv.filter(m=>m.detail?.category==='special'&&m.detail?.power).length;if(ph<=sp)return false;}
+    if(_mP.flags.special){const mv=p.allMoves||[];const ph=mv.filter(m=>m.detail?.category==='physical'&&m.detail?.power).length;const sp=mv.filter(m=>m.detail?.category==='special'&&m.detail?.power).length;if(sp<=ph)return false;}
     return true;
   });
   _mP.shown=BATCH;
@@ -500,7 +478,7 @@ function loadMorePokemon(){_mP.shown+=BATCH;renderPokeGrid();}
 
 function addFromModal(name){
   const team=_mP.team;
-  const p=pokemonByName.get(name);if(!p)return;
+  const p=allPokemon.find(x=>x.name===name);if(!p)return;
   // Si ya está en el equipo, quitarlo (toggle)
   const existIdx=teams[team].findIndex(s=>s&&s.name===name);
   if(existIdx!==-1){removeFromModal(name);return;}

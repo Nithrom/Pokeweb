@@ -659,35 +659,32 @@ function parseTeamByEeveelution(t,slug){
 }
 
 function normalizeTrainerFromApi(t,gameSlug){
-  const team=Array.isArray(t.team)?t.team:[];
   return{
     id:t.id,
     slug:t.slug,
     gameSlug:gameSlug||t.game_slug||'',
     name:t.name,
-    type:t.type||t.trainer_class||'other',
-    order:t.order??t.gym_order??0,
+    type:t.type,
+    order:t.order,
     region:t.region||null,
     location:t.location||'',
-    badge:t.badge||t.badge_name||'',
+    badge:t.badge||'',
     specialty:t.specialty||'',
-    sprite:t.sprite||t.sprite_url||'',
+    sprite:t.sprite,
     teamByStarter:t.teamByStarter||t.team_by_starter||null,
     teamByEeveelution:parseTeamByEeveelution(t,gameSlug),
-    team:team.map(m=>({
+    team:(t.team||[]).map(m=>({
       name:m.name,
-      name_display:m.name_es||m.name_display||formatName(m.name),
+      name_display:m.name_es||formatName(m.name),
       level:m.level,
       types:m.types_en||m.types||[],
-      moves:(Array.isArray(m.moves)?m.moves:[]).map(mv=>{
-        const rawName=typeof mv==='string'?mv:mv?.name;
-        if(!rawName)return null;
-        const moveSlug=normalizeMoveSlug(rawName);
+      moves:(m.moves||[]).map(mv=>{
+        const slug=normalizeMoveSlug(mv.name);
         return{
-          name:moveSlug,
-          name_display:mv.name_es||mv.name_display||formatName(moveSlug),
+          name:slug,
+          name_display:mv.name_es||mv.name_display||formatName(slug),
         };
-      }).filter(Boolean),
+      }),
     })),
   };
 }
@@ -701,50 +698,30 @@ async function loadTrainersForGame(slug){
   const list=await fetchApi(
     `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`
   );
-  if(!Array.isArray(list)){
-    throw new Error('La API no devolvió una lista de entrenadores');
-  }
   const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
   if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
   TRAINERS_DB.trainers[slug]=normalized;
   return normalized;
 }
 
-async function fetchTrainerWithTeam(gameSlug,trainer){
-  if(!useApi()||!trainer?.slug)return trainer;
-  try{
-    const full=await fetchApi(
-      `/trainers/${encodeURIComponent(gameSlug)}/${encodeURIComponent(trainer.slug)}`
-    );
-    return normalizeTrainerFromApi(full,gameSlug);
-  }catch(e){
-    console.warn('fetchTrainerWithTeam',e);
-    return trainer;
-  }
-}
-
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
+  if(typeof loadPokemonDb==='function'){
+    await loadPokemonDb();
+  }else{
+    let tries=0;
+    while((!DB||!allPokemon.length)&&tries<50){
+      await new Promise(r=>setTimeout(r,200));
+      tries++;
+    }
+  }
+
   try{
     const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
     if(!apiOk){
       throw new Error('API no disponible');
     }
-    if(typeof setStatusLoading==='function'){
-      setStatusLoading('Cargando base de datos (puede tardar 1-2 min)...');
-    }
-    const loadDex=typeof loadPokemonDb==='function'
-      ?loadPokemonDb()
-      :new Promise((resolve)=>{
-          let tries=0;
-          const tick=()=>{
-            if((DB&&allPokemon.length)||tries>=50)return resolve();
-            tries++;
-            setTimeout(tick,200);
-          };
-          tick();
-        });
-    const [,games]=await Promise.all([loadDex,fetchApi('/games')]);
+    const games=await fetchApi('/games');
     TRAINERS_DB={
       games:games.map(g=>({
         slug:g.slug,
@@ -754,7 +731,6 @@ async function initTrainers(){
         trainer_count:Number(g.trainer_count)||0,
       })),
       trainers:{},
-      _trainerTotal:games.reduce((s,g)=>s+(Number(g.trainer_count)||0),0),
     };
     buildGameSelector();
     resetStarterSelector();
@@ -879,16 +855,13 @@ async function onGameChange(){
   resetEeveelutionSelector();
 
   selTrainer.disabled=true;
-  selTrainer.innerHTML='<option value="">Cargando entrenadores (equipos)...</option>';
+  selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
 
   let trainers=[];
   try{
     trainers=await loadTrainersForGame(slug);
   }catch(e){
-    console.error('loadTrainersForGame',slug,e);
-    const hint=(e&&e.message)?e.message:'Error al cargar';
-    selTrainer.innerHTML=`<option value="">Error al cargar</option>`;
-    if(typeof showToast==='function')showToast(hint,'warn');
+    selTrainer.innerHTML='<option value="">Error al cargar</option>';
     return;
   }
 
@@ -998,10 +971,7 @@ function trimTeamByLevelCluster(team,trainerType,preferHighOverride){
 // ── Resolver nombre de pokémon del entrenador → pokemon_db ──
 function resolveTrainerPokemon(tp){
   if(!tp?.name)return null;
-  let p=(typeof pokemonByName!=='undefined'&&pokemonByName.get)
-    ?pokemonByName.get(tp.name)
-    :null;
-  if(!p)p=allPokemon.find(x=>x.name===tp.name);
+  let p=allPokemon.find(x=>x.name===tp.name);
   if(p)return p;
 
   const display=(tp.name_display||'').toLowerCase();
@@ -1042,9 +1012,6 @@ async function loadTrainer(){
   if(!trainer)return;
 
   if(useApi()){
-    const hasTeam=Array.isArray(trainer.team)&&trainer.team.length>0;
-    if(!hasTeam)trainer=await fetchTrainerWithTeam(slug,trainer);
-  }else{
     try{
       const json=await ensureTrainersJson();
       trainer=applyJsonTeam(trainer,slug,json);

@@ -27,7 +27,7 @@ function getApiBase() {
     _apiBase = POKEWEB_DEFAULT_PROD_API;
     return _apiBase;
   }
-  if (port === '8080' || port === '80') {
+  if (port === '8080' || port === '80' || port === '') {
     _apiBase = '/api';
     return _apiBase;
   }
@@ -42,34 +42,22 @@ function apiUrl(path) {
 }
 
 async function fetchApi(path, options = {}) {
-  const url = apiUrl(path);
-  let res;
-  try {
-    res = await fetch(url, {
-      ...options,
-      headers: { Accept: 'application/json', ...(options.headers || {}) },
-    });
-  } catch (e) {
-    const err = new Error(`Red: ${url} — ${e.message || e}`);
-    err.cause = e;
-    throw err;
-  }
+  const res = await fetch(apiUrl(path), {
+    ...options,
+    headers: { Accept: 'application/json', ...(options.headers || {}) },
+  });
   if (!res.ok) {
-    const err = new Error(`API ${res.status}: ${url}`);
+    const err = new Error(`API ${res.status}: ${path}`);
     err.status = res.status;
     throw err;
   }
-  const data = await res.json();
-  if (!Array.isArray(data) && path.includes('/trainers') && data?.error) {
-    throw new Error(data.error);
-  }
-  return data;
+  return res.json();
 }
 
 async function checkApiAvailable() {
   if (_useApi !== null) return _useApi;
   try {
-    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(12000) });
+    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(4000) });
     if (!h.ok) {
       _useApi = false;
       return false;
@@ -86,19 +74,8 @@ function useApi() {
   return _useApi === true;
 }
 
-async function loadPokemonDbFromApi(opts = {}) {
-  const lite = opts.lite && !opts.full ? '?lite=1' : '';
-  const url = apiUrl(`/db/pokemon${lite}`);
-  const res = await fetch(url, {
-    headers: { Accept: 'application/json' },
-    signal: AbortSignal.timeout(180000),
-  });
-  if (!res.ok) {
-    const err = new Error(`API ${res.status}: ${url}`);
-    err.status = res.status;
-    throw err;
-  }
-  return res.json();
+async function loadPokemonDbFromApi() {
+  return fetchApi('/db/pokemon');
 }
 
 window.getApiBase = getApiBase;

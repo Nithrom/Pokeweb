@@ -288,14 +288,7 @@ def effectiveness():
 # ── Juegos y entrenadores ───────────────────────────────────────────────────────
 @app.route('/games')
 def list_games():
-    return jsonify(query("""
-        SELECT g.id, g.slug, g.name, g.region, g.gen,
-               COUNT(tr.id)::int AS trainer_count
-        FROM games g
-        LEFT JOIN trainers tr ON tr.game_id = g.id
-        GROUP BY g.id, g.slug, g.name, g.region, g.gen
-        ORDER BY g.gen, g.id
-    """))
+    return jsonify(query('SELECT id, slug, name, region, gen FROM games ORDER BY gen, id'))
 
 
 TRAINER_LIST_ORDER = """
@@ -357,8 +350,7 @@ def list_trainers():
 
 @app.route('/db/pokemon')
 def db_pokemon():
-    """Exporta {pokemon, moves}. ?lite=1 omite movimientos por pokémon (más rápido en trainers)."""
-    lite = request.args.get('lite') in ('1', 'true', 'yes')
+    """Exporta {pokemon, moves} como pokemon_db.json (para teams.js / app.js)."""
     type_rows = query('SELECT id, name_en FROM types')
     type_en = {r['id']: r['name_en'] for r in type_rows}
 
@@ -402,28 +394,27 @@ def db_pokemon():
             'evolves_from': None,
         }
 
-    if not lite:
-        learn_rows = query("""
-            SELECT p.name AS pokemon_name, m.name AS move_name,
-                   pm.learn_method, pm.level
-            FROM pokemon_moves pm
-            JOIN pokemon p ON p.id = pm.pokemon_id
-            JOIN moves m ON m.id = pm.move_id
-            ORDER BY p.id, pm.learn_method, pm.level, m.name
-        """)
-        for row in learn_rows:
-            poke = pokemon_out.get(row['pokemon_name'])
-            if not poke:
-                continue
-            poke['moves'].append({
-                'name': row['move_name'],
-                'byLevel': row['learn_method'] == 'level-up',
-                'level': row['level'] or 0,
-            })
+    learn_rows = query("""
+        SELECT p.name AS pokemon_name, m.name AS move_name,
+               pm.learn_method, pm.level,
+               m.name_es, m.type_id, m.category, m.power, m.accuracy, m.pp
+        FROM pokemon_moves pm
+        JOIN pokemon p ON p.id = pm.pokemon_id
+        JOIN moves m ON m.id = pm.move_id
+        ORDER BY p.id, pm.learn_method, pm.level, m.name
+    """)
+    for row in learn_rows:
+        poke = pokemon_out.get(row['pokemon_name'])
+        if not poke:
+            continue
+        # Sin duplicar detail por movimiento (el cliente usa DB.moves[name])
+        poke['moves'].append({
+            'name': row['move_name'],
+            'byLevel': row['learn_method'] == 'level-up',
+            'level': row['level'] or 0,
+        })
 
-    resp = jsonify({'pokemon': pokemon_out, 'moves': moves_out})
-    resp.headers['Cache-Control'] = 'public, max-age=3600'
-    return resp
+    return jsonify({'pokemon': pokemon_out, 'moves': moves_out})
 
 
 @app.route('/trainer/<int:trainer_id>')
