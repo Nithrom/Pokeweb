@@ -1,93 +1,79 @@
-# Pokeweb en Supabase
+# Pokeweb — Supabase + Railway
 
-La fuente editable en repo es `data/pokemon_db.json` y `data/trainers_db.json` (solo desarrollo + import).  
-Supabase es lo que sirve la web en producción vía la API. No hace falta desplegar `data/` en el hosting estático.
+## Arquitectura simple (un repo en GitHub)
 
-## 1. Crear tablas en Supabase
+| Servicio Railway | Root directory | Qué hace |
+|------------------|----------------|----------|
+| **Web** (HTML) | `/` (raíz del repo) | `index.html`, `js/`, `css/` — sin carpeta `data/` |
+| **api-pokeweb** | `api/` | Flask + Gunicorn → Supabase |
 
-1. Abre tu proyecto en [Supabase](https://supabase.com).
-2. **SQL Editor** → New query.
-3. Pega y ejecuta todo el archivo [`sql/init.postgres.sql`](../sql/init.postgres.sql).
+La carpeta `api/` **sí debe estar en GitHub** (código + `Dockerfile`).  
+**No** subas `api/.env` (está en `.gitignore`).
 
-## 2. Configurar la API
+Variables solo en el servicio **api-pokeweb**:
 
-```powershell
-cd api
-copy .env.example .env
+| Variable | Valor |
+|----------|--------|
+| `DATABASE_URL` | URI de Supabase (Project Settings → Database → Connection string → URI) |
+
+En los HTML (`index.html`, `trainers.html`, `teams.html`):
+
+```html
+<script>window.POKEWEB_API_BASE = 'https://api-pokeweb.up.railway.app';</script>
 ```
 
-En `.env`, pon la **Connection string (URI)** de Supabase:
+Comprueba: `https://api-pokeweb.up.railway.app/health` → `"db":"connected"`, `"backend":"postgres"`.
 
-`Project Settings → Database → Connection string → URI`
+---
+
+## Datos
+
+- Edición: `data/*.json` + scripts `api/update_*.py` (local, opcional en Git).
+- Producción: **Supabase**, vía `import_db.py` desde tu PC.
+
+## 1. Tablas en Supabase (una vez)
+
+SQL Editor → ejecutar [`sql/init.postgres.sql`](../sql/init.postgres.sql).
+
+O en local: `cd api` → `python setup_supabase_schema.py` (con `DATABASE_URL` en `.env`).
+
+## 2. API local (`api/.env`)
 
 ```env
 DATABASE_URL=postgresql://postgres:...@db....supabase.co:5432/postgres
 ```
 
-Instala dependencias:
-
 ```powershell
+cd api
 pip install -r requirements.txt
 ```
 
-## 3. Importar datos (una vez o tras actualizar JSON)
-
-Desde la carpeta `api/`:
+## 3. Importar JSON → Supabase
 
 ```powershell
-# Import completo (pokémon + entrenadores). Tarda varios minutos por pokemon_db.json
+cd api
 python import_db.py --reset
-
-# Solo entrenadores (tras run_all_trainer_updates.py)
+# o solo entrenadores:
 python import_db.py --only trainers --reset
 ```
 
-Comprueba:
-
-```powershell
-python -c "import db; print(db.query_one('SELECT COUNT(*) AS n FROM trainers'))"
-```
-
-## 4. Arrancar la API
-
-```powershell
-python app.py
-```
-
-- Salud: http://127.0.0.1:5000/health → `"db": "connected"`, `"backend": "postgres"`
-- Estadísticas: http://127.0.0.1:5000/stats
-- Entrenadores: http://127.0.0.1:5000/trainers?game_slug=scarlet-violet
-
-La web (`trainers.html`, `teams.html`) usa la API si `/health` responde bien; si no, cae al JSON local.
-
-## 5. Deploy (Railway, Render, etc.)
-
-En el servicio **API** (p. ej. `api-pokeweb`), no solo la web estática:
-
-| Variable | Valor |
-|----------|--------|
-| `DATABASE_URL` | **Obligatoria.** Supabase → Project Settings → Database → Connection string → **URI** (`postgresql://postgres:...@db....supabase.co:5432/postgres`) |
-| `FLASK_ENV` | `production` (opcional) |
-
-Sin `DATABASE_URL`, `/health` intenta MariaDB en `127.0.0.1` y verás `Connection refused`.
-
-Tras guardar variables: **Redeploy** del servicio API.
-
-Comprueba: `https://TU-API.up.railway.app/health` → `"db":"connected"`, `"backend":"postgres"`.
-
-Tras cada cambio en `data/*.json` en el repo:
-
-1. Ejecuta `python import_db.py --only trainers` (o `--reset` completo) **con** `DATABASE_URL` apuntando a producción, **o**
-2. Automatiza el import en CI (cuidado con borrar `--reset` en prod).
-
-## Flujo habitual
+## 4. Tras cambiar entrenadores
 
 ```text
-Serebii / scripts update_*.py  →  data/trainers_db.json
-import_db.py                    →  Supabase (PostgreSQL)
-Flask app.py                    →  frontend vía /trainers, /pokemon, …
+api/update_*.py  →  data/trainers_db.json  →  import_db.py  →  Supabase
 ```
 
-## MariaDB local (opcional)
+No hace falta redeploy de la web por datos; sí mantener la API en Railway con `DATABASE_URL`.
 
-Si **no** defines `DATABASE_URL`, la API e `import_db.py` usan MariaDB (`DB_HOST`, etc.) y `sql/init.sql` como antes.
+## 5. Volver a subir `api/` a GitHub
+
+Si quitaste `api/` del repo y Railway ya no despliega la API:
+
+```powershell
+git add api/
+git add .gitignore docs/
+git commit -m "Restaurar api/ para Railway; quitar stack Docker/MariaDB"
+git push
+```
+
+En Railway → servicio **api-pokeweb** → Settings → **Root Directory** = `api` → Redeploy.
