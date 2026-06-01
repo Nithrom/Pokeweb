@@ -1,15 +1,13 @@
-# Build context: carpeta api/ (Root Directory en Railway = api)
-FROM python:3.12-alpine
+FROM python:3.15-rc-alpine3.22
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY api/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY api/ .
 
-RUN adduser -D -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
-
-ENV PORT=5000
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT} --timeout 120 --workers 1 app:app"]
+# Hot reload con flask --debug
+RUN useradd -U -u 1000 appuser && chown -R 1000:1000 /app
+USER 1000
+CMD ["flask", "--app", "app.py", "run", "--host=0.0.0.0", "--port=5000", "--debug"]

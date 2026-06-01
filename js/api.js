@@ -1,12 +1,9 @@
 // ══════════════════════════════════════════════════════
-//  api.js — Cliente REST → API Flask (Supabase / PostgreSQL o MariaDB local)
+//  api.js — Cliente REST → MariaDB (Flask)
 // ══════════════════════════════════════════════════════
 
 let _apiBase = null;
 let _useApi = null;
-
-/** API en producción (Railway); override con window.POKEWEB_API_BASE si cambia el dominio. */
-const POKEWEB_DEFAULT_PROD_API = 'https://api-pokeweb.up.railway.app';
 
 function getApiBase() {
   if (_apiBase) return _apiBase;
@@ -19,19 +16,15 @@ function getApiBase() {
     _apiBase = 'http://127.0.0.1:5000';
     return _apiBase;
   }
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    _apiBase = 'http://127.0.0.1:5000';
-    return _apiBase;
-  }
-  if (hostname.includes('railway.app')) {
-    _apiBase = POKEWEB_DEFAULT_PROD_API;
-    return _apiBase;
-  }
   if (port === '8080' || port === '80' || port === '') {
     _apiBase = '/api';
     return _apiBase;
   }
-  _apiBase = POKEWEB_DEFAULT_PROD_API;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    _apiBase = 'http://127.0.0.1:5000';
+    return _apiBase;
+  }
+  _apiBase = '/api';
   return _apiBase;
 }
 
@@ -41,18 +34,10 @@ function apiUrl(path) {
   return base ? `${base}${p}` : p;
 }
 
-function setStatusLoading(msg) {
-  const bar = document.getElementById('status-bar');
-  if (bar) bar.innerHTML = `<span class="spinner"></span> ${msg}`;
-}
-
 async function fetchApi(path, options = {}) {
-  const timeoutMs = options.timeout ?? 30000;
-  const { timeout: _t, ...fetchOpts } = options;
   const res = await fetch(apiUrl(path), {
-    ...fetchOpts,
-    headers: { Accept: 'application/json', ...(fetchOpts.headers || {}) },
-    signal: AbortSignal.timeout(timeoutMs),
+    ...options,
+    headers: { Accept: 'application/json', ...(options.headers || {}) },
   });
   if (!res.ok) {
     const err = new Error(`API ${res.status}: ${path}`);
@@ -62,10 +47,10 @@ async function fetchApi(path, options = {}) {
   return res.json();
 }
 
-async function checkApiAvailable(force = false) {
-  if (!force && _useApi !== null) return _useApi;
+async function checkApiAvailable() {
+  if (_useApi !== null) return _useApi;
   try {
-    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(12000) });
+    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(4000) });
     if (!h.ok) {
       _useApi = false;
       return false;
@@ -78,22 +63,16 @@ async function checkApiAvailable(force = false) {
   return _useApi;
 }
 
-function markApiConnected() {
-  _useApi = true;
-}
-
 function useApi() {
   return _useApi === true;
 }
 
 async function loadPokemonDbFromApi() {
-  return fetchApi('/db/pokemon', { timeout: 300000 });
+  return fetchApi('/db/pokemon');
 }
 
 window.getApiBase = getApiBase;
 window.fetchApi = fetchApi;
 window.checkApiAvailable = checkApiAvailable;
 window.useApi = useApi;
-window.setStatusLoading = setStatusLoading;
 window.loadPokemonDbFromApi = loadPokemonDbFromApi;
-window.markApiConnected = markApiConnected;

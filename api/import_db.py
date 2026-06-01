@@ -1,11 +1,7 @@
 """
-import_db.py — Importa pokemon_db.json y trainers_db.json a la BD
+import_db.py — Importa pokemon_db.json y trainers_db.json a MariaDB
 ====================================================================
-Supabase (PostgreSQL):
-  set DATABASE_URL=postgresql://postgres:PASSWORD@db.PROJECT.supabase.co:5432/postgres
-  python import_db.py --reset
-
-MariaDB local:
+Uso local (MariaDB en tu PC):
   set DB_HOST=127.0.0.1
   set DB_USER=pokeweb_user
   set DB_PASS=pokeweb_pass
@@ -38,11 +34,7 @@ import sys
 import time
 import unicodedata
 
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
-
-import db as database
+import pymysql
 
 # ── Rutas ─────────────────────────────────────────────────────────────────────
 API_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -71,8 +63,16 @@ def trainers_json_path() -> str | None:
     )
 
 
-# ── BD (ver api/db.py) ───────────────────────────────────────────────────────
-DB_CONFIG = database.DB_CONFIG
+# ── BD ────────────────────────────────────────────────────────────────────────
+DB_CONFIG = {
+    'host': os.environ.get('DB_HOST', '127.0.0.1'),
+    'port': int(os.environ.get('DB_PORT', 3306)),
+    'user': os.environ.get('DB_USER', 'pokeweb_user'),
+    'password': os.environ.get('DB_PASS', 'pokeweb_pass'),
+    'database': os.environ.get('DB_NAME', 'pokeweb'),
+    'charset': 'utf8mb4',
+    'cursorclass': pymysql.cursors.DictCursor,
+}
 
 TIPOS_ES = {
     'normal': 'Normal', 'fighting': 'Lucha', 'flying': 'Volador', 'poison': 'Veneno',
@@ -321,7 +321,7 @@ def ensure_schema(cur, conn) -> None:
         try:
             cur.execute('ALTER TABLE games MODIFY slug VARCHAR(40) NOT NULL')
             cur.execute('ALTER TABLE games ADD UNIQUE KEY uq_games_slug (slug)')
-        except Exception:
+        except pymysql.err.OperationalError:
             pass
         conn.commit()
 
@@ -362,7 +362,7 @@ def ensure_schema(cur, conn) -> None:
         conn.commit()
         try:
             cur.execute('ALTER TABLE trainers ADD UNIQUE KEY uq_trainer_game_slug (game_id, slug)')
-        except Exception:
+        except pymysql.err.OperationalError:
             pass
         conn.commit()
 
@@ -371,43 +371,39 @@ def ensure_schema(cur, conn) -> None:
 
 
 def wait_for_db(max_tries: int = 20) -> None:
-    label = database.health_label() if database.is_postgres() else DB_CONFIG['host']
-    print(f'Conectando a BD ({label})...', end='', flush=True)
+    print(f'Conectando a MariaDB ({DB_CONFIG["host"]})...', end='', flush=True)
     for _ in range(max_tries):
         try:
-            conn = database.connect()
+            conn = pymysql.connect(**DB_CONFIG)
             conn.close()
             print(' OK')
             return
         except Exception:
             print('.', end='', flush=True)
             time.sleep(2)
-    print('\nERROR: no se pudo conectar. Revisa DATABASE_URL o DB_HOST.')
+    print('\nERROR: no se pudo conectar. Revisa DB_HOST, usuario y contraseña.')
     sys.exit(1)
 
 
 def reset_tables(cur, conn, scope: str = 'all') -> None:
     if scope == 'pokemon':
         tables = RESET_POKEMON
-        print('AVISO: --reset --only pokemon -> se borran pokemon, movimientos y tipos.')
+        print('AVISO: --reset --only pokemon → se borran pokémon, movimientos y tipos.')
     elif scope == 'trainers':
         tables = RESET_TRAINERS
-        print('AVISO: --reset --only trainers -> NO se borra pokemon (solo entrenadores/juegos).')
+        print('AVISO: --reset --only trainers → NO se borra pokemon (solo entrenadores/juegos).')
     else:
         tables = RESET_ALL
-        print('AVISO: --reset (import completo) -> se borra TODA la base (pokemon + entrenadores).')
+        print('AVISO: --reset (import completo) → se borra TODA la base (pokémon + entrenadores).')
     print(f'Borrando datos ({scope})...')
-    if database.is_postgres():
-        database.truncate_tables(tables)
-    else:
-        for table in tables:
-            if not re.match(r'^[a-zA-Z0-9_]+$', table):
-                raise ValueError(f'Tabla inválida: {table}')
-            cur.execute(f'DELETE FROM {table}')
-        for table in ('trainer_pokemon', 'trainers', 'games'):
-            if table in tables:
-                reset_table_autoincrement(cur, table)
-        conn.commit()
+    for table in tables:
+        if not re.match(r'^[a-zA-Z0-9_]+$', table):
+            raise ValueError(f'Tabla inválida: {table}')
+        cur.execute(f'DELETE FROM {table}')
+    for table in ('trainer_pokemon', 'trainers', 'games'):
+        if table in tables:
+            reset_table_autoincrement(cur, table)
+    conn.commit()
     print('  Tablas vaciadas.')
 
 
@@ -415,7 +411,7 @@ def import_types_and_effectiveness(cur, conn) -> dict[str, int]:
     print('\n[tipos] Insertando...')
     for name_en, name_es in TIPOS_ES.items():
         cur.execute(
-            database.insert_ignore_types(),
+            'INSERT IGNORE INTO types (name_en, name_es) VALUES (%s,%s)',
             (name_en, name_es),
         )
     conn.commit()
@@ -431,7 +427,11 @@ def import_types_and_effectiveness(cur, conn) -> dict[str, int]:
             did = type_id_map.get(deftype)
             if did:
                 rows.append((aid, did, int(mult * 100)))
-    cur.executemany(database.upsert_type_effectiveness(), rows)
+    cur.executemany(
+        '''INSERT INTO type_effectiveness (attack_type_id, defend_type_id, multiplier)
+           VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE multiplier=VALUES(multiplier)''',
+        rows,
+    )
     conn.commit()
     print(f'  {len(type_id_map)} tipos, {len(rows)} efectividades')
     return type_id_map
@@ -448,7 +448,8 @@ def ensure_move(cur, conn, move_id_map: dict, type_id_map: dict,
         cat = 'status'
     name_es = det.get('name_es') or name.replace('-', ' ').title()
     cur.execute(
-        database.insert_ignore_moves(),
+        '''INSERT IGNORE INTO moves (name, name_es, type_id, category, power, accuracy, pp)
+           VALUES (%s,%s,%s,%s,%s,%s,%s)''',
         (name, name_es, tid, cat, det.get('power'), det.get('accuracy'), det.get('pp')),
     )
     conn.commit()
@@ -475,7 +476,8 @@ def import_moves(cur, conn, moves_data: dict, type_id_map: dict) -> dict[str, in
         ))
     for i in range(0, len(move_rows), 500):
         cur.executemany(
-            database.insert_ignore_moves(),
+            '''INSERT IGNORE INTO moves (name, name_es, type_id, category, power, accuracy, pp)
+               VALUES (%s,%s,%s,%s,%s,%s,%s)''',
             move_rows[i:i + 500],
         )
     conn.commit()
@@ -515,15 +517,24 @@ def import_pokemon(cur, conn, pokemon_data: dict, type_id_map: dict,
             sp_defense = pdata.get('sp_defense', pdata.get('special_defense', pdata.get('spdef', 0)))
             speed = pdata.get('speed', 0)
 
-        is_legendary = bool(
+        is_legendary = int(bool(
             pdata.get('is_legendary') or pdata.get('isLegendary')
             or pdata.get('legendary')
             or pdata.get('species', {}).get('is_legendary', False)
-        )
+        ))
         evo_fam = pid if pid in EVO_FAMILY_IDS else None
 
         cur.execute(
-            database.upsert_pokemon(),
+            '''INSERT INTO pokemon
+               (id, name, name_es, sprite_url, hp, attack, defense,
+                sp_attack, sp_defense, speed, is_legendary, evo_family_id)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+               ON DUPLICATE KEY UPDATE
+                 name_es=VALUES(name_es), sprite_url=VALUES(sprite_url),
+                 hp=VALUES(hp), attack=VALUES(attack), defense=VALUES(defense),
+                 sp_attack=VALUES(sp_attack), sp_defense=VALUES(sp_defense),
+                 speed=VALUES(speed), is_legendary=VALUES(is_legendary),
+                 evo_family_id=VALUES(evo_family_id)''',
             (pid, name, name_es, sprite,
              hp, attack, defense, sp_attack, sp_defense, speed,
              is_legendary, evo_fam),
@@ -533,7 +544,7 @@ def import_pokemon(cur, conn, pokemon_data: dict, type_id_map: dict,
             tid = type_id_map.get(type_en)
             if tid:
                 cur.execute(
-                    database.insert_ignore_pokemon_types(),
+                    'INSERT IGNORE INTO pokemon_types (pokemon_id,type_id,slot) VALUES(%s,%s,%s)',
                     (pid, tid, slot),
                 )
 
@@ -553,7 +564,8 @@ def import_pokemon(cur, conn, pokemon_data: dict, type_id_map: dict,
 
         if pm_rows:
             cur.executemany(
-                database.insert_ignore_pokemon_moves(),
+                '''INSERT IGNORE INTO pokemon_moves (pokemon_id,move_id,learn_method,level)
+                   VALUES(%s,%s,%s,%s)''',
                 pm_rows,
             )
 
@@ -596,14 +608,15 @@ def delete_trainer_row(cur, trainer_id: int) -> None:
 def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
                     move_id_map: dict, type_id_map: dict, moves_data: dict) -> None:
     print('[entrenadores] Insertando juegos y equipos...')
-    if not database.is_postgres():
-        ensure_games_schema(cur, conn)
+    ensure_games_schema(cur, conn)
     games_meta = {g['slug']: g for g in trainers_db.get('games', [])}
     game_id_by_slug: dict[str, int] = {}
 
     for slug, meta in games_meta.items():
         cur.execute(
-            database.upsert_game(),
+            '''INSERT INTO games (slug, name, region, gen)
+               VALUES (%s,%s,%s,%s)
+               ON DUPLICATE KEY UPDATE name=VALUES(name), region=VALUES(region), gen=VALUES(gen)''',
             (slug, meta['name'], meta.get('region', ''), meta.get('gen', 0)),
         )
     conn.commit()
@@ -641,7 +654,16 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
             tbs_json = json.dumps(tbs, ensure_ascii=False) if tbs else None
 
             cur.execute(
-                database.upsert_trainer(),
+                '''INSERT INTO trainers
+                   (slug, name, name_es, trainer_class, game_id, gym_order,
+                    badge_name, specialty, location, sprite_url, team_by_starter)
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   ON DUPLICATE KEY UPDATE
+                     name=VALUES(name), name_es=VALUES(name_es),
+                     trainer_class=VALUES(trainer_class), gym_order=VALUES(gym_order),
+                     badge_name=VALUES(badge_name), specialty=VALUES(specialty),
+                     location=VALUES(location), sprite_url=VALUES(sprite_url),
+                     team_by_starter=VALUES(team_by_starter)''',
                 (tslug, name, name_es, tclass, game_id, order,
                  badge, specialty, location, sprite, tbs_json),
             )
@@ -663,20 +685,12 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
                     missing_mons.add(pname)
                     continue
                 level = mon.get('level') or 50
-                if database.is_postgres():
-                    cur.execute(
-                        '''INSERT INTO trainer_pokemon (trainer_id, pokemon_id, level, slot)
-                           VALUES (%s,%s,%s,%s) RETURNING id''',
-                        (trainer_id, pid, level, slot),
-                    )
-                    tp_id = cur.fetchone()['id']
-                else:
-                    cur.execute(
-                        '''INSERT INTO trainer_pokemon (trainer_id, pokemon_id, level, slot)
-                           VALUES (%s,%s,%s,%s)''',
-                        (trainer_id, pid, level, slot),
-                    )
-                    tp_id = cur.lastrowid
+                cur.execute(
+                    '''INSERT INTO trainer_pokemon (trainer_id, pokemon_id, level, slot)
+                       VALUES (%s,%s,%s,%s)''',
+                    (trainer_id, pid, level, slot),
+                )
+                tp_id = cur.lastrowid
 
                 for mslot, mv in enumerate(mon.get('moves') or [], 1):
                     mname = normalize_move_slug(mv.get('name') or '')
@@ -692,7 +706,9 @@ def import_trainers(cur, conn, trainers_db: dict, name_to_id: dict[str, int],
                         missing_moves.add(mname)
                         continue
                     cur.execute(
-                        database.upsert_trainer_pokemon_move(),
+                        '''INSERT INTO trainer_pokemon_moves (trainer_pokemon_id, move_id, slot)
+                           VALUES (%s,%s,%s)
+                           ON DUPLICATE KEY UPDATE move_id=VALUES(move_id)''',
                         (tp_id, mid, mslot),
                     )
 
@@ -725,15 +741,14 @@ def print_stats(cur) -> None:
         cur.execute(f'SELECT COUNT(*) AS n FROM {table}')
         return cur.fetchone()['n']
 
-    backend = 'PostgreSQL (Supabase)' if database.is_postgres() else 'MariaDB'
-    print(f'\n=== Resumen en {backend} ===')
+    print('\n=== Resumen en MariaDB ===')
     for t in ('types', 'pokemon', 'moves', 'pokemon_moves', 'games', 'trainers',
               'trainer_pokemon', 'trainer_pokemon_moves'):
         print(f'  {t:24} {count(t)}')
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Importar Pokeweb JSON a BD (Supabase/MariaDB)')
+    parser = argparse.ArgumentParser(description='Importar Pokeweb JSON → MariaDB')
     parser.add_argument('--reset', action='store_true', help='Vaciar tablas antes de importar')
     parser.add_argument('--only', choices=('pokemon', 'trainers', 'all'), default='all')
     args = parser.parse_args()
@@ -749,67 +764,65 @@ def main() -> None:
         sys.exit(1)
 
     wait_for_db()
-    conn = database.connect()
-    with database.cursor(conn) as cur:
-        if not database.is_postgres():
-            ensure_schema(cur, conn)
-        else:
-            print('[esquema] PostgreSQL/Supabase — ejecuta sql/init.postgres.sql en el panel si es instalación nueva.')
+    conn = pymysql.connect(**DB_CONFIG)
+    cur = conn.cursor()
+    ensure_schema(cur, conn)
 
-        if args.reset:
-            reset_tables(cur, conn, scope=args.only)
+    if args.reset:
+        reset_tables(cur, conn, scope=args.only)
 
-        pokemon_data = {}
-        moves_data = {}
-        trainers_db = {}
-        name_to_id: dict[str, int] = {}
+    pokemon_data = {}
+    moves_data = {}
+    trainers_db = {}
+    name_to_id: dict[str, int] = {}
 
-        if args.only in ('pokemon', 'all'):
-            print(f'Leyendo {poke_path}...')
+    if args.only in ('pokemon', 'all'):
+        print(f'Leyendo {poke_path}...')
+        with open(poke_path, encoding='utf-8') as f:
+            db_json = json.load(f)
+        pokemon_data = db_json.get('pokemon', {})
+        moves_data = db_json.get('moves', {})
+        print(f'  {len(pokemon_data)} pokémon, {len(moves_data)} movimientos')
+
+        type_id_map = import_types_and_effectiveness(cur, conn)
+        move_id_map = import_moves(cur, conn, moves_data, type_id_map)
+        name_to_id = import_pokemon(cur, conn, pokemon_data, type_id_map, move_id_map, moves_data)
+
+    if args.only in ('trainers', 'all'):
+        if not name_to_id:
+            cur.execute('SELECT id, name FROM pokemon')
+            name_to_id = {r['name']: r['id'] for r in cur.fetchall()}
+        cur.execute('SELECT id, name FROM moves')
+        move_id_map = {r['name']: r['id'] for r in cur.fetchall()}
+        cur.execute('SELECT id, name_en FROM types')
+        type_id_map = {r['name_en']: r['id'] for r in cur.fetchall()}
+
+        print(f'Leyendo {train_path}...')
+        with open(train_path, encoding='utf-8') as f:
+            trainers_db = json.load(f)
+        if poke_path and not moves_data:
             with open(poke_path, encoding='utf-8') as f:
-                db_json = json.load(f)
-            pokemon_data = db_json.get('pokemon', {})
-            moves_data = db_json.get('moves', {})
-            print(f'  {len(pokemon_data)} pokémon, {len(moves_data)} movimientos')
+                moves_data = json.load(f).get('moves', {})
 
-            type_id_map = import_types_and_effectiveness(cur, conn)
-            move_id_map = import_moves(cur, conn, moves_data, type_id_map)
-            name_to_id = import_pokemon(cur, conn, pokemon_data, type_id_map, move_id_map, moves_data)
+        import_trainers(cur, conn, trainers_db, name_to_id, move_id_map, type_id_map, moves_data)
 
-        if args.only in ('trainers', 'all'):
-            if not name_to_id:
-                cur.execute('SELECT id, name FROM pokemon')
-                name_to_id = {r['name']: r['id'] for r in cur.fetchall()}
-            cur.execute('SELECT id, name FROM moves')
-            move_id_map = {r['name']: r['id'] for r in cur.fetchall()}
-            cur.execute('SELECT id, name_en FROM types')
-            type_id_map = {r['name_en']: r['id'] for r in cur.fetchall()}
+    print_stats(cur)
 
-            print(f'Leyendo {train_path}...')
-            with open(train_path, encoding='utf-8') as f:
-                trainers_db = json.load(f)
-            if poke_path and not moves_data:
-                with open(poke_path, encoding='utf-8') as f:
-                    moves_data = json.load(f).get('moves', {})
+    cur.execute('SELECT COUNT(*) AS n FROM pokemon')
+    n_poke = cur.fetchone()['n']
+    if args.only in ('pokemon', 'all') and n_poke == 0:
+        print('\nERROR: tabla pokemon vacía tras el import. Revisa pokemon_db.json y vuelve a ejecutar:')
+        print('  python import_db.py --only pokemon --reset')
+        sys.exit(1)
+    if args.only in ('trainers', 'all') and n_poke == 0:
+        print('\nAVISO: hay 0 pokémon en MariaDB. Importa primero:')
+        print('  python import_db.py --only pokemon --reset')
 
-            import_trainers(cur, conn, trainers_db, name_to_id, move_id_map, type_id_map, moves_data)
+    print('\nPrueba: http://127.0.0.1:5000/health')
+    print('        http://127.0.0.1:5000/stats')
+    print('        http://127.0.0.1:5000/trainers?game_slug=red-blue')
 
-        print_stats(cur)
-
-        cur.execute('SELECT COUNT(*) AS n FROM pokemon')
-        n_poke = cur.fetchone()['n']
-        if args.only in ('pokemon', 'all') and n_poke == 0:
-            print('\nERROR: tabla pokemon vacía tras el import. Revisa pokemon_db.json y vuelve a ejecutar:')
-            print('  python import_db.py --only pokemon --reset')
-            sys.exit(1)
-        if args.only in ('trainers', 'all') and n_poke == 0:
-            print('\nAVISO: hay 0 pokémon en la BD. Importa primero:')
-            print('  python import_db.py --only pokemon --reset')
-
-        print('\nPrueba: http://127.0.0.1:5000/health')
-        print('        http://127.0.0.1:5000/stats')
-        print('        http://127.0.0.1:5000/trainers?game_slug=red-blue')
-
+    cur.close()
     conn.close()
 
 

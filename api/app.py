@@ -1,5 +1,5 @@
 """
-Pokeweb API — Flask + PostgreSQL (Supabase) / MariaDB (local)
+Pokeweb API — Flask + MariaDB
 Endpoints:
   GET  /health, /stats
   GET  /pokemon, /pokemon/<name>, /pokemon/<name>/moves
@@ -14,31 +14,57 @@ import json as _json
 import os
 import re
 
-from dotenv import load_dotenv
+import pymysql
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-
-import db as database
-from move_gen_types import resolve_move_type
-
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-GC = database.group_concat
+DB_CONFIG = {
+    'host': os.environ.get('DB_HOST', '127.0.0.1'),
+    'port': int(os.environ.get('DB_PORT', 3306)),
+    'user': os.environ.get('DB_USER', 'pokeweb_user'),
+    'password': os.environ.get('DB_PASS', 'pokeweb_pass'),
+    'database': os.environ.get('DB_NAME', 'pokeweb'),
+    'charset': 'utf8mb4',
+    'cursorclass': pymysql.cursors.DictCursor,
+}
+
+
+def get_db():
+    return pymysql.connect(**DB_CONFIG)
 
 
 def query(sql, params=None):
-    return database.query(sql, params)
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(sql, params or ())
+            return cur.fetchall()
+    finally:
+        db.close()
 
 
 def query_one(sql, params=None):
-    return database.query_one(sql, params)
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(sql, params or ())
+            return cur.fetchone()
+    finally:
+        db.close()
 
 
 def execute(sql, params=None):
-    return database.execute(sql, params)
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(sql, params or ())
+            db.commit()
+            return cur.lastrowid
+    finally:
+        db.close()
 
 
 def split_types(row, key_en='types_en', key_es='types_es'):
@@ -49,8 +75,8 @@ def split_types(row, key_en='types_en', key_es='types_es'):
     return row
 
 
-def format_trainer_moves(tp_id: int, game_gen: int = 0) -> list:
-    rows = query("""
+def format_trainer_moves(tp_id: int) -> list:
+    return query("""
         SELECT m.name, m.name_es, t.name_en AS type_en, t.name_es AS type_es,
                m.category, m.power, m.accuracy, m.pp, tpm.slot
         FROM trainer_pokemon_moves tpm
@@ -59,30 +85,24 @@ def format_trainer_moves(tp_id: int, game_gen: int = 0) -> list:
         WHERE tpm.trainer_pokemon_id = %s
         ORDER BY tpm.slot
     """, (tp_id,))
-    for row in rows:
-        row['type_en'] = resolve_move_type(
-            row['name'], game_gen, row.get('type_en') or 'normal',
-        )
-    return rows
 
 
-def trainer_team_rows(trainer_id: int, game_gen: int = 0) -> list:
-    team = query(f"""
+def trainer_team_rows(trainer_id: int) -> list:
+    team = query("""
         SELECT tp.id, tp.slot, tp.level,
                p.id AS pokemon_id, p.name, p.name_es, p.sprite_url,
-               {GC('t.name_en', 'pt.slot')} AS types_en,
-               {GC('t.name_es', 'pt.slot')} AS types_es
+               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
+               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
         FROM trainer_pokemon tp
         JOIN pokemon p ON p.id = tp.pokemon_id
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
         WHERE tp.trainer_id = %s
-        GROUP BY tp.id, tp.slot, tp.level, p.id, p.name, p.name_es, p.sprite_url
-        ORDER BY tp.slot
+        GROUP BY tp.id ORDER BY tp.slot
     """, (trainer_id,))
     for member in team:
         split_types(member)
-        member['moves'] = format_trainer_moves(member['id'], game_gen)
+        member['moves'] = format_trainer_moves(member['id'])
         del member['id']
     return team
 
@@ -140,8 +160,7 @@ def trainer_to_json(tr: dict, include_team: bool = False) -> dict:
     if tbs:
         out['teamByStarter'] = tbs
     if include_team:
-        game_gen = int(tr.get('game_gen') or tr.get('gen') or 0)
-        out['team'] = trainer_team_rows(tr['id'], game_gen)
+        out['team'] = trainer_team_rows(tr['id'])
     return out
 
 
@@ -161,12 +180,7 @@ def index():
 def health():
     try:
         query_one('SELECT 1')
-        return jsonify({
-            'status': 'ok',
-            'db': 'connected',
-            'backend': database.BACKEND,
-            'host': database.health_label(),
-        })
+        return jsonify({'status': 'ok', 'db': 'connected', 'host': DB_CONFIG['host']})
     except Exception as e:
         return jsonify({'status': 'error', 'detail': str(e)}), 500
 
@@ -191,10 +205,10 @@ def stats():
 # ── Pokémon ───────────────────────────────────────────────────────────────────
 @app.route('/pokemon')
 def list_pokemon():
-    rows = query(f"""
+    rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               {GC('t.name_en', 'pt.slot')} AS types_en,
-               {GC('t.name_es', 'pt.slot')} AS types_es
+               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
+               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
         FROM pokemon p
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
@@ -206,9 +220,9 @@ def list_pokemon():
 
 @app.route('/pokemon/<name>')
 def get_pokemon(name):
-    p = query_one(f"""
-        SELECT p.*, {GC('t.name_en', 'pt.slot')} AS types_en,
-               {GC('t.name_es', 'pt.slot')} AS types_es
+    p = query_one("""
+        SELECT p.*, GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en,
+               GROUP_CONCAT(t.name_es ORDER BY pt.slot) AS types_es
         FROM pokemon p
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
@@ -239,10 +253,10 @@ def get_pokemon_moves(name):
 # ── Tipos ─────────────────────────────────────────────────────────────────────
 @app.route('/type/<type_name>')
 def pokemon_by_type(type_name):
-    rows = query(f"""
+    rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               {GC('t2.name_en', 'pt2.slot')} AS types_en,
-               {GC('t2.name_es', 'pt2.slot')} AS types_es
+               GROUP_CONCAT(t2.name_en ORDER BY pt2.slot) AS types_en,
+               GROUP_CONCAT(t2.name_es ORDER BY pt2.slot) AS types_es
         FROM pokemon p
         JOIN pokemon_types pt  ON pt.pokemon_id  = p.id
         JOIN types t           ON t.id           = pt.type_id  AND t.name_en = %s
@@ -257,9 +271,9 @@ def pokemon_by_type(type_name):
 
 @app.route('/type/<t1>/<t2>')
 def pokemon_by_dual_type(t1, t2):
-    rows = query(f"""
+    rows = query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
-               {GC('t.name_en', 'pt.slot')} AS types_en
+               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
         FROM pokemon p
         JOIN pokemon_types pt1 ON pt1.pokemon_id = p.id
         JOIN types ty1 ON ty1.id = pt1.type_id AND ty1.name_en = %s
@@ -288,14 +302,7 @@ def effectiveness():
 # ── Juegos y entrenadores ───────────────────────────────────────────────────────
 @app.route('/games')
 def list_games():
-    return jsonify(query("""
-        SELECT g.id, g.slug, g.name, g.region, g.gen,
-               COUNT(tr.id)::int AS trainer_count
-        FROM games g
-        LEFT JOIN trainers tr ON tr.game_id = g.id
-        GROUP BY g.id, g.slug, g.name, g.region, g.gen
-        ORDER BY g.gen, g.id
-    """))
+    return jsonify(query('SELECT id, slug, name, region, gen FROM games ORDER BY gen, id'))
 
 
 TRAINER_LIST_ORDER = """
@@ -320,7 +327,7 @@ def list_trainers():
     include_team = request.args.get('include_team') in ('1', 'true', 'yes')
     if game_slug:
         rows = query(f"""
-            SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+            SELECT tr.*, g.slug AS game_slug
             FROM trainers tr
             JOIN games g ON g.id = tr.game_id
             WHERE g.slug = %s
@@ -328,7 +335,7 @@ def list_trainers():
         """, (game_slug,))
     elif game_id:
         rows = query(f"""
-            SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+            SELECT tr.*, g.slug AS game_slug
             FROM trainers tr
             JOIN games g ON g.id = tr.game_id
             WHERE tr.game_id = %s
@@ -336,7 +343,7 @@ def list_trainers():
         """, (game_id,))
     else:
         rows = query(f"""
-            SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+            SELECT tr.*, g.slug AS game_slug
             FROM trainers tr
             JOIN games g ON g.id = tr.game_id
             ORDER BY g.gen, g.id,
@@ -374,10 +381,10 @@ def db_pokemon():
         }
 
     pokemon_out = {}
-    for p in query(f"""
+    for p in query("""
         SELECT p.id, p.name, p.name_es, p.sprite_url, p.hp, p.attack, p.defense,
                p.sp_attack, p.sp_defense, p.speed, p.is_legendary,
-               {GC('t.name_en', 'pt.slot')} AS types_en
+               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
         FROM pokemon p
         LEFT JOIN pokemon_types pt ON pt.pokemon_id = p.id
         LEFT JOIN types t ON t.id = pt.type_id
@@ -427,7 +434,7 @@ def db_pokemon():
 @app.route('/trainer/<int:trainer_id>')
 def get_trainer(trainer_id):
     tr = query_one("""
-        SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+        SELECT tr.*, g.slug AS game_slug
         FROM trainers tr
         JOIN games g ON g.id = tr.game_id
         WHERE tr.id = %s
@@ -440,7 +447,7 @@ def get_trainer(trainer_id):
 @app.route('/trainers/<game_slug>/<trainer_slug>')
 def get_trainer_by_slug(game_slug, trainer_slug):
     tr = query_one("""
-        SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+        SELECT tr.*, g.slug AS game_slug
         FROM trainers tr
         JOIN games g ON g.id = tr.game_id
         WHERE g.slug = %s AND tr.slug = %s
@@ -454,7 +461,7 @@ def get_trainer_by_slug(game_slug, trainer_slug):
 def list_trainers_for_game(game_slug):
     """Todos los entrenadores de un juego con equipo (payload grande)."""
     rows = query("""
-        SELECT tr.*, g.slug AS game_slug, g.gen AS game_gen
+        SELECT tr.*, g.slug AS game_slug
         FROM trainers tr
         JOIN games g ON g.id = tr.game_id
         WHERE g.slug = %s
@@ -468,9 +475,9 @@ def list_trainers_for_game(game_slug):
 def create_team():
     data = request.json or {}
     name = data.get('name', 'Mi equipo')
-    team_id = database.execute_returning_id('INSERT INTO user_teams (name) VALUES (%s)', (name,))
+    team_id = execute('INSERT INTO user_teams (name) VALUES (%s)', (name,))
     for slot, member in enumerate(data.get('pokemon', []), 1):
-        tp_id = database.execute_returning_id(
+        tp_id = execute(
             'INSERT INTO user_team_pokemon (team_id, pokemon_id, slot) VALUES (%s,%s,%s)',
             (team_id, member['pokemon_id'], slot),
         )
@@ -487,9 +494,9 @@ def get_team(team_id):
     team = query_one('SELECT * FROM user_teams WHERE id=%s', (team_id,))
     if not team:
         return jsonify({'error': 'Not found'}), 404
-    members = query(f"""
+    members = query("""
         SELECT utp.id, utp.slot, p.name, p.name_es, p.sprite_url,
-               {GC('t.name_en', 'pt.slot')} AS types_en
+               GROUP_CONCAT(t.name_en ORDER BY pt.slot) AS types_en
         FROM user_team_pokemon utp
         JOIN pokemon p ON p.id = utp.pokemon_id
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
