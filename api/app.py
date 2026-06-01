@@ -77,7 +77,8 @@ def trainer_team_rows(trainer_id: int, game_gen: int = 0) -> list:
         JOIN pokemon_types pt ON pt.pokemon_id = p.id
         JOIN types t ON t.id = pt.type_id
         WHERE tp.trainer_id = %s
-        GROUP BY tp.id ORDER BY tp.slot
+        GROUP BY tp.id, tp.slot, tp.level, p.id, p.name, p.name_es, p.sprite_url
+        ORDER BY tp.slot
     """, (trainer_id,))
     for member in team:
         split_types(member)

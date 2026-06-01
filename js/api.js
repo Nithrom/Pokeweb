@@ -87,8 +87,18 @@ function useApi() {
 }
 
 async function loadPokemonDbFromApi(opts = {}) {
-  const lite = opts.lite ? '?lite=1' : '';
-  return fetchApi(`/db/pokemon${lite}`);
+  const lite = opts.lite && !opts.full ? '?lite=1' : '';
+  const url = apiUrl(`/db/pokemon${lite}`);
+  const res = await fetch(url, {
+    headers: { Accept: 'application/json' },
+    signal: AbortSignal.timeout(180000),
+  });
+  if (!res.ok) {
+    const err = new Error(`API ${res.status}: ${url}`);
+    err.status = res.status;
+    throw err;
+  }
+  return res.json();
 }
 
 window.getApiBase = getApiBase;

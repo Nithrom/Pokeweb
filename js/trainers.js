@@ -698,7 +698,9 @@ async function loadTrainersForGame(slug){
     console.warn('loadTrainersForGame requiere API');
     return [];
   }
-  const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
+  const list=await fetchApi(
+    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`
+  );
   if(!Array.isArray(list)){
     throw new Error('La API no devolvió una lista de entrenadores');
   }
@@ -728,6 +730,9 @@ async function initTrainers(){
     if(!apiOk){
       throw new Error('API no disponible');
     }
+    if(typeof setStatusLoading==='function'){
+      setStatusLoading('Cargando base de datos (puede tardar 1-2 min)...');
+    }
     const loadDex=typeof loadPokemonDb==='function'
       ?loadPokemonDb()
       :new Promise((resolve)=>{
@@ -739,15 +744,7 @@ async function initTrainers(){
           };
           tick();
         });
-    let games;
-    try{
-      const [,g]=await Promise.all([loadDex,fetchApi('/games')]);
-      games=g;
-    }catch(e){
-      console.warn('initTrainers dex+games',e);
-      games=await fetchApi('/games');
-      try{ await loadDex; }catch(e2){ console.warn('initTrainers dex',e2); }
-    }
+    const [,games]=await Promise.all([loadDex,fetchApi('/games')]);
     TRAINERS_DB={
       games:games.map(g=>({
         slug:g.slug,
@@ -882,7 +879,7 @@ async function onGameChange(){
   resetEeveelutionSelector();
 
   selTrainer.disabled=true;
-  selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
+  selTrainer.innerHTML='<option value="">Cargando entrenadores (equipos)...</option>';
 
   let trainers=[];
   try{
@@ -1001,7 +998,10 @@ function trimTeamByLevelCluster(team,trainerType,preferHighOverride){
 // ── Resolver nombre de pokémon del entrenador → pokemon_db ──
 function resolveTrainerPokemon(tp){
   if(!tp?.name)return null;
-  let p=allPokemon.find(x=>x.name===tp.name);
+  let p=(typeof pokemonByName!=='undefined'&&pokemonByName.get)
+    ?pokemonByName.get(tp.name)
+    :null;
+  if(!p)p=allPokemon.find(x=>x.name===tp.name);
   if(p)return p;
 
   const display=(tp.name_display||'').toLowerCase();
@@ -1042,7 +1042,8 @@ async function loadTrainer(){
   if(!trainer)return;
 
   if(useApi()){
-    trainer=await fetchTrainerWithTeam(slug,trainer);
+    const hasTeam=Array.isArray(trainer.team)&&trainer.team.length>0;
+    if(!hasTeam)trainer=await fetchTrainerWithTeam(slug,trainer);
   }else{
     try{
       const json=await ensureTrainersJson();
