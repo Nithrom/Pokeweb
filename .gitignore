@@ -1,5 +1,6 @@
 api/.env
 api/.env.*
 api/__pycache__/
+backup/
 docker-compose.yml
 nginx.conf
