@@ -3,8 +3,6 @@
 //  Depende de teams.js (ya cargado antes)
 // ══════════════════════════════════════════════════════
 
-IS_TRAINER_PAGE=true;
-
 let TRAINERS_DB = null;
 /** Caché de equipos canónicos (evita mezclar Rojo/Azul con Amarillo vía API/SQL desactualizado). */
 let _trainersJsonCache = null;
@@ -767,6 +765,7 @@ async function initTrainers(){
     resetDifficultySelector();
     resetEeveelutionSelector();
     refreshTrainersStatusBar();
+    if(typeof bootstrapTeamsUI==='function')bootstrapTeamsUI();
   }catch(e){
     console.error('initTrainers',e);
     if(bar){
@@ -1045,9 +1044,17 @@ async function loadTrainer(){
   const val=selTrainer.value;
   if(!slug||!val)return;
 
+  if(!allPokemon.length||!DB){
+    showToast('Espera a que cargue la Pokédex (barra superior).','warn');
+    return;
+  }
+
   const sorted=selTrainer._sorted;
   let trainer=findTrainerInSorted(sorted,slug,val);
-  if(!trainer)return;
+  if(!trainer){
+    showToast('No se encontró el entrenador. Vuelve a elegir juego y rival.','warn');
+    return;
+  }
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;
@@ -1092,8 +1099,10 @@ async function loadTrainer(){
     const moves = resolveTrainerMoves(pData, tp, slug);
     if(!moves.length)noMoves++;
 
+    const slotTypes=(pData.types&&pData.types.length)?pData.types:(tp.types||[]);
     teams.b[i] = {
       ...pData,
+      types:slotTypes,
       moves,
       trainerLevel: level,
     };
@@ -1148,11 +1157,13 @@ function resolveTrainerMoves(pData, tp, gameSlug){
 }
 
 function renderTrainerSprite(trainer, team){
-  // Insertar sprite del entrenador antes de los slots
   const container = document.getElementById(`slots-${team}`);
+  if(!container)return;
   let wrap = document.getElementById('trainer-sprite-block');
   if(wrap) wrap.remove();
   if(!trainer.sprite) return;
+  const parent=container.parentElement;
+  if(!parent)return;
   wrap = document.createElement('div');
   wrap.id = 'trainer-sprite-block';
   wrap.className = 'trainer-sprite-wrap';
@@ -1162,7 +1173,7 @@ function renderTrainerSprite(trainer, team){
 
     ${trainer.badge?`<div class="trainer-sprite-badge">${trainer.badge}</div>`:''}
   `;
-  container.parentElement.insertBefore(wrap, container);
+  parent.insertBefore(wrap, container);
 }
 
 function addLevelBadges(){

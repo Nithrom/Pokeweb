@@ -64,8 +64,8 @@ function bestMult(attacker,defender){
 
 // ── Estado global ──
 let DB=null, allPokemon=[];
-let RIVAL_TEAM='b'; // en trainers.html el equipo rival no es editable
-let IS_TRAINER_PAGE=false; // true en trainers.html
+let RIVAL_TEAM='b';
+let IS_TRAINER_PAGE=!!window.POKEWEB_TRAINER_PAGE;
 const DEFAULT_TEAM_SIZE=6;
 const teams={a:Array(DEFAULT_TEAM_SIZE).fill(null),b:Array(DEFAULT_TEAM_SIZE).fill(null)};
 const _slotState={};
@@ -139,9 +139,14 @@ async function loadPokemonDb(opts={}){
   }
 }
 
-async function init(){
-  renderAllSlots('a'); renderAllSlots('b');
+function bootstrapTeamsUI(){
+  renderAllSlots('a');
+  renderAllSlots('b');
   buildTypeFilterRow();
+}
+
+async function init(){
+  bootstrapTeamsUI();
   await loadPokemonDb();
 }
 
@@ -150,8 +155,17 @@ async function init(){
 // ══════════════════════════════
 function renderAllSlots(team){
   const c=document.getElementById(`slots-${team}`);
-  c.innerHTML='';
-  for(let i=0;i<DEFAULT_TEAM_SIZE;i++)c.appendChild(buildSlotEl(team,i));
+  if(!c)return;
+  const built=[];
+  for(let i=0;i<DEFAULT_TEAM_SIZE;i++){
+    try{built.push(buildSlotEl(team,i));}
+    catch(e){
+      console.error(`buildSlotEl ${team}-${i}`,e);
+      teams[team][i]=null;
+      built.push(buildSlotEl(team,i));
+    }
+  }
+  c.replaceChildren(...built);
 }
 
 function refreshSlot(team,idx){
@@ -177,7 +191,9 @@ function buildSlotEl(team,idx){
   }
 
   const st=slotSt(team,idx);
-  const def=calcDefense(p.types);
+  const types=Array.isArray(p.types)?p.types:[];
+  const moves=Array.isArray(p.moves)?p.moves:[];
+  const def=calcDefense(types);
   const weakTo=(def[4]||[]).concat(def[2]||[]);
   const resistTo=(def[0]||[]).concat(def[0.25]||[]).concat(def[0.5]||[]);
 
@@ -196,8 +212,8 @@ function buildSlotEl(team,idx){
     :p.sprite;
 
   // Moves
-  const movesHtml=p.moves.length>0
-    ?p.moves.map(m=>{const d=m.detail||{};return`<div class="move-entry">
+  const movesHtml=moves.length>0
+    ?moves.map(m=>{const d=m.detail||{};return`<div class="move-entry">
       <span class="move-entry-name">${formatName(m.name)}</span>
       <span class="move-entry-type ${tc(d.type)}">${tn(d.type)}</span>
       <div class="move-entry-cat"><img src="${CAT_IMG[d.category]||CAT_IMG.status}" alt="${d.category||''}"></div>
@@ -221,7 +237,7 @@ function buildSlotEl(team,idx){
       <div class="slot-stats-wrap" id="stats-wrap-${team}-${idx}" style="display:none"></div>
       <div class="slot-poke-name">${formatName(p.name)}</div>
       <div class="slot-num">N.º ${p.id}</div>
-      <div class="slot-type-row">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+      <div class="slot-type-row">${types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
       `}
       <div class="slot-btns">
         ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="slot-btn${st.shiny?' active':''}" onclick="toggleShiny('${team}',${idx})" aria-pressed="${st.shiny}" title="Shiny">✨</button>`:''}
@@ -240,7 +256,7 @@ function buildSlotEl(team,idx){
         <span class="move-header-col">PREC</span>
       </div>
       ${movesHtml}
-      ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="btn-edit-moves" onclick="openMovesModal('${team}',${idx})">${p.moves.length>0?'✏ Editar moves':'＋ Añadir moves'}</button>`:''}
+      ${!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)?`<button class="btn-edit-moves" onclick="openMovesModal('${team}',${idx})">${moves.length>0?'✏ Editar moves':'＋ Añadir moves'}</button>`:''}
     </div>`;
 
   wrap.innerHTML=`
@@ -481,7 +497,15 @@ function loadMorePokemon(){_mP.shown+=BATCH;renderPokeGrid();}
 
 function addFromModal(name){
   const team=_mP.team;
-  const p=allPokemon.find(x=>x.name===name);if(!p)return;
+  if(!allPokemon.length||!DB){
+    showToast('La Pokédex aún no ha cargado. Espera a que termine la barra superior.','warn');
+    return;
+  }
+  const p=allPokemon.find(x=>x.name===name);
+  if(!p){
+    showToast(`No se encontró «${formatName(name)}» en la base de datos.`,'warn');
+    return;
+  }
   // Si ya está en el equipo, quitarlo (toggle)
   const existIdx=teams[team].findIndex(s=>s&&s.name===name);
   if(existIdx!==-1){removeFromModal(name);return;}
@@ -911,4 +935,8 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-init();
+if(IS_TRAINER_PAGE){
+  bootstrapTeamsUI();
+}else{
+  init();
+}
