@@ -442,7 +442,7 @@ function trainerHasRematchVariants(trainer,slug){
   return true;
 }
 
-/** E4/campeón BDSP: revancha 1 y 2 en JSON separados; no duplicar en el desplegable. */
+/** Revanchas en JSON aparte: una sola fila en el desplegable; el selector elige liga/revancha. */
 function shouldShowInTrainerSelect(trainer,allTrainers){
   if(isRematch2Entry(trainer))return false;
   if(!isRematchEntry(trainer))return true;
@@ -451,8 +451,7 @@ function shouldShowInTrainerSelect(trainer,allTrainers){
     t.type===trainer.type&&
     !isRematchEntry(t)&&
     !isRematch2Entry(t));
-  if(hasStory&&['elite4','champion'].includes(trainer.type))return false;
-  return true;
+  return !hasStory;
 }
 
 /** Challenge real: solo BW2; primer bloque sin especies repetidas; no es patrón de revancha. */

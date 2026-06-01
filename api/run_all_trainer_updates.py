@@ -26,6 +26,7 @@ SCRIPTS = [
     'update_oras_trainers.py',
     'update_lgpe_trainers.py',
     'update_swsh_gyms.py',
+    'update_sv_trainers.py',
 ]
 
 
