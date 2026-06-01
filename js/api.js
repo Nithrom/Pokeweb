@@ -62,8 +62,8 @@ async function fetchApi(path, options = {}) {
   return res.json();
 }
 
-async function checkApiAvailable() {
-  if (_useApi !== null) return _useApi;
+async function checkApiAvailable(force = false) {
+  if (!force && _useApi !== null) return _useApi;
   try {
     const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(12000) });
     if (!h.ok) {
@@ -76,6 +76,10 @@ async function checkApiAvailable() {
     _useApi = false;
   }
   return _useApi;
+}
+
+function markApiConnected() {
+  _useApi = true;
 }
 
 function useApi() {
@@ -92,3 +96,4 @@ window.checkApiAvailable = checkApiAvailable;
 window.useApi = useApi;
 window.setStatusLoading = setStatusLoading;
 window.loadPokemonDbFromApi = loadPokemonDbFromApi;
+window.markApiConnected = markApiConnected;

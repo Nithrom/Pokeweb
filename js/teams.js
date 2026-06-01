@@ -96,13 +96,15 @@ function showToast(msg,type='info'){
 //  INIT
 // ══════════════════════════════
 function applyPokemonDb(db){
+  if(!db?.pokemon)throw new Error('Formato de Pokédex inválido');
   DB=db;
   allPokemon=Object.entries(DB.pokemon).map(([name,p])=>{
     let sprite=p.sprite||'';
     if(sprite&&sprite.includes('/pokemon/'+p.id+'.png'))
       sprite=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
+    const types=Array.isArray(p.types)?p.types:(p.types_en?String(p.types_en).split(',').filter(Boolean):[]);
     return{
-      name,id:p.id,types:p.types,sprite,
+      name,id:p.id,types,sprite,
       is_legendary:!!p.is_legendary,
       hp:p.hp||0,attack:p.attack||0,defense:p.defense||0,
       sp_attack:p.sp_attack||0,sp_defense:p.sp_defense||0,speed:p.speed||0,
@@ -120,29 +122,85 @@ function applyPokemonDb(db){
   }
 }
 
+async function loadPokemonDbFromJson(){
+  const res=await fetch('data/pokemon_db.json');
+  if(!res.ok)throw new Error('No pokemon_db.json');
+  return res.json();
+}
+
 async function loadPokemonDb(opts={}){
-  if(typeof checkApiAvailable!=='function'||!await checkApiAvailable()){
-    document.getElementById('status-bar').textContent='Sin API (arranca Flask y configura DATABASE_URL en Supabase).';
-    return false;
-  }
+  const bar=document.getElementById('status-bar');
   if(opts.quiet!==true&&typeof setStatusLoading==='function'){
     setStatusLoading('Cargando Pokédex (puede tardar 1–2 min)…');
   }
+  let apiTried=false;
+  if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
+    apiTried=true;
+    try{
+      const db=await loadPokemonDbFromApi();
+      if(typeof markApiConnected==='function')markApiConnected();
+      applyPokemonDb(db);
+      return true;
+    }catch(e){
+      console.warn('Pokédex API:',e);
+    }
+  }
   try{
-    const db=await loadPokemonDbFromApi();
+    const db=await loadPokemonDbFromJson();
     applyPokemonDb(db);
+    if(bar&&!apiTried){
+      bar.textContent='Pokédex local (sin API). Arranca la API para datos actualizados.';
+    }
     return true;
   }catch(e){
-    console.error('API pokemon:',e);
-    document.getElementById('status-bar').textContent='Error cargando Pokédex desde la API.';
+    console.error('Pokédex:',e);
+    if(bar){
+      bar.textContent=apiTried
+        ?'Error cargando Pokédex (API y pokemon_db.json).'
+        :'Sin API ni pokemon_db.json en el servidor web.';
+    }
     return false;
   }
+}
+
+function setupTeamsEventDelegation(){
+  const pokeGrid=document.getElementById('modal-poke-grid');
+  if(pokeGrid&&!pokeGrid._pokeDelegation){
+    pokeGrid._pokeDelegation=true;
+    pokeGrid.addEventListener('click',e=>{
+      const card=e.target.closest('.modal-poke-card');
+      if(!card)return;
+      if(e.target.closest('.btn-modal-stats')||e.target.closest('.modal-card-remove-x'))return;
+      const name=card.dataset.pokemonName;
+      if(name)addFromModal(name);
+    });
+  }
+  ['a','b'].forEach(team=>{
+    const slots=document.getElementById(`slots-${team}`);
+    if(!slots||slots._slotDelegation)return;
+    slots._slotDelegation=true;
+    slots.addEventListener('click',e=>{
+      const empty=e.target.closest('.poke-slot-empty');
+      if(!empty)return;
+      if(IS_TRAINER_PAGE&&team===RIVAL_TEAM)return;
+      openPokeModal(team);
+    });
+    slots.addEventListener('keydown',e=>{
+      if(e.key!=='Enter'&&e.key!==' ')return;
+      const empty=e.target.closest('.poke-slot-empty');
+      if(!empty)return;
+      if(IS_TRAINER_PAGE&&team===RIVAL_TEAM)return;
+      e.preventDefault();
+      openPokeModal(team);
+    });
+  });
 }
 
 function bootstrapTeamsUI(){
   renderAllSlots('a');
   renderAllSlots('b');
   buildTypeFilterRow();
+  setupTeamsEventDelegation();
 }
 
 async function init(){
@@ -178,7 +236,7 @@ function buildSlotEl(team,idx){
   wrap.className='poke-row'; wrap.id=`poke-row-${team}-${idx}`;
   const p=teams[team][idx];
   if(!p){
-    const emptyLeft=`<div class="poke-slot-empty" onclick="openPokeModal('${team}')" role="button" tabindex="0" aria-label="Añadir pokémon al slot ${idx+1}">
+    const emptyLeft=`<div class="poke-slot-empty" role="button" tabindex="0" aria-label="Añadir pokémon al slot ${idx+1}">
       <div class="slot-empty-plus" aria-hidden="true">＋</div>
       <div class="slot-empty-label">Slot ${idx+1} — Vacío</div>
     </div>`;
@@ -186,7 +244,6 @@ function buildSlotEl(team,idx){
       <span style="color:#9090a8;font-size:.7rem">Sin pokémon</span>
     </div>`;
     wrap.innerHTML=`<div class="poke-row-top">${team==='a'?emptyLeft+emptyRight:emptyRight+emptyLeft}</div>`;
-    if(!(IS_TRAINER_PAGE&&team===RIVAL_TEAM)) wrap.querySelector('.poke-slot-empty').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openPokeModal(team);});
     return wrap;
   }
 
@@ -405,7 +462,8 @@ function applyPokeFilters(){
   const q=document.getElementById('modal-name-filter').value.toLowerCase().trim();
   _mP.filtered=allPokemon.filter(p=>{
     if(q&&!p.name.includes(q)&&!formatName(p.name).toLowerCase().includes(q))return false;
-    if(_mP.typeFilters.length>0&&!_mP.typeFilters.every(t=>p.types.includes(t)))return false;
+    const types=p.types||[];
+    if(_mP.typeFilters.length>0&&!_mP.typeFilters.every(t=>types.includes(t)))return false;
     if(_mP.flags.legendary&&!p.is_legendary)return false;
     if(_mP.flags.physical){const mv=p.allMoves||[];const ph=mv.filter(m=>m.detail?.category==='physical'&&m.detail?.power).length;const sp=mv.filter(m=>m.detail?.category==='special'&&m.detail?.power).length;if(ph<=sp)return false;}
     if(_mP.flags.special){const mv=p.allMoves||[];const ph=mv.filter(m=>m.detail?.category==='physical'&&m.detail?.power).length;const sp=mv.filter(m=>m.detail?.category==='special'&&m.detail?.power).length;if(sp<=ph)return false;}
@@ -427,8 +485,9 @@ function renderPokeGrid(){
       return`<div class="mini-stat-row"><span class="mini-stat-label">${s.label}</span><div class="mini-stat-bar-bg"><div class="mini-stat-bar ${s.cls}" style="width:${pct}%"></div></div><span class="mini-stat-val">${v}</span></div>`;
     }).join('');
     const safeN=p.name.replace(/[^a-z0-9]/g,'-');
-    return`<div class="modal-poke-card${chosen?' chosen':''}" onclick="addFromModal('${p.name}')" role="button" tabindex="0" aria-label="${formatName(p.name)}, ${chosen?'ya en equipo':'añadir al equipo'}">
-      ${chosen?`<button class="modal-card-remove-x" onclick="event.stopPropagation();removeFromModal('${p.name}')" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)}">✕</button>`:''}
+    const types=p.types||[];
+    return`<div class="modal-poke-card${chosen?' chosen':''}" data-pokemon-name="${p.name.replace(/"/g,'&quot;')}" role="button" tabindex="0" aria-label="${formatName(p.name)}, ${chosen?'ya en equipo':'añadir al equipo'}">
+      ${chosen?`<button type="button" class="modal-card-remove-x" data-remove-name="${p.name.replace(/"/g,'&quot;')}" title="Quitar del equipo" aria-label="Quitar ${formatName(p.name)}">✕</button>`:''}
       <div class="modal-card-visual" id="mcv-${safeN}">
         <div class="modal-card-media">
           <img class="modal-poke-img" id="mpi-${safeN}" src="${p.sprite}" alt="${formatName(p.name)}" loading="lazy">
@@ -436,7 +495,7 @@ function renderPokeGrid(){
         <div class="modal-poke-meta" id="mpmt-${safeN}">
           <div class="modal-poke-num">${p.id>9999?'???':'N.º '+p.id}</div>
           <div class="modal-poke-name">${formatName(p.name)}</div>
-          <div class="modal-poke-types">${p.types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
+          <div class="modal-poke-types">${types.map(t=>`<span class="type-badge ${tc(t)}">${tn(t)}</span>`).join('')}</div>
           ${p.is_legendary?'<span class="modal-poke-legendary" title="Legendario">⭐</span>':''}
         </div>
       </div>
@@ -446,9 +505,17 @@ function renderPokeGrid(){
       <button class="btn-modal-stats" onclick="event.stopPropagation();toggleModalStats(this,'${safeN}','${p.name}')" aria-expanded="false">STATS</button>
     </div>`;
   }).join('');
-  // Keyboard
   grid.querySelectorAll('.modal-poke-card').forEach(card=>{
-    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+    card.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();const n=card.dataset.pokemonName;if(n)addFromModal(n);}
+    });
+  });
+  grid.querySelectorAll('.modal-card-remove-x').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const n=btn.dataset.removeName;
+      if(n)removeFromModal(n);
+    });
   });
   document.getElementById('modal-load-more-wrap').style.display=_mP.shown<_mP.filtered.length?'block':'none';
 }
@@ -512,7 +579,8 @@ function addFromModal(name){
   const idx=teams[team].findIndex(s=>s===null);
   if(idx===-1){showToast('⚠ El equipo ya está lleno (6 pokémon).','warn');return;}
   teams[team][idx]={...p,moves:[]};
-  refreshSlot(team,idx);
+  try{refreshSlot(team,idx);}
+  catch(e){console.error('refreshSlot',e);renderAllSlots(team);}
   showToast(`${formatName(name)} añadido al equipo.`,'ok');
   // Marcar chosen sin re-render
   const cards=document.querySelectorAll(`#modal-poke-grid .modal-poke-card`);
@@ -934,6 +1002,10 @@ document.addEventListener('keydown',e=>{
     if(document.getElementById('modal-poke-overlay').classList.contains('open')){closePokeModal();return;}
   }
 });
+
+window.addFromModal=addFromModal;
+window.removeFromModal=removeFromModal;
+window.openPokeModal=openPokeModal;
 
 if(IS_TRAINER_PAGE){
   bootstrapTeamsUI();

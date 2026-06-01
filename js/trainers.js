@@ -638,14 +638,15 @@ function trainerSelectGroupLabel(groupKey){
 }
 
 function findTrainerInSorted(sorted,gameSlug,val){
-  if(!val||!sorted)return null;
+  if(!val||!sorted?.length)return null;
   const idx=parseInt(val,10);
-  if(!isNaN(idx)&&sorted[idx]!=null)return sorted[idx];
+  if(!isNaN(idx)&&idx>=0&&idx<sorted.length)return sorted[idx];
   if(useApi()){
     const key=val.includes('/')?val:`${gameSlug}/${val}`;
-    return sorted.find(t=>trainerOptionValue(gameSlug,t)===key)||null;
+    const bySlug=sorted.find(t=>trainerOptionValue(gameSlug,t)===key);
+    if(bySlug)return bySlug;
   }
-  return null;
+  return sorted.find(t=>t.name===val||String(t.slug)===val)||null;
 }
 
 function parseTeamByEeveelution(t,slug){
@@ -718,12 +719,24 @@ async function initTrainers(){
   const bar=document.getElementById('status-bar');
   try{
     if(typeof setStatusLoading==='function'){
-      setStatusLoading('Cargando base de datos (puede tardar 1–2 min)…');
+      setStatusLoading('Cargando entrenadores y Pokédex…');
     }
+
+    const json=await ensureTrainersJson();
+    TRAINERS_DB={
+      games:(json.games||[]).map(g=>({
+        slug:g.slug,
+        name:g.name,
+        gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+        region:g.region||'',
+        trainer_count:Number(g.trainer_count)||0,
+      })),
+      trainers:json.trainers||{},
+    };
 
     if(typeof loadPokemonDb==='function'){
       const dexOk=await loadPokemonDb({quiet:true});
-      if(dexOk===false)throw new Error('Pokédex no cargada');
+      if(!dexOk||!allPokemon.length)throw new Error('Pokédex no cargada');
     }else{
       let tries=0;
       while((!DB||!allPokemon.length)&&tries<50){
@@ -732,31 +745,22 @@ async function initTrainers(){
       }
     }
 
-    const json=await ensureTrainersJson();
-    const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
-
-    if(apiOk){
-      let apiGames=[];
+    if(typeof checkApiAvailable==='function'&&await checkApiAvailable(true)){
       try{
-        apiGames=await fetchApi('/games');
-      }catch(e){
-        console.warn('/games',e);
-      }
-      TRAINERS_DB={
-        games:(apiGames.length?apiGames:json.games).map(g=>{
-          const meta=json.games?.find(x=>x.slug===g.slug);
-          return{
-            slug:g.slug,
-            name:g.name||meta?.name,
-            gen:Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
-            region:g.region||meta?.region||'',
-            trainer_count:Number(g.trainer_count)||Number(meta?.trainer_count)||0,
-          };
-        }),
-        trainers:json.trainers||{},
-      };
-    }else{
-      TRAINERS_DB=json;
+        const apiGames=await fetchApi('/games');
+        if(apiGames?.length){
+          TRAINERS_DB.games=apiGames.map(g=>{
+            const meta=json.games?.find(x=>x.slug===g.slug);
+            return{
+              slug:g.slug,
+              name:g.name||meta?.name,
+              gen:Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+              region:g.region||meta?.region||'',
+              trainer_count:Number(g.trainer_count)||Number(meta?.trainer_count)||0,
+            };
+          });
+        }
+      }catch(e){console.warn('/games',e);}
     }
 
     buildGameSelector();
@@ -769,7 +773,7 @@ async function initTrainers(){
   }catch(e){
     console.error('initTrainers',e);
     if(bar){
-      bar.textContent='Error cargando la base de datos. Comprueba la API y data/trainers_db.json.';
+      bar.textContent='Error: sube data/trainers_db.json y data/pokemon_db.json al hosting, o conecta la API.';
     }
   }
 }
@@ -1064,7 +1068,14 @@ async function loadTrainer(){
   const difficulty=isOptionalSelectorActive('difficulty')?difficultyEl.value:'normal';
   const eeveelutionId=isOptionalSelectorActive('eeveelution')
     ?document.getElementById('sel-eeveelution').value:null;
-  const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel,eeveelutionId);
+  let resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel,eeveelutionId);
+  if(!resolvedTeam?.length){
+    resolvedTeam=(trainer.team||[]).slice();
+  }
+  if(!resolvedTeam?.length){
+    showToast(`El entrenador ${trainer.name} no tiene equipo en los datos.`,'warn');
+    return;
+  }
   const starterLabel=document.getElementById('sel-starter').selectedOptions[0]?.textContent||'';
   const rematchLabel=isOptionalSelectorActive('rematch')?rematchEl.selectedOptions[0]?.textContent||'':'';
   const diffLabel=isOptionalSelectorActive('difficulty')?difficultyEl.selectedOptions[0]?.textContent||'':'';
@@ -1110,16 +1121,27 @@ async function loadTrainer(){
     slotSt('b',i).stats=false;
   });
 
-  renderAllSlots('b');
+  try{
+    renderAllSlots('b');
+  }catch(e){
+    console.error('renderAllSlots b',e);
+    showToast('Error al dibujar el equipo rival.','warn');
+    return;
+  }
   setTimeout(()=>addLevelBadges(), 60);
 
-  const loaded=resolvedTeam.length-skipped;
-  let msg=skipped
-    ? `Equipo de ${trainer.name}: ${loaded}/${resolvedTeam.length} Pokémon (${skipped} sin datos en la DB).`
-    : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
-  if(noMoves)msg+=` ${noMoves} sin movimientos en datos (ejecuta enrich_moves.py).`;
-  showToast(msg, (skipped||noMoves)?'warn':'ok');
+  const filled=teams.b.filter(Boolean).length;
+  const loaded=filled;
+  let msg=filled===0
+    ? `No se pudo mostrar el equipo de ${trainer.name} (revisa que la Pokédex haya cargado).`
+    :skipped
+      ? `Equipo de ${trainer.name}: ${filled}/${resolvedTeam.length} en pantalla (${skipped} sin datos en la Pokédex).`
+      : `Equipo de ${trainer.name} cargado (${filled} Pokémon).`;
+  if(noMoves)msg+=` ${noMoves} sin movimientos en datos.`;
+  showToast(msg, (filled===0||skipped||noMoves)?'warn':'ok');
 }
+
+window.loadTrainer=loadTrainer;
 
 /** Solo movimientos del JSON (Bulbapedia); sin inventar por nivel. */
 function resolveTrainerMoves(pData, tp, gameSlug){
