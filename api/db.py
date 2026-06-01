@@ -19,6 +19,7 @@ except ImportError:
     pass
 
 _BACKEND: str | None = None
+_PG_POOL = None
 
 
 def get_backend() -> str:
@@ -77,14 +78,40 @@ def db_label() -> str:
     return f'MariaDB ({cfg["host"]})'
 
 
+def _pg_pool():
+    global _PG_POOL
+    if _PG_POOL is None and is_postgres():
+        from psycopg2.pool import ThreadedConnectionPool
+
+        url = os.environ['DATABASE_URL']
+        mn = max(1, int(os.environ.get('DB_POOL_MIN', '1')))
+        mx = max(mn, int(os.environ.get('DB_POOL_MAX', '10')))
+        _PG_POOL = ThreadedConnectionPool(mn, mx, url)
+    return _PG_POOL
+
+
 def connect():
     if is_postgres():
+        pool = _pg_pool()
+        if pool:
+            return pool.getconn()
         import psycopg2
 
         return psycopg2.connect(os.environ['DATABASE_URL'])
     import pymysql
 
     return pymysql.connect(**mysql_config())
+
+
+def release_conn(conn) -> None:
+    if conn is None:
+        return
+    if is_postgres():
+        pool = _pg_pool()
+        if pool:
+            pool.putconn(conn)
+            return
+    conn.close()
 
 
 def cursor(conn):
@@ -130,7 +157,7 @@ def query(sql: str, params=None) -> list[dict]:
             cur.execute(sql, params or ())
             return list(cur.fetchall())
     finally:
-        conn.close()
+        release_conn(conn)
 
 
 def query_one(sql: str, params=None) -> dict | None:
@@ -150,7 +177,7 @@ def execute(sql: str, params=None) -> int:
                     return int(row['id'])
             return int(getattr(cur, 'lastrowid', 0) or 0)
     finally:
-        conn.close()
+        release_conn(conn)
 
 
 def insert_returning_id(cur, sql: str, params: tuple, id_col: str = 'id') -> int:

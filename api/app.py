@@ -28,6 +28,12 @@ query_one = db.query_one
 execute = db.execute
 
 
+def jsonify_cached(data, max_age: int):
+    resp = jsonify(data)
+    resp.headers['Cache-Control'] = f'public, max-age={max_age}'
+    return resp
+
+
 def split_types(row, key_en='types_en', key_es='types_es'):
     if key_en in row and row[key_en]:
         row[key_en] = row[key_en].split(',')
@@ -36,37 +42,59 @@ def split_types(row, key_en='types_en', key_es='types_es'):
     return row
 
 
-def format_trainer_moves(tp_id: int, game_gen: int = 0) -> list:
-    rows = query("""
-        SELECT m.name, m.name_es, t.name_en AS type_en, t.name_es AS type_es,
-               m.category, m.power, m.accuracy, m.pp, tpm.slot
-        FROM trainer_pokemon_moves tpm
-        JOIN moves m ON m.id = tpm.move_id
-        JOIN types t ON t.id = m.type_id
-        WHERE tpm.trainer_pokemon_id = %s
-        ORDER BY tpm.slot
-    """, (tp_id,))
-    for row in rows:
-        row['type_en'] = resolve_move_type(
-            row['name'], game_gen, row.get('type_en') or 'normal',
-        )
-    return rows
-
-
 def trainer_team_rows(trainer_id: int, game_gen: int = 0) -> list:
-    team = query(f"""
+    rows = query(f"""
         SELECT tp.id, tp.slot, tp.level,
                p.id AS pokemon_id, p.name, p.name_es, p.sprite_url,
-               pt_agg.types_en, pt_agg.types_es
+               pt_agg.types_en, pt_agg.types_es,
+               m.name AS move_name, m.name_es AS move_name_es,
+               t.name_en AS move_type_en, t.name_es AS move_type_es,
+               m.category AS move_category, m.power AS move_power,
+               m.accuracy AS move_accuracy, m.pp AS move_pp,
+               tpm.slot AS move_slot
         FROM trainer_pokemon tp
         JOIN pokemon p ON p.id = tp.pokemon_id
         {db.types_agg_join()}
+        LEFT JOIN trainer_pokemon_moves tpm ON tpm.trainer_pokemon_id = tp.id
+        LEFT JOIN moves m ON m.id = tpm.move_id
+        LEFT JOIN types t ON t.id = m.type_id
         WHERE tp.trainer_id = %s
-        ORDER BY tp.slot
+        ORDER BY tp.slot, tpm.slot
     """, (trainer_id,))
+    team: list[dict] = []
+    by_tp_id: dict[int, dict] = {}
+    for row in rows:
+        tp_id = row['id']
+        if tp_id not in by_tp_id:
+            member = {
+                'id': tp_id,
+                'slot': row['slot'],
+                'level': row['level'],
+                'pokemon_id': row['pokemon_id'],
+                'name': row['name'],
+                'name_es': row['name_es'],
+                'sprite_url': row['sprite_url'],
+                'types_en': row['types_en'],
+                'types_es': row['types_es'],
+                'moves': [],
+            }
+            by_tp_id[tp_id] = member
+            team.append(member)
+        if row.get('move_name'):
+            by_tp_id[tp_id]['moves'].append({
+                'name': row['move_name'],
+                'name_es': row['move_name_es'],
+                'type_en': resolve_move_type(
+                    row['move_name'], game_gen, row.get('move_type_en') or 'normal',
+                ),
+                'type_es': row.get('move_type_es'),
+                'category': row['move_category'],
+                'power': row['move_power'],
+                'accuracy': row['move_accuracy'],
+                'pp': row['move_pp'],
+            })
     for member in team:
         split_types(member)
-        member['moves'] = format_trainer_moves(member['id'], game_gen)
         del member['id']
     return team
 
@@ -281,7 +309,10 @@ def effectiveness():
 # ── Juegos y entrenadores ───────────────────────────────────────────────────────
 @app.route('/games')
 def list_games():
-    return jsonify(query('SELECT id, slug, name, region, gen FROM games ORDER BY gen, id'))
+    return jsonify_cached(
+        query('SELECT id, slug, name, region, gen FROM games ORDER BY gen, id'),
+        max_age=3600,
+    )
 
 
 TRAINER_LIST_ORDER = """
@@ -338,6 +369,8 @@ def list_trainers():
               tr.id
         """)
     out = [trainer_to_json(r, include_team=include_team) for r in rows]
+    if (game_slug or game_id) and not include_team:
+        return jsonify_cached(out, max_age=300)
     return jsonify(out)
 
 
@@ -473,7 +506,7 @@ def create_team():
                     )
             conn.commit()
     finally:
-        conn.close()
+        db.release_conn(conn)
     return jsonify({'id': team_id}), 201
 
 

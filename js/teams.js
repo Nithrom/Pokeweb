@@ -121,6 +121,16 @@ function applyPokemonDb(db){
 }
 
 async function loadPokemonDb(){
+  // trainers.html: JSON local (sin learnsets masivos vía API); entrenadores siguen en Supabase
+  if(typeof IS_TRAINER_PAGE!=='undefined'&&IS_TRAINER_PAGE){
+    try{
+      const res=await fetch('data/pokemon_db.json');
+      if(res.ok){
+        applyPokemonDb(await res.json());
+        return true;
+      }
+    }catch(e){console.warn('JSON pokemon (trainers)',e);}
+  }
   let triedApi=false;
   if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
     triedApi=true;
