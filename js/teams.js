@@ -126,7 +126,7 @@ async function loadPokemonDb(){
     return false;
   }
   try{
-    const db=await loadPokemonDbFromApi();
+    const db=await loadPokemonDbFromApi({lite:!!IS_TRAINER_PAGE});
     applyPokemonDb(db);
     return true;
   }catch(e){

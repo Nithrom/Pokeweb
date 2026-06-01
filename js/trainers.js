@@ -695,33 +695,45 @@ async function loadTrainersForGame(slug){
     console.warn('loadTrainersForGame requiere API');
     return [];
   }
-  const list=await fetchApi(
-    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`
-  );
+  const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
   const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
   if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
   TRAINERS_DB.trainers[slug]=normalized;
   return normalized;
 }
 
+async function fetchTrainerWithTeam(gameSlug,trainer){
+  if(!useApi()||!trainer?.slug)return trainer;
+  try{
+    const full=await fetchApi(
+      `/trainers/${encodeURIComponent(gameSlug)}/${encodeURIComponent(trainer.slug)}`
+    );
+    return normalizeTrainerFromApi(full,gameSlug);
+  }catch(e){
+    console.warn('fetchTrainerWithTeam',e);
+    return trainer;
+  }
+}
+
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
-  if(typeof loadPokemonDb==='function'){
-    await loadPokemonDb();
-  }else{
-    let tries=0;
-    while((!DB||!allPokemon.length)&&tries<50){
-      await new Promise(r=>setTimeout(r,200));
-      tries++;
-    }
-  }
-
   try{
     const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
     if(!apiOk){
       throw new Error('API no disponible');
     }
-    const games=await fetchApi('/games');
+    const loadDex=typeof loadPokemonDb==='function'
+      ?loadPokemonDb()
+      :new Promise((resolve)=>{
+          let tries=0;
+          const tick=()=>{
+            if((DB&&allPokemon.length)||tries>=50)return resolve();
+            tries++;
+            setTimeout(tick,200);
+          };
+          tick();
+        });
+    const [,games]=await Promise.all([loadDex,fetchApi('/games')]);
     TRAINERS_DB={
       games:games.map(g=>({
         slug:g.slug,
@@ -731,6 +743,7 @@ async function initTrainers(){
         trainer_count:Number(g.trainer_count)||0,
       })),
       trainers:{},
+      _trainerTotal:games.reduce((s,g)=>s+(Number(g.trainer_count)||0),0),
     };
     buildGameSelector();
     resetStarterSelector();
@@ -1012,6 +1025,8 @@ async function loadTrainer(){
   if(!trainer)return;
 
   if(useApi()){
+    trainer=await fetchTrainerWithTeam(slug,trainer);
+  }else{
     try{
       const json=await ensureTrainersJson();
       trainer=applyJsonTeam(trainer,slug,json);

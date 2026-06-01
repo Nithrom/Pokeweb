@@ -50,7 +50,7 @@ async function fetchApi(path, options = {}) {
 async function checkApiAvailable() {
   if (_useApi !== null) return _useApi;
   try {
-    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(4000) });
+    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(12000) });
     if (!h.ok) {
       _useApi = false;
       return false;
@@ -67,8 +67,9 @@ function useApi() {
   return _useApi === true;
 }
 
-async function loadPokemonDbFromApi() {
-  return fetchApi('/db/pokemon');
+async function loadPokemonDbFromApi(opts = {}) {
+  const lite = opts.lite ? '?lite=1' : '';
+  return fetchApi(`/db/pokemon${lite}`);
 }
 
 window.getApiBase = getApiBase;
