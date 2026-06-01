@@ -23,6 +23,7 @@ SCRIPTS = [
     'update_bw2_gyms.py',
     'update_xy_trainers.py',
     'update_oras_trainers.py',
+    'update_lgpe_trainers.py',
 ]
 
 

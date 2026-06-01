@@ -87,6 +87,14 @@ const STARTER_GEN_BY_GAME={
   'firered-leafgreen':1,
 };
 
+/** Iniciales propios del juego (p. ej. Let's Go: solo Pikachu / Eevee). */
+const STARTERS_BY_GAME={
+  'lets-go-pikachu-eevee':[
+    {id:'pikachu',label:'Pikachu'},
+    {id:'eevee',label:'Eevee'},
+  ],
+};
+
 /** Campeones cuyo slot de inicial depende de tu elección (triángulo rival). */
 const RIVAL_STARTER_CHAMPIONS={
   'red-blue':new Set(['Blue']),
@@ -307,6 +315,7 @@ function getStarterGen(slug){
 
 function gameHasStarters(slug){
   if(!slug)return false;
+  if(STARTERS_BY_GAME[slug]?.length)return true;
   const gen=getStarterGen(slug);
   return!!(GEN_STARTERS[gen]?.length);
 }
@@ -820,10 +829,9 @@ function buildStarterSelector(slug){
     return;
   }
 
-  const gen=getStarterGen(slug);
-  const starters=GEN_STARTERS[gen];
+  const starters=STARTERS_BY_GAME[slug]||GEN_STARTERS[getStarterGen(slug)];
   if(!starters?.length){
-    console.warn('Sin iniciales para',slug,'gen',gen);
+    console.warn('Sin iniciales para',slug);
     resetStarterSelector('— Sin iniciales —');
     return;
   }
