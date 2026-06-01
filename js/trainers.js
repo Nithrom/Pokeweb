@@ -1084,7 +1084,7 @@ async function loadTrainer(){
     if(!pData){ skipped++; return; }
 
     const level = tp.level || 100;
-    const moves = resolveTrainerMoves(pData, tp);
+    const moves = resolveTrainerMoves(pData, tp, slug);
     if(!moves.length)noMoves++;
 
     teams.b[i] = {
@@ -1108,10 +1108,11 @@ async function loadTrainer(){
 }
 
 /** Solo movimientos del JSON (Bulbapedia); sin inventar por nivel. */
-function resolveTrainerMoves(pData, tp){
+function resolveTrainerMoves(pData, tp, gameSlug){
   const raw = tp.moves || [];
   if(!raw.length) return [];
 
+  const gameGen=getGameGen(gameSlug);
   const out = [];
   for(const m of raw.slice(0, 4)){
     const rawName = typeof m === 'string' ? m : m.name;
@@ -1119,9 +1120,12 @@ function resolveTrainerMoves(pData, tp){
     const name=normalizeMoveSlug(rawName);
     const fromSlot = pData.allMoves?.find(x => x.name === name);
     const global = DB?.moves?.[name];
-    const detail = fromSlot?.detail || global || {
+    let detail = fromSlot?.detail || global || {
       type: 'normal', category: 'status', power: null, accuracy: null, pp: null,
     };
+    if(typeof PokeMoveGenTypes!=='undefined'&&gameGen>0){
+      detail=PokeMoveGenTypes.detailForGen(detail,name,gameGen);
+    }
     out.push({
       name,
       byLevel: false,
