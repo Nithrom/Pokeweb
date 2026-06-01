@@ -54,17 +54,15 @@ def format_trainer_moves(tp_id: int, game_gen: int = 0) -> list:
 
 
 def trainer_team_rows(trainer_id: int, game_gen: int = 0) -> list:
-    team = query("""
+    team = query(f"""
         SELECT tp.id, tp.slot, tp.level,
                p.id AS pokemon_id, p.name, p.name_es, p.sprite_url,
-               {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
-               {db.group_concat('t.name_es', 'pt.slot')} AS types_es
+               pt_agg.types_en, pt_agg.types_es
         FROM trainer_pokemon tp
         JOIN pokemon p ON p.id = tp.pokemon_id
-        JOIN pokemon_types pt ON pt.pokemon_id = p.id
-        JOIN types t ON t.id = pt.type_id
+        {db.types_agg_join()}
         WHERE tp.trainer_id = %s
-        GROUP BY tp.id ORDER BY tp.slot
+        ORDER BY tp.slot
     """, (trainer_id,))
     for member in team:
         split_types(member)
@@ -186,7 +184,7 @@ def stats():
 # ── Pokémon ───────────────────────────────────────────────────────────────────
 @app.route('/pokemon')
 def list_pokemon():
-    rows = query("""
+    rows = query(f"""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
                {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
                {db.group_concat('t.name_es', 'pt.slot')} AS types_es
@@ -201,7 +199,7 @@ def list_pokemon():
 
 @app.route('/pokemon/<name>')
 def get_pokemon(name):
-    p = query_one("""
+    p = query_one(f"""
         SELECT p.*, {db.group_concat('t.name_en', 'pt.slot')} AS types_en,
                {db.group_concat('t.name_es', 'pt.slot')} AS types_es
         FROM pokemon p
@@ -234,7 +232,7 @@ def get_pokemon_moves(name):
 # ── Tipos ─────────────────────────────────────────────────────────────────────
 @app.route('/type/<type_name>')
 def pokemon_by_type(type_name):
-    rows = query("""
+    rows = query(f"""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
                {db.group_concat('t2.name_en', 'pt2.slot')} AS types_en,
                {db.group_concat('t2.name_es', 'pt2.slot')} AS types_es
@@ -252,7 +250,7 @@ def pokemon_by_type(type_name):
 
 @app.route('/type/<t1>/<t2>')
 def pokemon_by_dual_type(t1, t2):
-    rows = query("""
+    rows = query(f"""
         SELECT p.id, p.name, p.name_es, p.sprite_url,
                {db.group_concat('t.name_en', 'pt.slot')} AS types_en
         FROM pokemon p
@@ -362,7 +360,7 @@ def db_pokemon():
         }
 
     pokemon_out = {}
-    for p in query("""
+    for p in query(f"""
         SELECT p.id, p.name, p.name_es, p.sprite_url, p.hp, p.attack, p.defense,
                p.sp_attack, p.sp_defense, p.speed, p.is_legendary,
                {db.group_concat('t.name_en', 'pt.slot')} AS types_en
@@ -484,15 +482,14 @@ def get_team(team_id):
     team = query_one('SELECT * FROM user_teams WHERE id=%s', (team_id,))
     if not team:
         return jsonify({'error': 'Not found'}), 404
-    members = query("""
+    members = query(f"""
         SELECT utp.id, utp.slot, p.name, p.name_es, p.sprite_url,
-               {db.group_concat('t.name_en', 'pt.slot')} AS types_en
+               pt_agg.types_en
         FROM user_team_pokemon utp
         JOIN pokemon p ON p.id = utp.pokemon_id
-        JOIN pokemon_types pt ON pt.pokemon_id = p.id
-        JOIN types t ON t.id = pt.type_id
+        {db.types_agg_join()}
         WHERE utp.team_id = %s
-        GROUP BY utp.id ORDER BY utp.slot
+        ORDER BY utp.slot
     """, (team_id,))
     for m in members:
         split_types(m)

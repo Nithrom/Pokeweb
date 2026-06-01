@@ -101,6 +101,22 @@ def group_concat(column: str, order_by: str) -> str:
     return f'GROUP_CONCAT({column} ORDER BY {order_by})'
 
 
+def types_agg_join(alias: str = 'pt_agg', pokemon_fk: str = 'p.id') -> str:
+    """JOIN que agrega tipos por pokemon (evita GROUP BY en filas de equipo)."""
+    gc_en = group_concat('t.name_en', 'pt.slot')
+    gc_es = group_concat('t.name_es', 'pt.slot')
+    return f"""
+        LEFT JOIN (
+            SELECT pt.pokemon_id,
+                   {gc_en} AS types_en,
+                   {gc_es} AS types_es
+            FROM pokemon_types pt
+            JOIN types t ON t.id = pt.type_id
+            GROUP BY pt.pokemon_id
+        ) {alias} ON {alias}.pokemon_id = {pokemon_fk}
+    """
+
+
 def schema_name() -> str:
     if is_postgres():
         return 'public'
