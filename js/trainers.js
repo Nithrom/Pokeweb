@@ -659,32 +659,35 @@ function parseTeamByEeveelution(t,slug){
 }
 
 function normalizeTrainerFromApi(t,gameSlug){
+  const team=Array.isArray(t.team)?t.team:[];
   return{
     id:t.id,
     slug:t.slug,
     gameSlug:gameSlug||t.game_slug||'',
     name:t.name,
-    type:t.type,
-    order:t.order,
+    type:t.type||t.trainer_class||'other',
+    order:t.order??t.gym_order??0,
     region:t.region||null,
     location:t.location||'',
-    badge:t.badge||'',
+    badge:t.badge||t.badge_name||'',
     specialty:t.specialty||'',
-    sprite:t.sprite,
+    sprite:t.sprite||t.sprite_url||'',
     teamByStarter:t.teamByStarter||t.team_by_starter||null,
     teamByEeveelution:parseTeamByEeveelution(t,gameSlug),
-    team:(t.team||[]).map(m=>({
+    team:team.map(m=>({
       name:m.name,
-      name_display:m.name_es||formatName(m.name),
+      name_display:m.name_es||m.name_display||formatName(m.name),
       level:m.level,
       types:m.types_en||m.types||[],
-      moves:(m.moves||[]).map(mv=>{
-        const slug=normalizeMoveSlug(mv.name);
+      moves:(Array.isArray(m.moves)?m.moves:[]).map(mv=>{
+        const rawName=typeof mv==='string'?mv:mv?.name;
+        if(!rawName)return null;
+        const moveSlug=normalizeMoveSlug(rawName);
         return{
-          name:slug,
-          name_display:mv.name_es||mv.name_display||formatName(slug),
+          name:moveSlug,
+          name_display:mv.name_es||mv.name_display||formatName(moveSlug),
         };
-      }),
+      }).filter(Boolean),
     })),
   };
 }
@@ -696,6 +699,9 @@ async function loadTrainersForGame(slug){
     return [];
   }
   const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
+  if(!Array.isArray(list)){
+    throw new Error('La API no devolvió una lista de entrenadores');
+  }
   const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
   if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
   TRAINERS_DB.trainers[slug]=normalized;
@@ -733,7 +739,15 @@ async function initTrainers(){
           };
           tick();
         });
-    const [,games]=await Promise.all([loadDex,fetchApi('/games')]);
+    let games;
+    try{
+      const [,g]=await Promise.all([loadDex,fetchApi('/games')]);
+      games=g;
+    }catch(e){
+      console.warn('initTrainers dex+games',e);
+      games=await fetchApi('/games');
+      try{ await loadDex; }catch(e2){ console.warn('initTrainers dex',e2); }
+    }
     TRAINERS_DB={
       games:games.map(g=>({
         slug:g.slug,
@@ -874,7 +888,10 @@ async function onGameChange(){
   try{
     trainers=await loadTrainersForGame(slug);
   }catch(e){
-    selTrainer.innerHTML='<option value="">Error al cargar</option>';
+    console.error('loadTrainersForGame',slug,e);
+    const hint=(e&&e.message)?e.message:'Error al cargar';
+    selTrainer.innerHTML=`<option value="">Error al cargar</option>`;
+    if(typeof showToast==='function')showToast(hint,'warn');
     return;
   }
 
