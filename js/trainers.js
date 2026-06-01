@@ -596,17 +596,43 @@ function buildTrainerOptionSelectors(slug,trainer){
   buildEeveelutionSelector(slug,trainer);
 }
 
+let _trainerTeamLoading=false;
+
+function setTrainerTeamLoading(loading){
+  _trainerTeamLoading=!!loading;
+  const btn=document.getElementById('btn-load-trainer');
+  if(!btn)return;
+  if(loading){
+    if(!btn.dataset.label)btn.dataset.label=btn.textContent.trim();
+    btn.textContent='Cargando…';
+    btn.disabled=true;
+    btn.setAttribute('aria-busy','true');
+    return;
+  }
+  btn.removeAttribute('aria-busy');
+  if(btn.dataset.label){
+    btn.textContent=btn.dataset.label;
+    delete btn.dataset.label;
+  }
+  updateLoadTrainerButton();
+}
+
 function updateLoadTrainerButton(){
+  const btn=document.getElementById('btn-load-trainer');
+  if(!btn)return;
+  if(_trainerTeamLoading){
+    btn.disabled=true;
+    return;
+  }
   const slug=document.getElementById('sel-game').value;
   const trainerVal=document.getElementById('sel-trainer').value;
   const starterEl=document.getElementById('sel-starter');
-  const gen=getGameGen(slug);
   const needsStarter=gameHasStarters(slug);
   const starterOk=!needsStarter||!!starterEl.value;
   const trainerOk=!!trainerVal&&(useApi()||!isNaN(parseInt(trainerVal)));
   const eeveeOk=!isOptionalSelectorActive('eeveelution')
     ||!!document.getElementById('sel-eeveelution')?.value;
-  document.getElementById('btn-load-trainer').disabled=!(slug&&trainerOk&&starterOk&&eeveeOk);
+  btn.disabled=!(slug&&trainerOk&&starterOk&&eeveeOk);
 }
 
 async function ensureTrainersJson(){
@@ -781,6 +807,29 @@ async function fetchTrainerTeamFromApi(trainer,gameSlug){
   }catch(e){
     console.warn('Equipo desde API',e);
     return trainer;
+  }
+}
+
+/** Solo el rival necesario para la opción Liga/Revancha activa (evita 2–3 GET seguidos). */
+async function ensurePeerTeamsForResolve(trainer,gameSlug,rematchSel){
+  if(!useApi())return;
+  const peers=getRematchPeers(trainer,gameSlug);
+  const need=[];
+  if(rematchSel==='rematch2'&&peers.rematch2)need.push(peers.rematch2);
+  else if(rematchSel==='rematch'){
+    if(peers.rematch1)need.push(peers.rematch1);
+    else if(peers.rematch2)need.push(peers.rematch2);
+  }else if(
+    rematchSel==='first'&&
+    (isRematchEntry(trainer)||isRematch2Entry(trainer))&&
+    peers.story
+  ){
+    need.push(peers.story);
+  }
+  for(const peer of need){
+    if(!peer||peer.slug===trainer.slug||trainerHasLoadedTeam(peer))continue;
+    const loaded=await fetchTrainerTeamFromApi(peer,gameSlug);
+    patchTrainerInCache(loaded,gameSlug);
   }
 }
 
@@ -1115,6 +1164,7 @@ function resolveTrainerPokemon(tp){
 
 // ── Cargar entrenador al lado B ───────────────────────
 async function loadTrainer(){
+  if(_trainerTeamLoading)return;
   const slug=document.getElementById('sel-game').value;
   const selTrainer=document.getElementById('sel-trainer');
   const val=selTrainer.value;
@@ -1124,22 +1174,19 @@ async function loadTrainer(){
   let trainer=findTrainerInSorted(sorted,slug,val);
   if(!trainer)return;
 
-  trainer=await fetchTrainerTeamFromApi(trainer,slug);
-  patchTrainerInCache(trainer,slug);
-
-  const peers=getRematchPeers(trainer,slug);
-  for(const peer of [peers.story,peers.rematch1,peers.rematch2]){
-    if(!peer||peer.slug===trainer.slug)continue;
-    const loaded=await fetchTrainerTeamFromApi(peer,slug);
-    patchTrainerInCache(loaded,slug);
-  }
-
-  const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
-  const starterId=document.getElementById('sel-starter').value;
   const rematchEl=document.getElementById('sel-rematch');
   const difficultyEl=document.getElementById('sel-difficulty');
   const rematchSel=isOptionalSelectorActive('rematch')?rematchEl.value:'first';
   const difficulty=isOptionalSelectorActive('difficulty')?difficultyEl.value:'normal';
+
+  setTrainerTeamLoading(true);
+  try{
+  trainer=await fetchTrainerTeamFromApi(trainer,slug);
+  patchTrainerInCache(trainer,slug);
+  await ensurePeerTeamsForResolve(trainer,slug,rematchSel);
+
+  const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
+  const starterId=document.getElementById('sel-starter').value;
   const eeveelutionId=isOptionalSelectorActive('eeveelution')
     ?document.getElementById('sel-eeveelution').value:null;
   const resolvedTeam=resolveTrainerTeam(trainer,slug,starterId,difficulty,rematchSel,eeveelutionId);
@@ -1195,6 +1242,12 @@ async function loadTrainer(){
     : `Equipo de ${trainer.name} cargado (${loaded} Pokémon).`;
   if(noMoves)msg+=` ${noMoves} sin movimientos en datos (ejecuta enrich_moves.py).`;
   showToast(msg, (skipped||noMoves)?'warn':'ok');
+  }catch(e){
+    console.warn('Cargar entrenador',e);
+    showToast('No se pudo cargar el equipo del entrenador.','warn');
+  }finally{
+    setTrainerTeamLoading(false);
+  }
 }
 
 /** Solo movimientos del JSON (Bulbapedia); sin inventar por nivel. */
