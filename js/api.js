@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════
-//  api.js — Cliente REST → MariaDB (Flask)
+//  api.js — Cliente REST → API Flask (Supabase / PostgreSQL o MariaDB local)
 // ══════════════════════════════════════════════════════
 
 let _apiBase = null;

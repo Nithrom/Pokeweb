@@ -2,8 +2,8 @@
 //  teams.js — Batalla por equipos v3
 // ══════════════════════════════════════════════════════
 
-const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada'};
-const TYPE_CLASS={normal:'t-normal',fighting:'t-fighting',flying:'t-flying',poison:'t-poison',ground:'t-ground',rock:'t-rock',bug:'t-bug',ghost:'t-ghost',steel:'t-steel',fire:'t-fire',water:'t-water',grass:'t-grass',electric:'t-electric',psychic:'t-psychic',ice:'t-ice',dragon:'t-dragon',dark:'t-dark',fairy:'t-fairy'};
+const TIPOS_ES={normal:'Normal',fighting:'Lucha',flying:'Volador',poison:'Veneno',ground:'Tierra',rock:'Roca',bug:'Bicho',ghost:'Fantasma',steel:'Acero',fire:'Fuego',water:'Agua',grass:'Planta',electric:'Eléctrico',psychic:'Psíquico',ice:'Hielo',dragon:'Dragón',dark:'Siniestro',fairy:'Hada',unknown:'???'};
+const TYPE_CLASS={normal:'t-normal',fighting:'t-fighting',flying:'t-flying',poison:'t-poison',ground:'t-ground',rock:'t-rock',bug:'t-bug',ghost:'t-ghost',steel:'t-steel',fire:'t-fire',water:'t-water',grass:'t-grass',electric:'t-electric',psychic:'t-psychic',ice:'t-ice',dragon:'t-dragon',dark:'t-dark',fairy:'t-fairy',unknown:'t-normal'};
 const CAT_IMG={physical:'img/cat_physical.png',special:'img/cat_special.png',status:'img/cat_status.png'};
 const STAT_KEYS=[{key:'hp',label:'PS',cls:'sb-hp'},{key:'attack',label:'ATQ',cls:'sb-atk'},{key:'defense',label:'DEF',cls:'sb-def'},{key:'sp_attack',label:'ATQE',cls:'sb-spa'},{key:'sp_defense',label:'DEFE',cls:'sb-spd'},{key:'speed',label:'VEL',cls:'sb-spe'}];
 const ALL_TYPES=Object.keys(TIPOS_ES);
@@ -121,24 +121,19 @@ function applyPokemonDb(db){
 }
 
 async function loadPokemonDb(){
-  let triedApi=false;
-  if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
-    triedApi=true;
-    try{
-      const db=await loadPokemonDbFromApi();
-      applyPokemonDb(db);
-      return true;
-    }catch(e){console.warn('API pokemon falló, usando JSON',e);}
+  if(typeof checkApiAvailable!=='function'||!await checkApiAvailable()){
+    document.getElementById('status-bar').textContent='Sin API (arranca Flask y configura DATABASE_URL en Supabase).';
+    return false;
   }
   try{
-    const res=await fetch('data/pokemon_db.json');
-    if(res.ok){
-      applyPokemonDb(await res.json());
-      return true;
-    }
-  }catch(e){}
-  document.getElementById('status-bar').textContent='Sin DB (activa Flask + import_db.py).';
-  return false;
+    const db=await loadPokemonDbFromApi();
+    applyPokemonDb(db);
+    return true;
+  }catch(e){
+    console.error('API pokemon:',e);
+    document.getElementById('status-bar').textContent='Error cargando Pokédex desde la API.';
+    return false;
+  }
 }
 
 async function init(){

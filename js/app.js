@@ -66,35 +66,19 @@ function applyPokedexDb(db){
 }
 
 async function loadPokedex(){
-  if(typeof checkApiAvailable==='function'&&await checkApiAvailable()){
-    try{
-      const db=await loadPokemonDbFromApi();
-      applyPokedexDb(db);
-      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
-      document.getElementById('search-def').disabled=false;
-      document.getElementById('search-atk').disabled=false;
-      return;
-    }catch(e){console.warn('API pokedex',e);}
+  if(typeof checkApiAvailable!=='function'||!await checkApiAvailable()){
+    document.getElementById('status-bar').innerHTML='Sin API (arranca Flask con Supabase).';
+    return;
   }
   try{
-    const res=await fetch('data/pokemon_db.json');
-    if(res.ok){
-      applyPokedexDb(await res.json());
-      document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
-      document.getElementById('search-def').disabled=false;
-      document.getElementById('search-atk').disabled=false;
-      return;
-    }
-  }catch(e){}
-  try{
-    const res=await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
-    const data=await res.json();
-    allPokemon=data.results.map((p,i)=>({name:p.name,id:i+1}));
+    const db=await loadPokemonDbFromApi();
+    applyPokedexDb(db);
     document.getElementById('status-bar').innerHTML=`<img src="img/favicon.png" style="height:1.2em;vertical-align:middle;margin-right:5px"> <span>${allPokemon.length} Pokémon</span>`;
     document.getElementById('search-def').disabled=false;
     document.getElementById('search-atk').disabled=false;
   }catch(e){
-    document.getElementById('status-bar').innerHTML='Error cargando la Pokédex.';
+    console.error('API pokedex',e);
+    document.getElementById('status-bar').innerHTML='Error cargando la Pokédex desde la API.';
   }
 }
 

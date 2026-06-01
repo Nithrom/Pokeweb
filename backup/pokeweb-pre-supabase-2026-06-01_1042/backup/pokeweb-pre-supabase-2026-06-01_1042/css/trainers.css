@@ -1,0 +1,226 @@
+/* ══════════════════════════════════════════════════════
+   trainers.css — estilos específicos de trainers.html
+══════════════════════════════════════════════════════ */
+.nav-dropdown { z-index: 300; }
+
+/* ── Barra selectora ── */
+.trainer-selector-bar{
+  background:#0d0d1a;
+  border-bottom:2px solid #e94560;
+  padding:12px 20px;
+  position:sticky;
+  top:0;
+  z-index:200;
+}
+.selector-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  max-width:1280px;
+  margin:0 auto;
+}
+.selector-row{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+.selector-row-filters{
+  align-items:flex-end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.selector-group[hidden],
+.selector-arrow[hidden]{
+  display:none !important;
+}
+.selector-group{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  flex:1 1 0;
+  min-width:0;
+  max-width:340px;
+}
+.selector-label{
+  font-family:'Press Start 2P',monospace;
+  font-size:8px;
+  color:#9090a8;
+  text-transform:uppercase;
+}
+.sel-dropdown{
+  width:100%;
+  background:#0a0a12;
+  border:1px solid #1a3a6e;
+  color:#eaeaea;
+  font-family:'Nunito',sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  outline:none;
+  min-width:0;
+  transition:border-color .15s;
+}
+.sel-dropdown:focus{border-color:#4a9eff;}
+.sel-dropdown:disabled{opacity:.4;cursor:not-allowed;}
+.sel-dropdown option{background:#0d1526;}
+.selector-arrow{
+  font-size:.9rem;
+  color:#e94560;
+  padding-bottom:8px;
+  opacity:.6;
+  flex-shrink:0;
+  align-self:flex-end;
+}
+.selector-row-action{
+  justify-content:center;
+}
+.btn-load-trainer{
+  font-family:'Press Start 2P',monospace;
+  font-size:10px;
+  padding:10px 24px;
+  border-radius:8px;
+  border:2px solid #e94560;
+  background:rgba(233,69,96,.12);
+  color:#e94560;
+  cursor:pointer;
+  transition:background .15s,transform .1s;
+  white-space:nowrap;
+}
+.btn-load-trainer:hover:not(:disabled){
+  background:rgba(233,69,96,.3);
+  transform:scale(1.04);
+}
+.btn-load-trainer:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── Cabecera rival ── */
+.trainer-b-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+}
+.trainer-b-info{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  flex:1;
+}
+.trainer-b-name{
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(6px,.7vw,9px);
+  color:#ffaa33;
+}
+.trainer-b-game{
+  font-size:.58rem;
+  color:#9090a8;
+  font-weight:700;
+}
+
+/* ── Sprite del entrenador en el slot B ── */
+.trainer-sprite-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:12px 8px 6px;
+  border-bottom:1px solid #5a3a00;
+  background:rgba(255,170,51,.04);
+}
+.trainer-sprite{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  image-rendering:auto;
+}
+.trainer-sprite-name{
+  font-family:'Press Start 2P',monospace;
+  font-size:7px;
+  color:#ffaa33;
+  margin-top:6px;
+  text-align:center;
+}
+.trainer-sprite-badge{
+  font-size:.55rem;
+  color:#ffd700;
+  font-weight:800;
+  margin-top:2px;
+}
+.trainer-sprite-type{
+  font-size:.52rem;
+  color:#9090a8;
+  font-weight:700;
+  text-transform:uppercase;
+  display:none;
+}
+
+/* ── Slot rival bloqueado (no editable) ── */
+.poke-slot-rival{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:8px;
+  position:relative;
+  pointer-events:none;
+  opacity:1;
+}
+.rival-level-badge{
+  position:absolute;
+  top:4px;
+  right:4px;
+  background:rgba(0,0,0,.55);
+  border:1px solid #5a3a00;
+  border-radius:4px;
+  font-size:.5rem;
+  font-weight:800;
+  color:#ffcc77;
+  padding:1px 5px;
+}
+
+/* ── Vacío rival ── */
+.rival-empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  gap:8px;
+  padding:20px;
+  color:#9090a8;
+}
+.rival-empty-icon{font-size:2rem;opacity:.15;}
+.rival-empty-text{font-size:.65rem;font-weight:700;text-align:center;}
+
+/* ── Tipo badge especial para nivel ── */
+.trainer-type-badge{
+  font-size:.52rem;
+  font-weight:800;
+  padding:2px 7px;
+  border-radius:50px;
+  text-transform:uppercase;
+  background:rgba(255,170,51,.15);
+  border:1px solid #5a3a00;
+  color:#ffcc77;
+}
+
+/* ── Responsive: desplegables en columna ── */
+@media(max-width:720px){
+  .trainer-selector-bar{padding:10px 14px;}
+  .selector-row-filters{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .selector-group{
+    max-width:none;
+    flex:1 1 auto;
+  }
+  .selector-arrow{display:none;}
+  .sel-dropdown{font-size:.68rem;}
+  .btn-load-trainer{font-size:8px;padding:9px 18px;}
+}
+
+/* Override moves-panel-label a 12px igual que teams */
+.moves-panel-label{font-size:12px;}

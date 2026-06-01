@@ -691,23 +691,17 @@ function normalizeTrainerFromApi(t,gameSlug){
 
 async function loadTrainersForGame(slug){
   if(!slug)return[];
-  if(useApi()){
-    let json=null;
-    try{
-      json=await ensureTrainersJson();
-    }catch(e){
-      console.warn('Equipos desde API (sin trainers_db.json):',e);
-    }
-    const list=await fetchApi(`/trainers?game_slug=${encodeURIComponent(slug)}`);
-    const normalized=list.map(t=>{
-      const n=normalizeTrainerFromApi(t,slug);
-      return json?applyJsonTeam(n,slug,json):n;
-    });
-    if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
-    TRAINERS_DB.trainers[slug]=normalized;
-    return normalized;
+  if(!useApi()){
+    console.warn('loadTrainersForGame requiere API');
+    return [];
   }
-  return TRAINERS_DB.trainers[slug]||[];
+  const list=await fetchApi(
+    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`
+  );
+  const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
+  if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
+  TRAINERS_DB.trainers[slug]=normalized;
+  return normalized;
 }
 
 // ── Carga de datos ────────────────────────────────────
@@ -724,40 +718,20 @@ async function initTrainers(){
 
   try{
     const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
-    if(apiOk){
-      const [games,stats]=await Promise.all([
-        fetchApi('/games'),
-        fetchApi('/stats').catch(()=>({})),
-      ]);
-      let gamesMeta=[];
-      try{
-        const jRes=await fetch('data/trainers_db.json');
-        if(jRes.ok)gamesMeta=(await jRes.json()).games||[];
-      }catch(_e){/* games locales opcionales */}
-      TRAINERS_DB={
-        games:games.map(g=>{
-          const meta=gamesMeta.find(x=>x.slug===g.slug);
-          const gen=Number(g.gen)||Number(meta?.gen)||STARTER_GEN_BY_GAME[g.slug]||0;
-          return{
-            slug:g.slug,
-            name:g.name,
-            gen,
-            region:g.region||meta?.region||'',
-            trainer_count:Number(meta?.trainer_count)||Number(g.trainer_count)||0,
-          };
-        }),
-        trainers:{},
-      };
-      const apiTrainerTotal=Number(stats?.trainers);
-      if(Number.isFinite(apiTrainerTotal)&&apiTrainerTotal>0){
-        TRAINERS_DB._trainerTotal=apiTrainerTotal;
-      }
-      ensureTrainersJson().then(()=>refreshTrainersStatusBar()).catch(()=>{});
-    }else{
-      const res=await fetch('data/trainers_db.json');
-      if(!res.ok)throw new Error('No trainers DB');
-      TRAINERS_DB=await res.json();
+    if(!apiOk){
+      throw new Error('API no disponible');
     }
+    const games=await fetchApi('/games');
+    TRAINERS_DB={
+      games:games.map(g=>({
+        slug:g.slug,
+        name:g.name,
+        gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+        region:g.region||'',
+        trainer_count:Number(g.trainer_count)||0,
+      })),
+      trainers:{},
+    };
     buildGameSelector();
     resetStarterSelector();
     resetRematchSelector();
@@ -765,7 +739,7 @@ async function initTrainers(){
     resetEeveelutionSelector();
     refreshTrainersStatusBar();
   }catch(e){
-    document.getElementById('status-bar').textContent='Sin DB de entrenadores (Flask + import_db.py).';
+    document.getElementById('status-bar').textContent='Sin API (arranca Flask con DATABASE_URL de Supabase).';
   }
 }
 
@@ -1084,7 +1058,7 @@ async function loadTrainer(){
     if(!pData){ skipped++; return; }
 
     const level = tp.level || 100;
-    const moves = resolveTrainerMoves(pData, tp);
+    const moves = resolveTrainerMoves(pData, tp, slug);
     if(!moves.length)noMoves++;
 
     teams.b[i] = {
@@ -1108,10 +1082,11 @@ async function loadTrainer(){
 }
 
 /** Solo movimientos del JSON (Bulbapedia); sin inventar por nivel. */
-function resolveTrainerMoves(pData, tp){
+function resolveTrainerMoves(pData, tp, gameSlug){
   const raw = tp.moves || [];
   if(!raw.length) return [];
 
+  const gameGen=getGameGen(gameSlug);
   const out = [];
   for(const m of raw.slice(0, 4)){
     const rawName = typeof m === 'string' ? m : m.name;
@@ -1119,9 +1094,12 @@ function resolveTrainerMoves(pData, tp){
     const name=normalizeMoveSlug(rawName);
     const fromSlot = pData.allMoves?.find(x => x.name === name);
     const global = DB?.moves?.[name];
-    const detail = fromSlot?.detail || global || {
+    let detail = fromSlot?.detail || global || {
       type: 'normal', category: 'status', power: null, accuracy: null, pp: null,
     };
+    if(typeof PokeMoveGenTypes!=='undefined'&&gameGen>0){
+      detail=PokeMoveGenTypes.detailForGen(detail,name,gameGen);
+    }
     out.push({
       name,
       byLevel: false,
