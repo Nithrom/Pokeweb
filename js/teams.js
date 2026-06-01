@@ -120,10 +120,13 @@ function applyPokemonDb(db){
   }
 }
 
-async function loadPokemonDb(){
+async function loadPokemonDb(opts={}){
   if(typeof checkApiAvailable!=='function'||!await checkApiAvailable()){
     document.getElementById('status-bar').textContent='Sin API (arranca Flask y configura DATABASE_URL en Supabase).';
     return false;
+  }
+  if(opts.quiet!==true&&typeof setStatusLoading==='function'){
+    setStatusLoading('Cargando Pokédex…');
   }
   try{
     const db=await loadPokemonDbFromApi();

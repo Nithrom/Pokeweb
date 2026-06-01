@@ -41,10 +41,18 @@ function apiUrl(path) {
   return base ? `${base}${p}` : p;
 }
 
+function setStatusLoading(msg) {
+  const bar = document.getElementById('status-bar');
+  if (bar) bar.innerHTML = `<span class="spinner"></span> ${msg}`;
+}
+
 async function fetchApi(path, options = {}) {
+  const timeoutMs = options.timeout ?? 30000;
+  const { timeout: _t, ...fetchOpts } = options;
   const res = await fetch(apiUrl(path), {
-    ...options,
-    headers: { Accept: 'application/json', ...(options.headers || {}) },
+    ...fetchOpts,
+    headers: { Accept: 'application/json', ...(fetchOpts.headers || {}) },
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!res.ok) {
     const err = new Error(`API ${res.status}: ${path}`);
@@ -57,7 +65,7 @@ async function fetchApi(path, options = {}) {
 async function checkApiAvailable() {
   if (_useApi !== null) return _useApi;
   try {
-    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(4000) });
+    const h = await fetch(apiUrl('/health'), { signal: AbortSignal.timeout(12000) });
     if (!h.ok) {
       _useApi = false;
       return false;
@@ -74,12 +82,20 @@ function useApi() {
   return _useApi === true;
 }
 
+/** Pokédex completa (~varios MB). */
 async function loadPokemonDbFromApi() {
-  return fetchApi('/db/pokemon');
+  return fetchApi('/db/pokemon', { timeout: 300000 });
+}
+
+/** Todos los entrenadores de todos los juegos con equipos. */
+async function loadAllTrainersFromApi() {
+  return fetchApi('/trainers?include_team=1', { timeout: 300000 });
 }
 
 window.getApiBase = getApiBase;
 window.fetchApi = fetchApi;
 window.checkApiAvailable = checkApiAvailable;
 window.useApi = useApi;
+window.setStatusLoading = setStatusLoading;
 window.loadPokemonDbFromApi = loadPokemonDbFromApi;
+window.loadAllTrainersFromApi = loadAllTrainersFromApi;

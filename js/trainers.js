@@ -689,14 +689,57 @@ function normalizeTrainerFromApi(t,gameSlug){
   };
 }
 
+function groupTrainersByGame(allTrainers){
+  const byGame={};
+  for(const t of allTrainers||[]){
+    const slug=t.game_slug||t.gameSlug;
+    if(!slug)continue;
+    if(!byGame[slug])byGame[slug]=[];
+    byGame[slug].push(normalizeTrainerFromApi(t,slug));
+  }
+  return byGame;
+}
+
+function mergeJsonTeamsIntoDb(json){
+  if(!json||!TRAINERS_DB?.trainers)return;
+  for(const [slug,list] of Object.entries(TRAINERS_DB.trainers)){
+    TRAINERS_DB.trainers[slug]=list.map(t=>applyJsonTeam(t,slug,json));
+  }
+}
+
+async function loadTrainersBundleFromApi(){
+  const [games,allTrainers]=await Promise.all([
+    fetchApi('/games'),
+    loadAllTrainersFromApi(),
+  ]);
+  const trainers=groupTrainersByGame(allTrainers);
+  return{
+    games:games.map(g=>({
+      slug:g.slug,
+      name:g.name,
+      gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
+      region:g.region||'',
+      trainer_count:Number(g.trainer_count)||(trainers[g.slug]?.length||0),
+    })),
+    trainers,
+  };
+}
+
+function getTrainersForGame(slug){
+  return TRAINERS_DB?.trainers?.[slug]||[];
+}
+
 async function loadTrainersForGame(slug){
   if(!slug)return[];
+  const cached=getTrainersForGame(slug);
+  if(cached.length)return cached;
   if(!useApi()){
     console.warn('loadTrainersForGame requiere API');
     return [];
   }
   const list=await fetchApi(
-    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`
+    `/trainers?game_slug=${encodeURIComponent(slug)}&include_team=1`,
+    {timeout:120000},
   );
   const normalized=list.map(t=>normalizeTrainerFromApi(t,slug));
   if(!TRAINERS_DB.trainers)TRAINERS_DB.trainers={};
@@ -706,40 +749,57 @@ async function loadTrainersForGame(slug){
 
 // ── Carga de datos ────────────────────────────────────
 async function initTrainers(){
-  if(typeof loadPokemonDb==='function'){
-    await loadPokemonDb();
-  }else{
-    let tries=0;
-    while((!DB||!allPokemon.length)&&tries<50){
-      await new Promise(r=>setTimeout(r,200));
-      tries++;
-    }
-  }
-
+  const bar=document.getElementById('status-bar');
   try{
     const apiOk=typeof checkApiAvailable==='function'&&await checkApiAvailable();
     if(!apiOk){
       throw new Error('API no disponible');
     }
-    const games=await fetchApi('/games');
-    TRAINERS_DB={
-      games:games.map(g=>({
-        slug:g.slug,
-        name:g.name,
-        gen:Number(g.gen)||STARTER_GEN_BY_GAME[g.slug]||0,
-        region:g.region||'',
-        trainer_count:Number(g.trainer_count)||0,
-      })),
-      trainers:{},
-    };
+    if(typeof setStatusLoading==='function'){
+      setStatusLoading('Cargando base de datos completa (1–3 min)…');
+    }
+
+    const loadDex=typeof loadPokemonDb==='function'
+      ?loadPokemonDb({quiet:true})
+      :new Promise(resolve=>{
+          let tries=0;
+          const tick=()=>{
+            if((DB&&allPokemon.length)||tries>=50)return resolve();
+            tries++;
+            setTimeout(tick,200);
+          };
+          tick();
+        });
+
+    const [dexOk,bundle,json]=await Promise.all([
+      loadDex,
+      loadTrainersBundleFromApi(),
+      ensureTrainersJson().catch(e=>{
+        console.warn('trainers_db.json no disponible',e);
+        return null;
+      }),
+    ]);
+
+    TRAINERS_DB=bundle;
+    if(json)mergeJsonTeamsIntoDb(json);
+
     buildGameSelector();
     resetStarterSelector();
     resetRematchSelector();
     resetDifficultySelector();
     resetEeveelutionSelector();
     refreshTrainersStatusBar();
+
+    if(dexOk===false){
+      if(bar)bar.textContent='Pokédex no cargada; entrenadores listos.';
+    }
   }catch(e){
-    document.getElementById('status-bar').textContent='Sin API (arranca Flask con DATABASE_URL de Supabase).';
+    console.error('initTrainers',e);
+    if(bar){
+      bar.textContent=e?.message?.includes('API')
+        ?'Sin API (arranca Flask con DATABASE_URL de Supabase).'
+        :'Error cargando la base de datos.';
+    }
   }
 }
 
@@ -854,14 +914,10 @@ async function onGameChange(){
   resetDifficultySelector();
   resetEeveelutionSelector();
 
-  selTrainer.disabled=true;
-  selTrainer.innerHTML='<option value="">Cargando entrenadores…</option>';
-
-  let trainers=[];
-  try{
-    trainers=await loadTrainersForGame(slug);
-  }catch(e){
-    selTrainer.innerHTML='<option value="">Error al cargar</option>';
+  const trainers=getTrainersForGame(slug);
+  if(!trainers.length){
+    selTrainer.innerHTML='<option value="">Sin entrenadores</option>';
+    selTrainer.disabled=true;
     return;
   }
 
@@ -1010,13 +1066,6 @@ async function loadTrainer(){
   const sorted=selTrainer._sorted;
   let trainer=findTrainerInSorted(sorted,slug,val);
   if(!trainer)return;
-
-  if(useApi()){
-    try{
-      const json=await ensureTrainersJson();
-      trainer=applyJsonTeam(trainer,slug,json);
-    }catch(e){console.warn('JSON team overlay',e);}
-  }
 
   const gameName = document.getElementById('sel-game').options[document.getElementById('sel-game').selectedIndex].text;
   const starterId=document.getElementById('sel-starter').value;

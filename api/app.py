@@ -288,7 +288,14 @@ def effectiveness():
 # ── Juegos y entrenadores ───────────────────────────────────────────────────────
 @app.route('/games')
 def list_games():
-    return jsonify(query('SELECT id, slug, name, region, gen FROM games ORDER BY gen, id'))
+    return jsonify(query("""
+        SELECT g.id, g.slug, g.name, g.region, g.gen,
+               COUNT(tr.id)::int AS trainer_count
+        FROM games g
+        LEFT JOIN trainers tr ON tr.game_id = g.id
+        GROUP BY g.id, g.slug, g.name, g.region, g.gen
+        ORDER BY g.gen, g.id
+    """))
 
 
 TRAINER_LIST_ORDER = """
